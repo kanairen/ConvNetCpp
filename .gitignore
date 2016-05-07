@@ -31,3 +31,6 @@
 
 # For Mac
 .DS_Store
+
+# For Xcode
+*.xcodeproj
