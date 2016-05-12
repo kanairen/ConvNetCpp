@@ -9,6 +9,10 @@ using namespace std;
 
 class Layer{
 private:
+    // 隣接レイヤへのポインタ
+    Layer* prev;
+    Layer* next;
+    
     // 入出力ユニット数
     float n_in, n_out;
     // 重み変数 行数はn_out, 列数はn_in
