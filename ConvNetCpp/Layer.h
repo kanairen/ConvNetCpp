@@ -30,8 +30,9 @@ private:
     // バイアス対応デルタ
     float b_delta;
     
+    // 学習率
     float learning_rate;
-    
+   
     // デフォルトコンストラクタを明示的に利用不可に
     Layer();
     // コピーコンストラクタの外部からの呼び出しを不可に
@@ -51,6 +52,7 @@ public:
     Layer(Layer* prev, int n_out, float learning_rate = 0.001);
     virtual ~Layer();
     
+    // アクセサ
     vector<vector<float>>* getWeights();
     vector<float>* getBiases();
     vector<float>* getDelta();

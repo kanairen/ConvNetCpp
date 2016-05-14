@@ -1,5 +1,18 @@
 #include"Layer.h"
 
+Layer::Layer(int n_in, int n_out, float learning_rate){
+    this->prev = NULL;
+    this->next = NULL;
+    this->init(n_in, n_out,learning_rate);
+}
+
+Layer::Layer(Layer* prev, int n_out, float learning_rate){
+    this->prev = prev;
+    this->next = NULL;
+    this->init(prev->n_out, n_out,learning_rate);
+}
+
+// メンバ初期化
 void Layer::init(int n_in, int n_out,float learning_rate){
     
     // 入出力ユニット数初期化
@@ -31,19 +44,6 @@ void Layer::init(int n_in, int n_out,float learning_rate){
     this->delta = new vector<float>(n_out);
     this->b_delta = 0.0;
 }
-
-Layer::Layer(int n_in, int n_out, float learning_rate){
-    this->prev = NULL;
-    this->next = NULL;
-    this->init(n_in, n_out,learning_rate);
-}
-
-Layer::Layer(Layer* prev, int n_out, float learning_rate){
-    this->prev = prev;
-    this->next = NULL;
-    this->init(prev->n_out, n_out,learning_rate);
-}
-
 
 Layer::~Layer(){
     if (this->prev != NULL) {
@@ -91,7 +91,6 @@ vector<float>* Layer::forward(vector<float> *x){
     }
 }
 
-
 // 外部呼び出し用逆伝播関数
 void Layer::backward(vector<float>* delta){
     if (this->next == NULL) {
@@ -107,7 +106,6 @@ void Layer::backward(vector<float>* delta){
         throw exception();
     }
 }
-
 
 // 逆伝播関数
 // 出力層のデルタは、交差エントロピー誤差の場合、
@@ -139,6 +137,7 @@ void Layer::backward(){
     }
 }
 
+// パラメタ更新関数
 void Layer::update(){
     for(int i = 0; i < this->n_out; i++){
         for(int j = 0; j < this->n_in; j++){
@@ -147,7 +146,6 @@ void Layer::update(){
         (*this->biases)[i] -= this->b_delta * this->learning_rate;
     }
 }
-
 
 // 活性化関数
 float Layer::activation(float x){
