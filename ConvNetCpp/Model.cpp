@@ -65,7 +65,7 @@ float Model::error(vector<int> *predicts, vector<int> *answers){
     }
     float err = 0.0;
     for(int i = 0; i < predicts->size(); i++){
-        if((*predicts)[i] == (*answers)[i]){
+        if((*predicts)[i] != (*answers)[i]){
             err += 1.;
         }
     }
