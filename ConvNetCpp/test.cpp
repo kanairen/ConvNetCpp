@@ -14,7 +14,7 @@ void mnist() {
     string f_x_test = filedir + "/xtest";
     string f_y_train = filedir + "/ytrain";
     string f_y_test = filedir + "/ytest";
-    MNIST mnist(f_x_train,f_x_test,f_y_train,f_y_test);
+    MNIST mnist(f_x_train, f_x_test, f_y_train, f_y_test);
     
     Model *model = new Model();
     model->addLayer(28*28, 128, 0.001);

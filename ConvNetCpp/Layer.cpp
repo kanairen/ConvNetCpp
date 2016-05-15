@@ -20,14 +20,26 @@ Layer::Layer(Layer* prev, int n_out, float learning_rate){
     this->init(prev->n_out, n_out,learning_rate);
 }
 
+Layer::~Layer(){
+    if (this->prev != NULL) {
+        delete this->prev;
+    }
+    if (this->next != NULL) {
+        delete this->next;
+    }
+    delete this->weights;
+    delete this->biases;
+    delete this->u;
+    delete this->z;
+    delete this->delta;
+}
+
 // メンバ初期化
 void Layer::init(int n_in, int n_out,float learning_rate){
     
-    // 入出力ユニット数初期化
     this->n_in = n_in;
     this->n_out = n_out;
     
-    // 学習率
     this->learning_rate = learning_rate;
     
     // 乱数生成器
@@ -53,19 +65,6 @@ void Layer::init(int n_in, int n_out,float learning_rate){
     this->b_delta = 0.0;
 }
 
-Layer::~Layer(){
-    if (this->prev != NULL) {
-        delete this->prev;
-    }
-    if (this->next != NULL) {
-        delete this->next;
-    }
-    delete this->weights;
-    delete this->biases;
-    delete this->u;
-    delete this->z;
-    delete this->delta;
-}
 
 // 順伝播関数
 // 伝播により、逆伝播に使う入力重み付き和uが求まる
@@ -133,7 +132,6 @@ void Layer::backward(){
     }
 }
 
-// パラメタ更新関数
 void Layer::update(){
     for(int i = 0; i < this->n_out; i++){
         for(int j = 0; j < this->n_in; j++){
@@ -141,16 +139,6 @@ void Layer::update(){
         }
         (*this->biases)[i] -= this->b_delta * this->learning_rate;
     }
-}
-
-// 活性化関数
-float Layer::activation(float x){
-    return x;
-}
-
-// 活性化関数微分形
-float Layer::gradActivation(float x){
-    return 1.0;
 }
 
 string Layer::toString(){

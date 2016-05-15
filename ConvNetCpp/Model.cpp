@@ -24,12 +24,10 @@ Model::~Model(){
     delete this->delta;
 }
 
-// レイヤの追加
 void Model::addLayer(int n_in, int n_out, float learning_rate){
     this->layers->push_back(new Layer(n_in, n_out, learning_rate));
 }
 
-// 順伝播
 vector<int>* Model::forward(vector<vector<float>*> *inputs){
     if (preds->size() != inputs->size()) {
         preds->resize(inputs->size());
@@ -45,7 +43,6 @@ vector<int>* Model::forward(vector<vector<float>*> *inputs){
     return this->preds;
 }
 
-// 逆伝播あり順伝播
 vector<int>* Model::forwardWithBackward(vector<vector<float>*> *inputs,vector<int> *answers){
     vector<int> *predicts = this->forward(inputs);
     if(predicts->size() != answers->size()){
@@ -61,12 +58,10 @@ vector<int>* Model::forwardWithBackward(vector<vector<float>*> *inputs,vector<in
     return predicts;
 }
 
-// 逆伝播
 void Model::backward(vector<float> *delta){
     (*this->layers)[this->layers->size() - 1]->backward(delta);
 }
 
-// 誤差
 float Model::error(vector<int> *predicts, vector<int> *answers){
     if(predicts->size() != answers->size()){
         throw exception();
@@ -80,7 +75,6 @@ float Model::error(vector<int> *predicts, vector<int> *answers){
     return err / predicts->size();
 }
 
-// 最大値インデックスのベクトル
 int Model::argmax(vector<float> *output){
     float max = FLT_MIN;
     int max_idx = 0;
