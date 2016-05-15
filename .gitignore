@@ -34,3 +34,6 @@
 
 # For Xcode
 *.xcodeproj
+
+# Resource Folder
+ConvNetCpp/res/*
