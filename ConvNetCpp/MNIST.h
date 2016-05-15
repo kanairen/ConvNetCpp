@@ -6,8 +6,8 @@
 //  Copyright © 2016年 金井廉. All rights reserved.
 //
 
-#ifndef MNIST_h
-#define MNIST_h
+#ifndef MNIST_H_
+#define MNIST_H_
 
 #include <string>
 #include <iostream>
@@ -39,4 +39,4 @@ public:
    
 };
 
-#endif /* MNIST_h */
+#endif /* MNIST_H_ */

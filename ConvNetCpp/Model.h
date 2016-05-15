@@ -1,3 +1,11 @@
+//
+//  Model.h
+//  ConvNetCpp
+//
+//  Created by 金井廉 on 2016/05/06.
+//  Copyright © 2016年 金井廉. All rights reserved.
+//
+
 #ifndef MODEL_H_
 #define MODEL_H_
 

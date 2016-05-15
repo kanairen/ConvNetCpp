@@ -1,3 +1,11 @@
+//
+//  Layer.h
+//  ConvNetCpp
+//
+//  Created by 金井廉 on 2016/05/06.
+//  Copyright © 2016年 金井廉. All rights reserved.
+//
+
 #ifndef LAYER_H_
 #define LAYER_H_
 

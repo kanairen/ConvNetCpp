@@ -1,3 +1,11 @@
+//
+//  Layer.cpp
+//  ConvNetCpp
+//
+//  Created by 金井廉 on 2016/05/06.
+//  Copyright © 2016年 金井廉. All rights reserved.
+//
+
 #include"Layer.h"
 
 Layer::Layer(int n_in, int n_out, float learning_rate){
