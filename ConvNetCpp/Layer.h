@@ -53,9 +53,9 @@ public:
     virtual ~Layer();
     
     // アクセサ
-    vector<vector<float>>* getWeights();
-    vector<float>* getBiases();
-    vector<float>* getDelta();
+    vector<vector<float>>* getWeights(){return weights;}
+    vector<float>* getBiases(){return biases;}
+    vector<float>* getDelta(){return delta;}
     
     // 順伝播関数
     vector<float>* forward(vector<float> *x);

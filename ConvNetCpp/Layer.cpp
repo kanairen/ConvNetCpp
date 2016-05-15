@@ -59,18 +59,6 @@ Layer::~Layer(){
     delete this->delta;
 }
 
-vector<vector<float>>* Layer::getWeights(){
-    return this->weights;
-}
-
-vector<float>* Layer::getBiases(){
-    return this->biases;
-}
-
-vector<float>* Layer::getDelta(){
-    return this->delta;
-}
-
 // 順伝播関数
 // 伝播により、逆伝播に使う入力重み付き和uが求まる
 vector<float>* Layer::forward(vector<float> *x){
