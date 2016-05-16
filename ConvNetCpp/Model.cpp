@@ -24,8 +24,8 @@ Model::~Model(){
     delete this->delta;
 }
 
-void Model::addLayer(int n_in, int n_out, float learning_rate){
-    this->layers->push_back(new Layer(n_in, n_out, learning_rate));
+void Model::addLayer(int n_in, int n_out, Activation *activation, float learning_rate){
+    this->layers->push_back(new Layer(n_in, n_out, activation, learning_rate));
 }
 
 vector<int>* Model::forward(vector<vector<float>*> *inputs){

@@ -13,6 +13,8 @@
 #include <sstream>
 #include <random>
 
+#include "Activation.h"
+
 using namespace std;
 
 class Layer{
@@ -22,6 +24,9 @@ private:
     
     float n_in, n_out;
     float learning_rate;
+    
+    Activation *activation;
+    
     vector<vector<float>> *weights;
     vector<float> *biases;
     
@@ -35,14 +40,14 @@ private:
     Layer(const Layer& otherLayer);
     Layer& operator=(const Layer& otherLayer);
     
-    void init(int n_in, int n_out, float learning_rate);// メンバ初期化関数
+    void init(int n_in, int n_out, Activation *activation, float learning_rate);// メンバ初期化関数
     
     void backward();
     void update();
     
 public:
-    Layer(int n_in, int n_out, float learning_rate = 0.001);
-    Layer(Layer* prev, int n_out, float learning_rate = 0.001);
+    Layer(int n_in, int n_out, Activation *activation, float learning_rate);
+    Layer(Layer* prev, int n_out, Activation *activation, float learning_rate);
     virtual ~Layer();
     
     vector<vector<float>>* getWeights(){return weights;}
@@ -51,9 +56,6 @@ public:
     
     vector<float>* forward(vector<float> *x);
     void backward(vector<float>* delta);// 外部呼び出し用逆伝播関数
-    
-    virtual float activation(float x){return x;}
-    virtual float gradActivation(float x){return 1;}
     
     virtual string toString();
 };

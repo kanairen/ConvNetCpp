@@ -17,9 +17,9 @@ void mnist() {
     MNIST mnist(f_x_train, f_x_test, f_y_train, f_y_test);
     
     Model *model = new Model();
-    model->addLayer(28*28, 128, 0.001);
-    model->addLayer(128, 256, 0.001);
-    model->addLayer(256, 10, 0.001);
+    model->addLayer(28*28, 128, new ReLU(), 0.001);
+    model->addLayer(128, 256, new ReLU(), 0.001);
+    model->addLayer(256, 10, new ReLU(), 0.001);
     
     for (int i = 0; i < 1000; i++) {
         cout << i + 1 << "st learning..." << endl;

@@ -8,16 +8,16 @@
 
 #include"Layer.h"
 
-Layer::Layer(int n_in, int n_out, float learning_rate){
+Layer::Layer(int n_in, int n_out, Activation *activation, float learning_rate){
     this->prev = NULL;
     this->next = NULL;
-    this->init(n_in, n_out,learning_rate);
+    this->init(n_in, n_out, activation, learning_rate);
 }
 
-Layer::Layer(Layer* prev, int n_out, float learning_rate){
+Layer::Layer(Layer* prev, int n_out, Activation *activation, float learning_rate){
     this->prev = prev;
     this->next = NULL;
-    this->init(prev->n_out, n_out,learning_rate);
+    this->init(prev->n_out, n_out, activation, learning_rate);
 }
 
 Layer::~Layer(){
@@ -35,11 +35,11 @@ Layer::~Layer(){
 }
 
 // メンバ初期化
-void Layer::init(int n_in, int n_out,float learning_rate){
+void Layer::init(int n_in, int n_out, Activation *activation, float learning_rate){
     
     this->n_in = n_in;
     this->n_out = n_out;
-    
+    this->activation = activation;
     this->learning_rate = learning_rate;
     
     // 乱数生成器
@@ -77,7 +77,7 @@ vector<float>* Layer::forward(vector<float> *x){
         }
         u += (*this->biases)[i];
         (*this->u)[i] = u;
-        (*this->z)[i] = Layer::activation(u);
+        (*this->z)[i] = this->activation->f(u);
     }
     if (this->next == NULL) {
         return this->z;
@@ -117,7 +117,7 @@ void Layer::backward(){
         for(int k = 0; k < this->next->n_out; k++){
             (*this->delta)[j] += (*next_delta)[k] * (*next_weight)[k][j];
         }
-        (*this->delta)[j] *= Layer::gradActivation((*this->u)[j]);
+        (*this->delta)[j] *= this->activation->gf((*this->u)[j]);
     }
     // バイアスパラメタへの逆伝播
     this->b_delta = 0.0;

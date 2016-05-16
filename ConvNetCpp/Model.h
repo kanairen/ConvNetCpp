@@ -30,7 +30,7 @@ public:
     Model();
     virtual ~Model();
 
-    void addLayer(int n_in, int n_out, float learning_rate=0.001);
+    void addLayer(int n_in, int n_out, Activation *activation, float learning_rate);
     vector<int>* forward(vector<vector<float>*>* inputs);
     vector<int>* forwardWithBackward(vector<vector<float>*> *inputs,vector<int> *answers);
     static float error(vector<int>* predicts, vector<int>* answers);
