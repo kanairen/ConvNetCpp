@@ -11,11 +11,12 @@
 MNIST::MNIST(string fname_x_train,
              string fname_x_test,
              string fname_y_train,
-             string fname_y_test){
-    this->x_train = this->loadData(fname_x_train);
-    this->x_test = this->loadData(fname_x_test);
-    this->y_train = this->loadLabels(fname_y_train);
-    this->y_test = this->loadLabels(fname_y_test);
+             string fname_y_test,
+             unsigned int n_batch){
+    this->x_train = this->loadData(fname_x_train, n_batch);
+    this->x_test = this->loadData(fname_x_test, n_batch);
+    this->y_train = this->loadLabels(fname_y_train, n_batch);
+    this->y_test = this->loadLabels(fname_y_test, n_batch);
 }
 
 MNIST::~MNIST(){
@@ -36,7 +37,7 @@ int MNIST::toInteger(int i){
 }
 
 // ヒープ上vectorオブジェクトへの参照は内部で生成する
-vector<vector<float>*>* MNIST::loadData(string filename){
+vector<vector<vector<float>*>*>* MNIST::loadData(string filename, unsigned int n_batch){
     
     cout << "load data : " << filename << endl;
     
@@ -64,26 +65,33 @@ vector<vector<float>*>* MNIST::loadData(string filename){
     cout << "number of rows : " << n_row << endl;
     cout << "number of cols : " << n_col << endl;
     
-    vector<vector<float>*>* v = new vector<vector<float>*>(n_imgs);
-    cout << v->size() << endl;
+    if(n_imgs % n_batch != 0){
+        cerr << "error : 入力データがバッチ数で割りきれません" << endl;
+        exit(1);
+    }
+    
+    vector<vector<vector<float>*>*>* v = new vector<vector<vector<float>*>*>(n_batch);
     
     unsigned char p;
-    for (int idx_img = 0; idx_img < n_imgs; idx_img++) {
-        (*v)[idx_img] = new vector<float>(n_row * n_col);
-        
-        for (int row = 0; row < n_row; row++) {
-            for (int col = 0; col < n_col; col++) {
-                ifs.read((char*)&p, sizeof(p));
-                (*(*v)[idx_img])[row * n_col + col] = (float)p;
+    for (int i = 0; i < n_batch; i++){
+        (*v)[i] = new vector<vector<float>*>(n_imgs / n_batch);
+        for (int j = 0; j < n_imgs / n_batch; j++) {
+            (*(*v)[i])[j] = new vector<float>(n_row * n_col);
+            
+            for (int row = 0; row < n_row; row++) {
+                for (int col = 0; col < n_col; col++) {
+                    ifs.read((char*)&p, sizeof(p));
+                    (*(*(*v)[i])[j])[row * n_col + col] = (float)p;
+                }
             }
+            
         }
-        
     }
     return v;
 }
 
 // ヒープ上vectorオブジェクトへの参照は内部で生成する
-vector<int>* MNIST::loadLabels(string filename){
+vector<vector<int>*>* MNIST::loadLabels(string filename, unsigned int n_batch){
     
     cout << "load labels : " << filename << endl;
     
@@ -104,13 +112,20 @@ vector<int>* MNIST::loadLabels(string filename){
     cout << "magic number : " << magic_number << endl;
     cout << "number of labels : " << n_labels << endl;
     
-    vector<int> *v = new vector<int>(n_labels);
-    cout << v->size() << endl;
+    if(n_labels % n_batch != 0){
+        cerr << "error : 入力データがバッチ数で割りきれません" << endl;
+        exit(1);
+    }
+    
+    vector<vector<int>*> *v = new vector<vector<int>*>(n_labels);
     
     unsigned char p;
-    for (int i = 0; i < n_labels; i++) {
-        ifs.read((char*)&p, sizeof(p));
-        (*v)[i] = (int)p;
+    for (int i = 0; i < n_batch; i++) {
+        (*v)[i] = new vector<int>(n_labels / n_batch);
+        for (int j = 0; j < n_labels / n_batch; j++) {
+            ifs.read((char*)&p, sizeof(p));
+            (*(*v)[i])[j] = (int)p;
+        }
     }
     return v;
 }

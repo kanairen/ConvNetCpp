@@ -18,24 +18,25 @@ using namespace std;
 
 class MNIST{
 private:
-    vector<vector<float>*> *x_train;
-    vector<vector<float>*> *x_test;
-    vector<int> *y_train;
-    vector<int> *y_test;
+    vector<vector<vector<float>*>*> *x_train;
+    vector<vector<vector<float>*>*> *x_test;
+    vector<vector<int>*> *y_train;
+    vector<vector<int>*> *y_test;
+    
+    MNIST(string fname_x_train, string fname_x_test, string fname_y_train, string fname_y_test, unsigned int n_batch);
+    ~MNIST();
     
     static int toInteger(int i);
     
-    vector<vector<float>*>* loadData(string filename);
-    vector<int>* loadLabels(string filename);
+    vector<vector<vector<float>*>*>* loadData(string filename, unsigned int n_batch);
+    vector<vector<int>*>* loadLabels(string filename, unsigned int n_batch);
     
 public:
-    MNIST(string fname_x_train, string fname_x_test, string fname_y_train, string fname_y_test);
-    ~MNIST();
-    
-    vector<vector<float>*>* getXTrain(){return x_train;}
-    vector<vector<float>*>* getXTest(){return x_test;}
-    vector<int>* getYTrain(){return y_train;}
-    vector<int>* getYTest(){return y_test;}
+    static MNIST* newMNIST(string fname_x_train, string fname_x_test, string fname_y_train, string fname_y_test, unsigned int n_batch){return new MNIST(fname_x_train, fname_x_test, fname_y_train, fname_y_test, n_batch);}
+    vector<vector<vector<float>*>*>* getXTrain(){return x_train;}
+    vector<vector<vector<float>*>*>* getXTest(){return x_test;}
+    vector<vector<int>*>* getYTrain(){return y_train;}
+    vector<vector<int>*>* getYTest(){return y_test;}
    
 };
 
