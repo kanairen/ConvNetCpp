@@ -23,8 +23,8 @@ private:
     vector<vector<int>*> *y_train;
     vector<vector<int>*> *y_test;
     
+    MNIST();
     MNIST(string fname_x_train, string fname_x_test, string fname_y_train, string fname_y_test, unsigned int n_batch);
-    ~MNIST();
     
     static int toInteger(int i);
     
@@ -32,6 +32,7 @@ private:
     vector<vector<int>*>* loadLabels(string filename, unsigned int n_batch);
     
 public:
+    virtual ~MNIST();
     static MNIST* newMNIST(string fname_x_train, string fname_x_test, string fname_y_train, string fname_y_test, unsigned int n_batch){return new MNIST(fname_x_train, fname_x_test, fname_y_train, fname_y_test, n_batch);}
     vector<vector<vector<float>*>*>* getXTrain(){return x_train;}
     vector<vector<vector<float>*>*>* getXTest(){return x_test;}

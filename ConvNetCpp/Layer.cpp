@@ -65,7 +65,6 @@ void Layer::init(int n_in, int n_out, Activation *activation, float learning_rat
     this->b_delta = 0.0;
 }
 
-
 // 順伝播関数
 // 伝播により、逆伝播に使う入力重み付き和uが求まる
 vector<float>* Layer::forward(vector<float> *x){

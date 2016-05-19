@@ -19,8 +19,8 @@ using namespace std;
 
 class Layer{
 private:
-    Layer* prev;
-    Layer* next;
+    Layer *prev;
+    Layer *next;
     
     float n_in, n_out;
     float learning_rate;
@@ -38,6 +38,8 @@ private:
    
     Layer();
     Layer(const Layer& otherLayer);
+    Layer(int n_in, int n_out, Activation *activation, float learning_rate);
+    Layer(Layer *prev, int n_out, Activation *activation, float learning_rate);
     Layer& operator=(const Layer& otherLayer);
     
     void init(int n_in, int n_out, Activation *activation, float learning_rate);// メンバ初期化関数
@@ -46,16 +48,18 @@ private:
     void update();
     
 public:
-    Layer(int n_in, int n_out, Activation *activation, float learning_rate);
-    Layer(Layer* prev, int n_out, Activation *activation, float learning_rate);
     virtual ~Layer();
+    
+    static Layer* newLayer(int n_in, int n_out, Activation *activation, float learning_rate){return new Layer(n_in, n_out, activation, learning_rate);}
+    
+    static Layer* newLayer(Layer *prev, int n_out, Activation *activation, float learning_rate){return new Layer(prev, n_out, activation, learning_rate);}
     
     vector<vector<float>>* getWeights(){return weights;}
     vector<float>* getBiases(){return biases;}
     vector<float>* getDelta(){return delta;}
     
-    vector<float>* forward(vector<float> *x);
-    void backward(vector<float>* delta);// 外部呼び出し用逆伝播関数
+    virtual vector<float>* forward(vector<float> *x);
+    void backward(vector<float> *delta);// 外部呼び出し用逆伝播関数
     
     virtual string toString();
 };

@@ -14,14 +14,16 @@ void mnist() {
     string f_x_test = filedir + "/xtest";
     string f_y_train = filedir + "/ytrain";
     string f_y_test = filedir + "/ytest";
+    
     unsigned int n_batch = 100;
+    
     MNIST *mnist = MNIST::newMNIST(f_x_train, f_x_test, f_y_train, f_y_test, n_batch);
     vector<vector<vector<float>*>*>* x_train = mnist->getXTrain();
     vector<vector<vector<float>*>*>* x_test = mnist->getXTest();
     vector<vector<int>*>* y_train = mnist->getYTrain();
     vector<vector<int>*>* y_test = mnist->getYTest();
     
-    Model *model = new Model();
+    Model *model = Model::newModel();
     model->addLayer(28*28, 10, new Sigmoid(), 0.1);
     model->addLayer(10, 20, new Sigmoid(), 0.1);
     model->addLayer(20, 10, new Sigmoid(), 0.1);

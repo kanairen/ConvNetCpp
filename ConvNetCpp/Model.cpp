@@ -25,7 +25,7 @@ Model::~Model(){
 }
 
 void Model::addLayer(int n_in, int n_out, Activation *activation, float learning_rate){
-    this->layers->push_back(new Layer(n_in, n_out, activation, learning_rate));
+    this->layers->push_back(Layer::newLayer(n_in, n_out, activation, learning_rate));
 }
 
 vector<int>* Model::forward(vector<vector<float>*> *inputs){
