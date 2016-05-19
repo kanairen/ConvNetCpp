@@ -26,7 +26,7 @@ private:
     Model(const Model& model);
     Model& operator=(const Model& model);
     
-    void backward(vector<float>* delta);
+    void backward();
 public:
     virtual ~Model();
     
@@ -34,7 +34,7 @@ public:
     
     void addLayer(int n_in, int n_out, Activation *activation, float learning_rate);
     vector<int>* forward(vector<vector<float>*>* inputs);
-    vector<int>* forwardWithBackward(vector<vector<float>*> *inputs,vector<int> *answers);
+    vector<int>* forwardWithBackward(vector<vector<float>*> *inputs, vector<int> *answers);
     static float error(vector<int>* predicts, vector<int>* answers);
     static int argmax(vector<float>* output);
 };

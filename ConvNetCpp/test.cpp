@@ -8,13 +8,13 @@
 
 #include "test.h"
 
-void mnist(string filedir) {
-    string f_x_train = filedir + "/xtrain";
-    string f_x_test = filedir + "/xtest";
-    string f_y_train = filedir + "/ytrain";
-    string f_y_test = filedir + "/ytest";
+void mnist(string resdir) {
+    string f_x_train = resdir + "/xtrain";
+    string f_x_test = resdir + "/xtest";
+    string f_y_train = resdir + "/ytrain";
+    string f_y_test = resdir + "/ytest";
     
-    unsigned int n_batch = 100;
+    unsigned int n_batch = 1000;
     
     MNIST *mnist = MNIST::newMNIST(f_x_train, f_x_test, f_y_train, f_y_test, n_batch);
     vector<vector<vector<float>*>*>* x_train = mnist->getXTrain();
@@ -23,9 +23,9 @@ void mnist(string filedir) {
     vector<vector<int>*>* y_test = mnist->getYTest();
     
     Model *model = Model::newModel();
-    model->addLayer(28*28, 128, new ReLU(), 0.1);
-    model->addLayer(128, 64, new ReLU(), 0.1);
-    model->addLayer(64, 10, new Sigmoid(), 0.1);
+    model->addLayer(28 * 28, 512, new Sigmoid(), 0.001);
+    model->addLayer(512, 1024, new Sigmoid(), 0.001);
+    model->addLayer(1024, 10, new Sigmoid(), 0.001);
     
     vector<int> *train_pred;
     vector<int> *test_pred;

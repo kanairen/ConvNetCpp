@@ -25,10 +25,12 @@ Model::~Model(){
 }
 
 void Model::addLayer(int n_in, int n_out, Activation *activation, float learning_rate){
-    this->layers->push_back(Layer::newLayer(n_in, n_out, activation, learning_rate));
+    Layer *layer = Layer::newLayer(n_in, n_out, activation, learning_rate);
+    this->layers->push_back(layer);
 }
 
 vector<int>* Model::forward(vector<vector<float>*> *inputs){
+    
     if (preds->size() != inputs->size()) {
         preds->resize(inputs->size());
     }
@@ -44,22 +46,30 @@ vector<int>* Model::forward(vector<vector<float>*> *inputs){
 }
 
 vector<int>* Model::forwardWithBackward(vector<vector<float>*> *inputs,vector<int> *answers){
+    
+    if (this->delta->size() == 0) {
+        this->delta->resize(this->layers->back()->getNOut());
+    }
+    
     vector<int> *predicts = this->forward(inputs);
     if(predicts->size() != answers->size()){
         throw exception();
     }
-    if(this->delta->size() != predicts->size()){
-        this->delta->resize(predicts->size());
-    }
     for (int i = 0; i < predicts->size(); i++) {
         (*this->delta)[i] = (*predicts)[i] - (*answers)[i];
     }
-    this->backward(this->delta);
+    this->backward();
     return predicts;
 }
 
-void Model::backward(vector<float> *delta){
-    (*this->layers)[this->layers->size() - 1]->backward(delta);
+void Model::backward(){
+    vector<float> *d = delta;
+    vector<vector<float> > *w = NULL;
+    for (int i = (int)this->layers->size() - 1; i >= 0; i--) {
+        (*this->layers)[i]->backward(d, w);
+        d = (*this->layers)[i]->getDelta();
+        w = (*this->layers)[i]->getWeights();
+    }
 }
 
 float Model::error(vector<int> *predicts, vector<int> *answers){

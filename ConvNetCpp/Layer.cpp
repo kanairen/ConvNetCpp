@@ -8,34 +8,9 @@
 
 #include"Layer.h"
 
-Layer::Layer(int n_in, int n_out, Activation *activation, float learning_rate){
-    this->prev = NULL;
-    this->next = NULL;
-    this->init(n_in, n_out, activation, learning_rate);
-}
-
-Layer::Layer(Layer* prev, int n_out, Activation *activation, float learning_rate){
-    this->prev = prev;
-    this->next = NULL;
-    this->init(prev->n_out, n_out, activation, learning_rate);
-}
-
-Layer::~Layer(){
-    if (this->prev != NULL) {
-        delete this->prev;
-    }
-    if (this->next != NULL) {
-        delete this->next;
-    }
-    delete this->weights;
-    delete this->biases;
-    delete this->u;
-    delete this->z;
-    delete this->delta;
-}
 
 // メンバ初期化
-void Layer::init(int n_in, int n_out, Activation *activation, float learning_rate){
+Layer::Layer(int n_in, int n_out, Activation *activation, float learning_rate){
     
     this->n_in = n_in;
     this->n_out = n_out;
@@ -49,7 +24,7 @@ void Layer::init(int n_in, int n_out, Activation *activation, float learning_rat
     mt19937 mt((random_device())());
     
     // パラメタ変数の初期化
-    this->weights = new vector<vector<float>>(n_out);
+    this->weights = new vector<vector<float> >(n_out);
     this->biases = new vector<float>(n_out);
     for(int i = 0; i < n_out; i++){
         (*this->biases)[i] = 0.0;
@@ -65,6 +40,14 @@ void Layer::init(int n_in, int n_out, Activation *activation, float learning_rat
     this->b_delta = 0.0;
 }
 
+Layer::~Layer(){
+    delete this->weights;
+    delete this->biases;
+    delete this->u;
+    delete this->z;
+    delete this->delta;
+}
+
 // 順伝播関数
 // 伝播により、逆伝播に使う入力重み付き和uが求まる
 vector<float>* Layer::forward(vector<float> *x){
@@ -78,57 +61,42 @@ vector<float>* Layer::forward(vector<float> *x){
         (*this->u)[i] = u;
         (*this->z)[i] = this->activation->f(u);
     }
-    if (this->next == NULL) {
-        return this->z;
-    }else{
-        return this->next->forward(this->z);
-    }
-}
-
-// 外部呼び出し用逆伝播関数
-void Layer::backward(vector<float>* delta){
-    if (this->next == NULL) {
-        for (int i = 0; i < this->delta->size(); i++) {
-            (*this->delta)[i] = (*delta)[i];
-        }
-        // パラメタ更新
-        this->update();
-        if (this->prev != NULL) {
-            this->prev->backward();
-        }
-    }else{
-        throw exception();
-    }
+    return this->z;
 }
 
 // 逆伝播関数
-// 出力層のデルタは、交差エントロピー誤差の場合、
-// 推測結果と正解データの誤差になる
-void Layer::backward(){
-    if (this->next == NULL) {
-        throw exception();
+void Layer::backward(vector<float> *nextDelta, vector<vector<float> > *nextWeight){
+    cout << "backward" << endl;
+    if(nextWeight == NULL){
+        if(this->delta->size() != nextDelta->size()){
+            cerr << "error : backward on output layer." << endl;
+            exit(1);
+        }
+        for (int i = 0; i < nextDelta->size(); i++) {
+            (*this->delta)[i] = (*nextDelta)[i];
+        }
+        this->b_delta = 0.0;
+        this->update();
+        return;
     }
-    vector<float> *next_delta = this->next->getDelta();
-    vector<vector<float>> *next_weight = this->next->getWeights();
+    
     // 重みパラメタの逆伝播（次層のバイアスパラメタは現在層の重みパラメタから影響を受けないので、）
-    for(int j  = 0; j < this->next->n_in; j++){
+    for(int j = 0; j < this->n_out; j++){
         (*this->delta)[j] = 0.0;
-        for(int k = 0; k < this->next->n_out; k++){
-            (*this->delta)[j] += (*next_delta)[k] * (*next_weight)[k][j];
+        for(int k = 0; k < nextDelta->size(); k++){
+            (*this->delta)[j] += (*nextDelta)[k] * (*nextWeight)[k][j];
         }
         (*this->delta)[j] *= this->activation->gf((*this->u)[j]);
     }
+    
     // バイアスパラメタへの逆伝播
     this->b_delta = 0.0;
-    for (int k = 0; k < this->next->n_out; k++) {
-        this->b_delta += (*next_delta)[k] * 1.0;
+    for (int k = 0; k < nextDelta->size(); k++) {
+        this->b_delta += (*nextDelta)[k] * 1.0;
     }
     
     // パラメタ更新
     this->update(); 
-    if (this->prev != NULL) {
-        this->prev->backward();
-    }
 }
 
 void Layer::update(){

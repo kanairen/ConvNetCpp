@@ -15,8 +15,7 @@
 
 #include "MNIST.h"
 #include "Model.h"
-#include "Layer.h"
 
-void mnist(string filedir);
+void mnist(string resdir);
 
 #endif /* TEST_H */

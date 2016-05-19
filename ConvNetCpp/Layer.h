@@ -10,6 +10,7 @@
 #define LAYER_H_
 
 #include <stdio.h>
+#include <iostream>
 #include <sstream>
 #include <random>
 
@@ -19,15 +20,13 @@ using namespace std;
 
 class Layer{
 private:
-    Layer *prev;
-    Layer *next;
     
-    float n_in, n_out;
+    int n_in, n_out;
     float learning_rate;
     
     Activation *activation;
     
-    vector<vector<float>> *weights;
+    vector<vector<float> > *weights;
     vector<float> *biases;
     
     /* 計算結果を格納する配列・変数*/
@@ -39,12 +38,8 @@ private:
     Layer();
     Layer(const Layer& otherLayer);
     Layer(int n_in, int n_out, Activation *activation, float learning_rate);
-    Layer(Layer *prev, int n_out, Activation *activation, float learning_rate);
     Layer& operator=(const Layer& otherLayer);
     
-    void init(int n_in, int n_out, Activation *activation, float learning_rate);// メンバ初期化関数
-    
-    void backward();
     void update();
     
 public:
@@ -52,16 +47,17 @@ public:
     
     static Layer* newLayer(int n_in, int n_out, Activation *activation, float learning_rate){return new Layer(n_in, n_out, activation, learning_rate);}
     
-    static Layer* newLayer(Layer *prev, int n_out, Activation *activation, float learning_rate){return new Layer(prev, n_out, activation, learning_rate);}
-    
-    vector<vector<float>>* getWeights(){return weights;}
+    int getNIn(){return n_in;}
+    int getNOut(){return n_out;}
+    vector<vector<float> >* getWeights(){return weights;}
     vector<float>* getBiases(){return biases;}
     vector<float>* getDelta(){return delta;}
     
     virtual vector<float>* forward(vector<float> *x);
-    void backward(vector<float> *delta);// 外部呼び出し用逆伝播関数
+    void backward(vector<float> *nextDelta, vector<vector<float> > *nextWeight);// 逆伝播関数
     
     virtual string toString();
 };
+
 
 #endif

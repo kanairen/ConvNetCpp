@@ -8,15 +8,15 @@
 
 #include "MNIST.h"
 
-MNIST::MNIST(string fname_x_train,
-             string fname_x_test,
-             string fname_y_train,
-             string fname_y_test,
+MNIST::MNIST(string f_x_train,
+             string f_x_test,
+             string f_y_train,
+             string f_y_test,
              unsigned int n_batch){
-    this->x_train = this->loadData(fname_x_train, n_batch);
-    this->x_test = this->loadData(fname_x_test, n_batch);
-    this->y_train = this->loadLabels(fname_y_train, n_batch);
-    this->y_test = this->loadLabels(fname_y_test, n_batch);
+    this->x_train = this->loadData(f_x_train, n_batch);
+    this->x_test = this->loadData(f_x_test, n_batch);
+    this->y_train = this->loadLabels(f_y_train, n_batch);
+    this->y_test = this->loadLabels(f_y_test, n_batch);
 }
 
 MNIST::~MNIST(){
@@ -59,11 +59,11 @@ int MNIST::toInteger(int i){
 }
 
 // ヒープ上vectorオブジェクトへの参照は内部で生成する
-vector<vector<vector<float>*>*>* MNIST::loadData(string filename, unsigned int n_batch){
+vector<vector<vector<float>*>*>* MNIST::loadData(string f_name, unsigned int n_batch){
     
-    cout << "load data : " << filename << endl;
+    cout << "load data : " << f_name << endl;
     
-    ifstream ifs(filename,ios::in|ios::binary);
+    ifstream ifs(f_name,ios::in|ios::binary);
     if(ifs.fail()){
         cerr << "MNIST:ファイル読み込みエラー" << endl;
         exit(1);
@@ -113,11 +113,11 @@ vector<vector<vector<float>*>*>* MNIST::loadData(string filename, unsigned int n
 }
 
 // ヒープ上vectorオブジェクトへの参照は内部で生成する
-vector<vector<int>*>* MNIST::loadLabels(string filename, unsigned int n_batch){
+vector<vector<int>*>* MNIST::loadLabels(string f_name, unsigned int n_batch){
     
-    cout << "load labels : " << filename << endl;
+    cout << "load labels : " << f_name << endl;
     
-    ifstream ifs(filename,ios::in|ios::binary);
+    ifstream ifs(f_name,ios::in|ios::binary);
     if(ifs.fail()){
         cerr << "MNIST:ファイル読み込みエラー" << endl;
         exit(1);
