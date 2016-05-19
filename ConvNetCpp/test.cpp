@@ -8,8 +8,7 @@
 
 #include "test.h"
 
-void mnist() {
-    string filedir = "/Users/kanairen/Projects/xcode/ConvNetCpp/ConvNetCpp/res/mnist";
+void mnist(string filedir) {
     string f_x_train = filedir + "/xtrain";
     string f_x_test = filedir + "/xtest";
     string f_y_train = filedir + "/ytrain";
@@ -24,32 +23,39 @@ void mnist() {
     vector<vector<int>*>* y_test = mnist->getYTest();
     
     Model *model = Model::newModel();
-    model->addLayer(28*28, 10, new Sigmoid(), 0.1);
-    model->addLayer(10, 20, new Sigmoid(), 0.1);
-    model->addLayer(20, 10, new Sigmoid(), 0.1);
+    model->addLayer(28*28, 128, new ReLU(), 0.1);
+    model->addLayer(128, 64, new ReLU(), 0.1);
+    model->addLayer(64, 10, new Sigmoid(), 0.1);
     
-    float train_error;
-    float test_error;
-    float sum_train_error;
-    float sum_test_error;
+    vector<int> *train_pred;
+    vector<int> *test_pred;
+    float train_err;
+    float test_err;
+    float sum_train_err;
+    float sum_test_err;
     
     for (int i = 0; i < 100; i++) {
-        sum_train_error = 0;
-        sum_test_error = 0;
+        
+        sum_train_err = 0;
+        sum_test_err = 0;
+        
         for (int j = 0; j < n_batch; j++){
+            
             cout << i + 1 << "st learning / " << j + 1 << "st batch" << endl;
             
-            vector<int> *train_pred = model->forwardWithBackward((*x_train)[j], (*y_train)[j]);
-            train_error = model->error(train_pred, (*y_train)[j]);
-            cout << "train error : " << train_error << endl;
-            sum_train_error += train_error;
-            cout << "train error average : " << sum_train_error / (j + 1) << endl;
+            train_pred = model->forwardWithBackward((*x_train)[j], (*y_train)[j]);
+            train_err = model->error(train_pred, (*y_train)[j]);
+            sum_train_err += train_err;
             
-            vector<int> *test_pred = model->forward((*x_test)[j]);
-            test_error = model->error(test_pred, (*y_test)[j]);
-            cout << "test error : " << test_error << endl;
-            sum_test_error += test_error;
-            cout << "test error average : " << sum_test_error / (j + 1) << endl;
+            cout << "train error : " << train_err << endl;
+            cout << "train error average : " << sum_train_err / (j + 1) << endl;
+            
+            test_pred = model->forward((*x_test)[j]);
+            test_err = model->error(test_pred, (*y_test)[j]);
+            sum_test_err += test_err;
+            
+            cout << "test error : " << test_err << endl;
+            cout << "test error average : " << sum_test_err / (j + 1) << endl;
             
             cout << endl;
         }

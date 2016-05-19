@@ -10,7 +10,12 @@
 
 
 int main(int argc, const char * argv[]) {
-    mnist();
+    if(argc == 0){
+        cerr << "error : コマンドライン引数にパスを設定してください。" << endl;
+        exit(1);
+    }
+    string filedir = argv[1];
+    mnist(filedir);
     return 0;
 }
 

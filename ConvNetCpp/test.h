@@ -9,6 +9,7 @@
 #ifndef TEST_H_
 #define TEST_H_
 
+#include <unistd.h>
 #include <iostream>
 #include <string>
 
@@ -16,6 +17,6 @@
 #include "Model.h"
 #include "Layer.h"
 
-void mnist();
+void mnist(string filedir);
 
 #endif /* TEST_H */
