@@ -20,9 +20,31 @@ MNIST::MNIST(string fname_x_train,
 }
 
 MNIST::~MNIST(){
+    // TODO more better expression
+    for (int i = 0; i < this->x_train->size(); i++){
+        for (int j = 0; j < (*this->x_train)[i]->size(); j++) {
+            delete (*(*this->x_train)[i])[j];
+        }
+         delete (*this->x_train)[i];
+    }
     delete this->x_train;
+    
+    for (int i = 0; i < this->x_test->size(); i++){
+        for (int j = 0; j < (*this->x_test)[i]->size(); j++) {
+            delete (*(*this->x_test)[i])[j];
+        }
+         delete (*this->x_test)[i];
+    }
     delete this->x_test;
+    
+    for (int i = 0; i < this->y_train->size(); i++) {
+        delete (*this->y_train)[i];
+    }
     delete this->y_train;
+    
+    for (int i = 0; i < this->y_test->size(); i++) {
+        delete (*this->y_test)[i];
+    }
     delete this->y_test;
 }
 
