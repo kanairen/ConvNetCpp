@@ -26,7 +26,7 @@ private:
     
     Activation *activation;
     
-    vector<vector<float> > *weights;
+    vector<vector<float>*> *weights;
     vector<float> *biases;
     
     /* 計算結果を格納する配列・変数*/
@@ -49,12 +49,12 @@ public:
     
     int getNIn(){return n_in;}
     int getNOut(){return n_out;}
-    vector<vector<float> >* getWeights(){return weights;}
+    vector<vector<float>*>* getWeights(){return weights;}
     vector<float>* getBiases(){return biases;}
     vector<float>* getDelta(){return delta;}
     
     virtual vector<float>* forward(vector<float> *x);
-    void backward(vector<float> *nextDelta, vector<vector<float> > *nextWeight);// 逆伝播関数
+    void backward(vector<float> *nextDelta, vector<vector<float>*> *nextWeight);// 逆伝播関数
     
     virtual string toString();
 };

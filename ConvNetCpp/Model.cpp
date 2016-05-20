@@ -30,7 +30,6 @@ void Model::addLayer(unsigned int n_in, unsigned int n_out, Activation *activati
 }
 
 vector<int>* Model::forward(vector<vector<float>*> *inputs){
-    
     if (preds->size() != inputs->size()) {
         preds->resize(inputs->size());
     }
@@ -64,7 +63,7 @@ vector<int>* Model::forwardWithBackward(vector<vector<float>*> *inputs,vector<in
 
 void Model::backward(){
     vector<float> *d = delta;
-    vector<vector<float> > *w = NULL;
+    vector<vector<float>*> *w = NULL;
     for (int i = (int)this->layers->size() - 1; i >= 0; i--) {
         (*this->layers)[i]->backward(d, w);
         d = (*this->layers)[i]->getDelta();

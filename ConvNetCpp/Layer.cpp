@@ -24,13 +24,13 @@ Layer::Layer(unsigned int n_in, unsigned int n_out, Activation *activation, floa
     mt19937 mt((random_device())());
     
     // パラメタ変数の初期化
-    this->weights = new vector<vector<float> >(n_out);
+    this->weights = new vector<vector<float>*>(n_out);
     this->biases = new vector<float>(n_out);
     for(int i = 0; i < n_out; i++){
         (*this->biases)[i] = 0.0;
-        (*this->weights)[i] = vector<float>(n_in);
+        (*this->weights)[i] = new vector<float>(n_in);
         for(int j = 0; j < n_in; j++){
-            (*this->weights)[i][j] = real(mt);
+            (*(*this->weights)[i])[j] = real(mt);
         }
     }
     
@@ -41,6 +41,9 @@ Layer::Layer(unsigned int n_in, unsigned int n_out, Activation *activation, floa
 }
 
 Layer::~Layer(){
+    for (int i = 0; i < this->weights->size(); i++) {
+        delete (*this->weights)[i];
+    }
     delete this->weights;
     delete this->biases;
     delete this->u;
@@ -55,7 +58,7 @@ vector<float>* Layer::forward(vector<float> *x){
     for(int i = 0; i < this->n_out; i++){
         u = 0.0;
         for(int j = 0; j < this->n_in; j++){
-            u += (*this->weights)[i][j] * (*x)[j];
+            u += (*(*this->weights)[i])[j] * (*x)[j];
         }
         u += (*this->biases)[i];
         (*this->u)[i] = u;
@@ -65,7 +68,7 @@ vector<float>* Layer::forward(vector<float> *x){
 }
 
 // 逆伝播関数
-void Layer::backward(vector<float> *nextDelta, vector<vector<float> > *nextWeight){
+void Layer::backward(vector<float> *nextDelta, vector<vector<float>*> *nextWeight){
     if(nextWeight == NULL){
         if(this->delta->size() != nextDelta->size()){
             cerr << "error : backward on output layer." << endl;
@@ -83,7 +86,7 @@ void Layer::backward(vector<float> *nextDelta, vector<vector<float> > *nextWeigh
     for(int j = 0; j < this->n_out; j++){
         (*this->delta)[j] = 0.0;
         for(int k = 0; k < nextDelta->size(); k++){
-            (*this->delta)[j] += (*nextDelta)[k] * (*nextWeight)[k][j];
+            (*this->delta)[j] += (*nextDelta)[k] * (*(*nextWeight)[k])[j];
         }
         (*this->delta)[j] *= this->activation->gf((*this->u)[j]);
     }
@@ -101,7 +104,7 @@ void Layer::backward(vector<float> *nextDelta, vector<vector<float> > *nextWeigh
 void Layer::update(){
     for(int i = 0; i < this->n_out; i++){
         for(int j = 0; j < this->n_in; j++){
-            (*this->weights)[i][j] -= (*this->delta)[i] * this->learning_rate;
+            (*(*this->weights)[i])[j] -= (*this->delta)[i] * this->learning_rate;
         }
         (*this->biases)[i] -= this->b_delta * this->learning_rate;
     }
