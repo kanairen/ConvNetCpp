@@ -10,7 +10,7 @@
 
 
 // メンバ初期化
-Layer::Layer(int n_in, int n_out, Activation *activation, float learning_rate){
+Layer::Layer(unsigned int n_in, unsigned int n_out, Activation *activation, float learning_rate){
     
     this->n_in = n_in;
     this->n_out = n_out;
@@ -66,7 +66,6 @@ vector<float>* Layer::forward(vector<float> *x){
 
 // 逆伝播関数
 void Layer::backward(vector<float> *nextDelta, vector<vector<float> > *nextWeight){
-    cout << "backward" << endl;
     if(nextWeight == NULL){
         if(this->delta->size() != nextDelta->size()){
             cerr << "error : backward on output layer." << endl;

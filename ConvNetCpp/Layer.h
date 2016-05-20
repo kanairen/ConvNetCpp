@@ -21,7 +21,7 @@ using namespace std;
 class Layer{
 private:
     
-    int n_in, n_out;
+    unsigned int n_in, n_out;
     float learning_rate;
     
     Activation *activation;
@@ -37,7 +37,7 @@ private:
    
     Layer();
     Layer(const Layer& otherLayer);
-    Layer(int n_in, int n_out, Activation *activation, float learning_rate);
+    Layer(unsigned int n_in, unsigned int n_out, Activation *activation, float learning_rate);
     Layer& operator=(const Layer& otherLayer);
     
     void update();
@@ -45,7 +45,7 @@ private:
 public:
     virtual ~Layer();
     
-    static Layer* newLayer(int n_in, int n_out, Activation *activation, float learning_rate){return new Layer(n_in, n_out, activation, learning_rate);}
+    static Layer* newLayer(unsigned int n_in, unsigned int n_out, Activation *activation, float learning_rate){return new Layer(n_in, n_out, activation, learning_rate);}
     
     int getNIn(){return n_in;}
     int getNOut(){return n_out;}

@@ -24,7 +24,7 @@ Model::~Model(){
     delete this->delta;
 }
 
-void Model::addLayer(int n_in, int n_out, Activation *activation, float learning_rate){
+void Model::addLayer(unsigned int n_in, unsigned int n_out, Activation *activation, float learning_rate){
     Layer *layer = Layer::newLayer(n_in, n_out, activation, learning_rate);
     this->layers->push_back(layer);
 }

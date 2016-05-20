@@ -32,7 +32,7 @@ public:
     
     static Model* newModel(){return new Model();}
     
-    void addLayer(int n_in, int n_out, Activation *activation, float learning_rate);
+    void addLayer(unsigned int n_in, unsigned int n_out, Activation *activation, float learning_rate);
     vector<int>* forward(vector<vector<float>*>* inputs);
     vector<int>* forwardWithBackward(vector<vector<float>*> *inputs, vector<int> *answers);
     static float error(vector<int>* predicts, vector<int>* answers);
