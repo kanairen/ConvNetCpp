@@ -15,4 +15,6 @@ set(SOURCE_FILES
     ConvNetCpp/test.cpp
     ConvNetCpp/test.h)
 
+include_directories("/usr/local/include/eigen3")
+
 add_executable(ConvNetCpp ${SOURCE_FILES})
