@@ -35,5 +35,8 @@
 # For Xcode
 *.xcodeproj
 
+# For CLion
+.idea/*
+
 # Resource Folder
 ConvNetCpp/res/*
