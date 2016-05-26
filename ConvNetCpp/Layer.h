@@ -35,6 +35,11 @@ private:
     MatrixXf *z;
     MatrixXf *delta;
 
+    /* 暗黙的なオブジェクトのコピーを回避 */
+    Layer() = delete;
+    Layer(Layer& other) = delete;
+    Layer& operator=(const Layer& other) = delete;
+
     Layer(unsigned int n_in, unsigned int n_out, Activation *activation,
           float learning_rate);
 
