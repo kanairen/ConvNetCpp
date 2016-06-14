@@ -3,7 +3,7 @@ project(ConvNetCpp)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
-set(SOURCE_FILES src/main.cpp src/Layer.h)
+set(SOURCE_FILES src/main.cpp src/Layer.cpp src/Layer.h)
 
 include_directories("/usr/local/include/eigen3")
 
