@@ -1,0 +1,12 @@
+language: cpp
+
+compiler:
+  - gcc-4.8
+
+script:
+  - g++-4.8 -std=c++11 -Wall -Wextra -pedantic tests/suite.cpp && ./a.out
+
+install:
+    - sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
+    - sudo apt-get -qq update
+    - sudo apt-get -qq install g++-4.8
