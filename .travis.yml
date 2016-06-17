@@ -4,6 +4,10 @@ compiler:
   - gcc-4.8
 
 script:
+  - curl http://yann.lecun.com/exdb/mnist/train-images-idx3-ubyte.gz > x_train
+  - curl http://yann.lecun.com/exdb/mnist/train-labels-idx1-ubyte.gz > x_test
+  - curl http://yann.lecun.com/exdb/mnist/t10k-images-idx3-ubyte.gz > y_train
+  - curl http://yann.lecun.com/exdb/mnist/t10k-labels-idx1-ubyte.gz > y_test
   - g++-4.8 -std=c++11 -Wall -Wextra -pedantic src/*.cpp tests/*.cpp && ./a.out
 
 install:
