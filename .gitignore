@@ -40,3 +40,6 @@
 
 # Resource Folder
 ConvNetCpp/res/*
+
+# main
+main.cpp
