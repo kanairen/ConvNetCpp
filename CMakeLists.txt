@@ -7,11 +7,15 @@ set(SOURCE_FILES
         src/main.cpp
         src/Layer.cpp
         src/Layer.h
+        src/Model.cpp
+        src/Model.h
         src/MNIST.cpp
         src/MNIST.h
         tests/suite.cpp
         tests/TestLayer.cpp
         tests/TestLayer.h
+        tests/TestModel.cpp
+        tests/TestModel.h
         tests/TestMNIST.cpp
         tests/TestMNIST.h)
 
