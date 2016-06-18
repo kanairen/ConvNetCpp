@@ -45,3 +45,112 @@ const vector<vector<float>> &Layer::forward(vector<vector<float>> &input) {
     return z;
 }
 
+void Layer::backward(const vector<vector<float>> &last_delta,
+                     const vector<vector<float>> &prev_output,
+                     const float learning_rate) {
+
+    cout << "last_delta_size : " << last_delta.size() << endl;
+    cout << "delta_size: " << delta.size() << endl;
+
+    // 出力層のデルタとしてコピー
+    std::copy(last_delta.begin(), last_delta.end(), delta.begin());
+
+
+    float d;
+    float sum_delta = 0.f;
+    float max_delta = -MAXFLOAT;
+    float min_delta = MAXFLOAT;
+    for (int i_out = 0; i_out < n_out; ++i_out) {
+        for (int i_data = 0; i_data < n_data; ++i_data) {
+            d = delta[i_out][i_data];
+            sum_delta += d;
+            if (d > max_delta) {
+                max_delta = d;
+            }
+            if (d < min_delta) {
+                min_delta = d;
+            }
+        }
+    }
+    cout << "sum_delta : " << sum_delta << endl;
+    cout << "max_delta : " << max_delta << endl;
+    cout << "min_delta : " << min_delta << endl;
+
+    // パラメタ更新
+    update(prev_output, learning_rate);
+
+}
+
+void Layer::backward(const Layer &next,
+                     const vector<vector<float>> &prev_output,
+                     const float learning_rate) {
+    const vector<vector<float>> &next_weights = next.weights;
+    const vector<vector<float>> &next_delta = next.delta;
+    const unsigned int next_n_out = next.n_out;
+    float d;
+    for (int i_data = 0; i_data < n_data; ++i_data) {
+        for (int i_out = 0; i_out < n_out; ++i_out) {
+            d = 0.f;
+            for (int i_n_out = 0; i_n_out < next_n_out; ++i_n_out) {
+                // デルタを導出
+                d += grad_activation(u[i_out][i_data]) *
+                     next_weights[i_n_out][i_out] * next_delta[i_n_out][i_data];
+            }
+            delta[i_out][i_data] = d;
+        }
+    }
+
+    float sum_delta = 0.f;
+    float max_delta = -MAXFLOAT;
+    float min_delta = MAXFLOAT;
+    for (int i_out = 0; i_out < n_out; ++i_out) {
+        for (int i_data = 0; i_data < n_data; ++i_data) {
+            d = delta[i_out][i_data];
+            sum_delta += d;
+            if (d > max_delta) {
+                max_delta = d;
+            }
+            if (d < min_delta) {
+                min_delta = d;
+            }
+        }
+    }
+    cout << "sum_delta : " << sum_delta << endl;
+    cout << "max_delta : " << max_delta << endl;
+    cout << "min_delta : " << min_delta << endl;
+
+    // パラメタ更新
+    update(prev_output, learning_rate);
+
+}
+
+void Layer::update(const vector<vector<float>> &prev_output,
+                   const float learning_rate) {
+    float dw, db;
+    float sum_dw = 0;
+    float max_dw = -MAXFLOAT;
+    float min_dw = MAXFLOAT;
+    for (int i_out = 0; i_out < n_out; ++i_out) {
+        for (int i_in = 0; i_in < n_in; ++i_in) {
+            dw = 0.f;
+            db = 0.f;
+            for (int i_data = 0; i_data < n_data; ++i_data) {
+                dw += delta[i_out][i_data] * prev_output[i_out][i_data];
+                db += delta[i_out][i_data];
+                sum_dw += dw;
+                if (dw > max_dw) {
+                    max_dw = dw;
+                }
+                if (dw < min_dw) {
+                    min_dw = dw;
+                }
+            }
+            weights[i_out][i_in] -= learning_rate * dw / n_data;
+        }
+        biases[i_out] -= learning_rate * db / n_data;
+    }
+    cout << "sum_dw : " << sum_dw << endl;
+    cout << "max_dw : " << max_dw << endl;
+    cout << "min_dw : " << min_dw << endl;
+
+}
