@@ -5,6 +5,9 @@
 #ifndef CONVNETCPP_LAYER_H
 #define CONVNETCPP_LAYER_H
 
+#define SHOW_DW
+#define SHOW_DELTA
+
 #include <random>
 #include <vector>
 #include <iostream>

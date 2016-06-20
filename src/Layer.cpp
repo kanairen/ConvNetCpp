@@ -50,9 +50,6 @@ void Layer::backward(const vector<vector<float>> &last_delta,
                      const vector<vector<float>> &prev_output,
                      const float learning_rate) {
 
-    cout << "last_delta_size : " << last_delta.size() << endl;
-    cout << "delta_size: " << delta.size() << endl;
-
     // 出力層のデルタとしてコピー
     std::copy(last_delta.begin(), last_delta.end(), delta.begin());
 
@@ -73,9 +70,11 @@ void Layer::backward(const vector<vector<float>> &last_delta,
             }
         }
     }
+#ifdef SHOW_DELTA
     cout << "sum_delta : " << sum_delta << endl;
     cout << "max_delta : " << max_delta << endl;
     cout << "min_delta : " << min_delta << endl;
+#endif
 
     // パラメタ更新
     update(prev_output, learning_rate);
@@ -116,9 +115,11 @@ void Layer::backward(const Layer &next,
             }
         }
     }
+#ifdef SHOW_DELTA
     cout << "sum_delta : " << sum_delta << endl;
     cout << "max_delta : " << max_delta << endl;
     cout << "min_delta : " << min_delta << endl;
+#endif
 
     // パラメタ更新
     update(prev_output, learning_rate);
@@ -146,12 +147,15 @@ void Layer::update(const vector<vector<float>> &prev_output,
                     min_dw = dw;
                 }
             }
-            weights[i_out][i_in] -= learning_rate * dw / n_data;
+            weights[i_out][i_in] -= dw / n_data;
         }
-        biases[i_out] -= learning_rate * db / n_data;
+        biases[i_out] -= db / n_data;
     }
+
+#ifdef SHOW_DW
     cout << "sum_dw : " << sum_dw << endl;
     cout << "max_dw : " << max_dw << endl;
     cout << "min_dw : " << min_dw << endl;
+#endif
 
 }
