@@ -45,11 +45,13 @@ void MNIST::loadData(std::string f_name, vector<vector<float>> &dst) {
 
     dst.resize(n_row * n_col);
     unsigned char p;
-    for (int i = 0; i < n_row * n_col; ++i) {
-        dst[i].resize(n_imgs);
-        for (int j = 0; j < n_imgs; ++j) {
+    for (int j = 0; j < n_imgs; ++j) {
+        for (int i = 0; i < n_row * n_col; ++i) {
+            if (j == 0) {
+                dst[i].resize(n_imgs);
+            }
             ifs.read((char *) &p, sizeof(p));
-            dst[i][j] = (float) p;
+            dst[i][j] = (float) p ;
         }
     }
 
