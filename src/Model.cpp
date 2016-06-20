@@ -32,11 +32,12 @@ void Model::softmax(const vector<vector<float>> &outputs,
         exit(1);
     }
 
-    float u, sum_exp;
+    float u, sum_exp, max_output;
     for (int i = 0; i < outputs.size(); ++i) {
         sum_exp = 0.f;
+        max_output = (*std::max_element(outputs[i].begin(), outputs[i].end()));
         for (int j = 0; j < outputs[i].size(); ++j) {
-            u = exp(outputs[i][j]);
+            u = exp(outputs[i][j] - max_output);
             y[i][j] = u;
             sum_exp += u;
         }
