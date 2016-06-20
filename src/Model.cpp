@@ -4,12 +4,12 @@
 
 #include "Model.h"
 
-vector<vector<float>> &Model::forward(vector<vector<float>> &inputs) {
-    vector<vector<float>> &output = inputs;
+const vector<vector<float>> &Model::forward(vector<vector<float>> &inputs) {
+    const vector<vector<float>> *output = &inputs;
     for (int i = 0; i < layers.size(); i++) {
-        output = layers[i].forward(output);
+        output = &(layers[i].forward(*output));
     }
-    return output;
+    return *output;
 }
 
 void Model::backward(const vector<vector<float>> &inputs,
