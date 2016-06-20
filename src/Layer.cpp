@@ -36,9 +36,9 @@ const vector<vector<float>> &Layer::forward(
         for (int i_out = 0; i_out < n_out; ++i_out) {
             out = 0.f;
             for (int i_in = 0; i_in < n_in; ++i_in) {
-                out += weights[i_out][i_in] * input[i_in][i_data] +
-                       biases[i_out];
+                out += weights[i_out][i_in] * input[i_in][i_data];
             }
+            out += biases[i_out];
             u[i_out][i_data] = out;
             z[i_out][i_data] = activation(out);
         }
