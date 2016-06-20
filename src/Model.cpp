@@ -12,8 +12,9 @@ vector<vector<float>> &Model::forward(vector<vector<float>> &inputs) {
     return output;
 }
 
-void Model::backward(vector<vector<float>> &inputs,
-                     vector<vector<float>> &last_delta, float learning_rate) {
+void Model::backward(const vector<vector<float>> &inputs,
+                     const vector<vector<float>> &last_delta,
+                     float learning_rate) {
 
     layers.back().backward(last_delta, layers[layers.size() - 2].get_z(),
                            learning_rate);

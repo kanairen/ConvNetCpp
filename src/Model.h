@@ -25,8 +25,8 @@ public:
 
     vector<vector<float>> &forward(vector<vector<float>> &inputs);
 
-    void backward(vector<vector<float>> &inputs,
-                  vector<vector<float>> &last_delta, float learning_rate);
+    void backward(const vector<vector<float>> &inputs,
+                  const vector<vector<float>> &last_delta, float learning_rate);
 
     static void softmax(const vector<vector<float>> &outputs,
                         vector<vector<float>> &y);

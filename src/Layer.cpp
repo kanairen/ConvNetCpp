@@ -26,7 +26,8 @@ Layer::Layer(unsigned int n_data, unsigned int n_in, unsigned int n_out,
 
 }
 
-const vector<vector<float>> &Layer::forward(vector<vector<float>> &input) {
+const vector<vector<float>> &Layer::forward(
+        const vector<vector<float>> &input) {
     float out;
     if (input.size() != n_out) {
 

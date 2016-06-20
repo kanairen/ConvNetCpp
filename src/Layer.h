@@ -43,7 +43,7 @@ public:
 
     const vector<vector<float>> &get_z() { return z; }
 
-    const vector<vector<float>> &forward(vector<vector<float>> &input);
+    const vector<vector<float>> &forward(const vector<vector<float>> &input);
 
     void backward(const vector<vector<float>> &last_delta,
                   const vector<vector<float>> &prev_output,
