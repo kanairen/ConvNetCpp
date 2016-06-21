@@ -14,10 +14,12 @@ Layer::Layer(unsigned int n_data, unsigned int n_in, unsigned int n_out,
         u(vector<vector<float>>(n_out, vector<float>(n_data, 0.f))),
         z(vector<vector<float>>(n_out, vector<float>(n_data, 0.f))) {
 
+    // 乱数生成器
     std::random_device rnd;
     std::mt19937 mt(rnd());
     std::uniform_real_distribution<> uniform(-sqrt(6. / (n_in + n_out)),
                                              sqrt(6. / (n_in + n_out)));
+    // 重みパラメタの初期化
     for (int i = 0; i < n_out; ++i) {
         for (int j = 0; j < n_in; ++j) {
             weights[i][j] = uniform(mt);
@@ -53,7 +55,7 @@ void Layer::backward(const vector<vector<float>> &last_delta,
     // 出力層のデルタとしてコピー
     std::copy(last_delta.begin(), last_delta.end(), delta.begin());
 
-
+#ifdef SHOW_DELTA
     float d;
     float sum_delta = 0.f;
     float max_delta = -MAXFLOAT;
@@ -70,7 +72,6 @@ void Layer::backward(const vector<vector<float>> &last_delta,
             }
         }
     }
-#ifdef SHOW_DELTA
     cout << "sum_delta : " << sum_delta << endl;
     cout << "max_delta : " << max_delta << endl;
     cout << "min_delta : " << min_delta << endl;
@@ -100,6 +101,7 @@ void Layer::backward(const Layer &next,
         }
     }
 
+#ifdef SHOW_DELTA
     float sum_delta = 0.f;
     float max_delta = -MAXFLOAT;
     float min_delta = MAXFLOAT;
@@ -115,7 +117,6 @@ void Layer::backward(const Layer &next,
             }
         }
     }
-#ifdef SHOW_DELTA
     cout << "sum_delta : " << sum_delta << endl;
     cout << "max_delta : " << max_delta << endl;
     cout << "min_delta : " << min_delta << endl;
@@ -129,9 +130,11 @@ void Layer::backward(const Layer &next,
 void Layer::update(const vector<vector<float>> &prev_output,
                    const float learning_rate) {
     float dw, db;
+#ifdef SHOW_DW
     float sum_dw = 0;
     float max_dw = -MAXFLOAT;
     float min_dw = MAXFLOAT;
+#endif
     for (int i_out = 0; i_out < n_out; ++i_out) {
         for (int i_in = 0; i_in < n_in; ++i_in) {
             dw = 0.f;
@@ -141,6 +144,7 @@ void Layer::update(const vector<vector<float>> &prev_output,
                 dw += learning_rate * delta[i_out][i_data] *
                       prev_output[i_in][i_data];
                 db += learning_rate * delta[i_out][i_data];
+#ifdef SHOW_DW
                 sum_dw += dw;
                 if (dw > max_dw) {
                     max_dw = dw;
@@ -148,6 +152,7 @@ void Layer::update(const vector<vector<float>> &prev_output,
                 if (dw < min_dw) {
                     min_dw = dw;
                 }
+#endif
             }
             weights[i_out][i_in] -= dw / n_data;
         }

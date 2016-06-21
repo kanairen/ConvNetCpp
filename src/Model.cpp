@@ -78,7 +78,7 @@ float Model::error(const vector<int> &predict, const vector<int> &answer) {
         exit(1);
     }
 
-    float num_error = 0.;
+    float num_error = 0.f;
     for (int i = 0; i < predict.size(); ++i) {
         if (predict[i] != answer[i]) {
             num_error += 1;
