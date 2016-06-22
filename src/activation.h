@@ -8,12 +8,12 @@
 #include <cmath>
 
 float sigmoid(float x) {
-    return 1. / (1. + exp(-x));
+    return 1.f / (1.f + expf(-x));
 }
 
 float g_sigmoid(float x) {
     float t = sigmoid(x);
-    return t * (1. - t);
+    return t * (1.f - t);
 }
 
 float relu(float x) {
@@ -21,7 +21,7 @@ float relu(float x) {
 }
 
 float g_relu(float x) {
-    return (x > 0) ? 1 : 0;
+    return (x > 0) ? 1.f : 0;
 }
 
 float iden(float x) {
@@ -29,7 +29,7 @@ float iden(float x) {
 }
 
 float g_iden(float x) {
-    return 1;
+    return 1.f;
 }
 
 #endif //CONVNETCPP_ACTIVATION_H

@@ -51,7 +51,7 @@ void MNIST::loadData(std::string f_name, vector<vector<float>> &dst) {
                 dst[i].resize(n_imgs);
             }
             ifs.read((char *) &p, sizeof(p));
-            dst[i][j] = (float) p / 255.;
+            dst[i][j] = (float) p / 255.f;
         }
     }
 

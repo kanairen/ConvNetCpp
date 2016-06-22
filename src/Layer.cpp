@@ -17,15 +17,14 @@ Layer::Layer(unsigned int n_data, unsigned int n_in, unsigned int n_out,
     // 乱数生成器
     std::random_device rnd;
     std::mt19937 mt(rnd());
-    std::uniform_real_distribution<> uniform(-sqrt(6. / (n_in + n_out)),
-                                             sqrt(6. / (n_in + n_out)));
+    std::uniform_real_distribution<float> uniform(-sqrtf(6.f / (n_in + n_out)),
+                                                  sqrtf(6.f / (n_in + n_out)));
     // 重みパラメタの初期化
     for (int i = 0; i < n_out; ++i) {
         for (int j = 0; j < n_in; ++j) {
             weights[i][j] = uniform(mt);
         }
     }
-
 }
 
 const vector<vector<float>> &Layer::forward(
