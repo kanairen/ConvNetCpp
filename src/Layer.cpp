@@ -60,7 +60,12 @@ void Layer::backward(const vector<vector<float>> &last_delta,
                      const float learning_rate) {
 
     // 出力層のデルタとしてコピー
-    std::copy(last_delta.begin(), last_delta.end(), delta.begin());
+//    std::copy(last_delta.begin(), last_delta.end(), delta.begin());
+    for (int i = 0; i < last_delta.size(); ++i) {
+        for (int j = 0; j < last_delta[0].size(); ++j) {
+            delta[i][j] = last_delta[i][j];
+        }
+    }
 
 #ifdef SHOW_DELTA
     float d;
