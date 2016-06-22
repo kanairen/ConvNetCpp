@@ -100,14 +100,15 @@ void Layer::backward(const Layer &next,
     const vector<vector<float>> &next_weights = next.weights;
     const vector<vector<float>> &next_delta = next.delta;
     const unsigned int next_n_out = next.n_out;
-    float d;
+    float d, fu;
     for (int i_data = 0; i_data < n_data; ++i_data) {
         for (int i_out = 0; i_out < n_out; ++i_out) {
             d = 0.f;
+            fu = grad_activation(u[i_out][i_data]);
             for (int i_n_out = 0; i_n_out < next_n_out; ++i_n_out) {
                 // デルタを導出
-                d += grad_activation(u[i_out][i_data]) *
-                     next_weights[i_n_out][i_out] * next_delta[i_n_out][i_data];
+                d += fu * next_weights[i_n_out][i_out] *
+                     next_delta[i_n_out][i_data];
             }
             delta[i_out][i_data] = d;
         }
@@ -166,9 +167,9 @@ void Layer::update(const vector<vector<float>> &prev_output,
                 }
 #endif
             }
-            weights[i_out][i_in] -= dw / n_data;
+            weights[i_out][i_in] -= (dw / n_data);
         }
-        biases[i_out] -= db / n_data;
+        biases[i_out] -= (db / n_data);
     }
 
 #ifdef SHOW_DW
