@@ -41,9 +41,6 @@ Layer::Layer(unsigned int n_data, unsigned int n_in, unsigned int n_out,
 const vector<vector<float>> &Layer::forward(
         const vector<vector<float>> &input) {
     float out;
-    if (input.size() != n_out) {
-
-    }
     for (int i_data = 0; i_data < n_data; ++i_data) {
         for (int i_out = 0; i_out < n_out; ++i_out) {
             out = 0.f;
