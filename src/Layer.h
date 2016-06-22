@@ -7,6 +7,7 @@
 
 //#define SHOW_DW
 //#define SHOW_DELTA
+//#define SHOW_WEIGHT_INIT
 
 #include <random>
 #include <vector>
@@ -22,6 +23,7 @@ private:
     unsigned int n_data;
     unsigned int n_in;
     unsigned int n_out;
+
     vector<vector<float>> weights;
     vector<float> biases;
     vector<vector<float>> delta;

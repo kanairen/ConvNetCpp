@@ -25,6 +25,17 @@ Layer::Layer(unsigned int n_data, unsigned int n_in, unsigned int n_out,
             w = uniform(mt);
         }
     }
+
+#ifdef SHOW_WEIGHT_INIT
+    cout << "init weight : \n";
+    for (vector<float> &row : weights) {
+        for (float &w : row) {
+            cout << w << " ";
+        }
+        cout << "\n";
+    }
+#endif
+
 }
 
 const vector<vector<float>> &Layer::forward(
