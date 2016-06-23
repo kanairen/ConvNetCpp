@@ -17,11 +17,11 @@ float g_sigmoid(float x) {
 }
 
 float relu(float x) {
-    return (x > 0) ? x : 0;
+    return (x >= 0) ? x : 0;
 }
 
 float g_relu(float x) {
-    return (x > 0) ? 1.f : 0;
+    return (x >= 0) ? 1.f : 0;
 }
 
 float iden(float x) {
