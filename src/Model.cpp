@@ -44,7 +44,7 @@ void Model::softmax(const vector<vector<float>> &outputs,
     for (int j = 0; j < outputs[0].size(); ++j) {
 
         // 最大出力値を求める
-        max_output = -MAXFLOAT;
+        max_output = FLT_MIN;
         for (int i = 0; i < outputs.size(); ++i) {
             if (outputs[i][j] > max_output) {
                 max_output = outputs[i][j];

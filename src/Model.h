@@ -5,6 +5,7 @@
 #ifndef CONVNETCPP_MODEL_H
 #define CONVNETCPP_MODEL_H
 
+#include <float.h>
 #include <cmath>
 #include <vector>
 #include "Layer.h"
