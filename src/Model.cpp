@@ -17,12 +17,19 @@ void Model::backward(const vector<vector<float>> &inputs,
                      const vector<vector<float>> &last_delta,
                      float learning_rate) {
 
-    layers.back().backward(last_delta, layers[layers.size() - 2].get_z(),
-                           learning_rate);
-    for (int i = layers.size() - 2; i > 0; --i) {
-        layers[i].backward(layers[i + 1], layers[i - 1].get_z(), learning_rate);
+    const vector<vector<float>> *prev_output;
+    for (int i = layers.size() - 1; i >= 0; --i) {
+
+        prev_output = (i == 0) ? &inputs : &layers[i - 1].get_z();
+
+        if (i == layers.size() - 1) {
+            layers[i].backward(last_delta, *prev_output, learning_rate);
+        } else {
+            layers[i].backward(layers[i + 1], *prev_output, learning_rate);
+        }
+
     }
-    layers[0].backward(layers[1], inputs, learning_rate);
+
 }
 
 void Model::softmax(const vector<vector<float>> &outputs,
