@@ -33,22 +33,34 @@ void Model::softmax(const vector<vector<float>> &outputs,
     }
 
     float u, sum_exp, max_output;
-    for (int i = 0; i < outputs.size(); ++i) {
+    for (int j = 0; j < outputs[0].size(); ++j) {
+
+        // 最大出力値を求める
+        max_output = -MAXFLOAT;
+        for (int i = 0; i < outputs.size(); ++i) {
+            if (outputs[i][j] > max_output) {
+                max_output = outputs[i][j];
+            }
+        }
+
+        // softmax関数の分子・分母を求める
         sum_exp = 0.f;
-        max_output = (*std::max_element(outputs[i].begin(), outputs[i].end()));
-        for (int j = 0; j < outputs[i].size(); ++j) {
+        for (int i = 0; i < outputs.size(); ++i) {
             u = expf(outputs[i][j] - max_output);
             y[i][j] = u;
             sum_exp += u;
         }
-        for (int k = 0; k < outputs[i].size(); ++k) {
-            y[i][k] /= sum_exp;
-        }
-    }
 
+        // softmax関数の出力値を求める
+        for (int i = 0; i < outputs.size(); ++i) {
+            y[i][j] /= sum_exp;
+        }
+        
+    }
 }
 
 void Model::argmax(const vector<vector<float>> &y, vector<int> &predict) {
+
     if (y[0].size() != predict.size()) {
         std::cerr << "error :  Model::argmax()" << endl;
         exit(1);
