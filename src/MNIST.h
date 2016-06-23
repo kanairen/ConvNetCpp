@@ -1,5 +1,5 @@
 //
-// Created by 金井廉 on 2016/06/14.
+// Created by kanairen on 2016/06/14.
 //
 
 #ifndef CONVNETCPP_MNIST_H

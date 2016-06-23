@@ -1,5 +1,5 @@
 //
-// Created by 金井廉 on 2016/06/15.
+// Created by kanairen on 2016/06/15.
 //
 
 #include "config.h"
