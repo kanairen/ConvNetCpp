@@ -5,10 +5,6 @@
 #ifndef CONVNETCPP_LAYER_H
 #define CONVNETCPP_LAYER_H
 
-//#define SHOW_DW
-//#define SHOW_DELTA
-//#define SHOW_WEIGHT_INIT
-
 #include <random>
 #include <vector>
 #include <iostream>

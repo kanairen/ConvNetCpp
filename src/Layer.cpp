@@ -26,16 +26,6 @@ Layer::Layer(unsigned int n_data, unsigned int n_in, unsigned int n_out,
         }
     }
 
-#ifdef SHOW_WEIGHT_INIT
-    cout << "init weight : \n";
-    for (vector<float> &row : weights) {
-        for (float &w : row) {
-            cout << w << " ";
-        }
-        cout << "\n";
-    }
-#endif
-
 }
 
 const vector<vector<float>> &Layer::forward(
@@ -59,35 +49,18 @@ void Layer::backward(const vector<vector<float>> &last_delta,
                      const vector<vector<float>> &prev_output,
                      const float learning_rate) {
 
+    if (last_delta.size() != delta.size() &&
+        last_delta[0].size() != delta[0].size()) {
+        std::cerr << "Layer::backward : size of delta is not correct.";
+        exit(1);
+    }
+
     // 出力層のデルタとしてコピー
-//    std::copy(last_delta.begin(), last_delta.end(), delta.begin());
     for (int i = 0; i < last_delta.size(); ++i) {
         for (int j = 0; j < last_delta[0].size(); ++j) {
             delta[i][j] = last_delta[i][j];
         }
     }
-
-#ifdef SHOW_DELTA
-    float d;
-    float sum_delta = 0.f;
-    float max_delta = -MAXFLOAT;
-    float min_delta = MAXFLOAT;
-    for (int i_out = 0; i_out < n_out; ++i_out) {
-        for (int i_data = 0; i_data < n_data; ++i_data) {
-            d = delta[i_out][i_data];
-            sum_delta += d;
-            if (d > max_delta) {
-                max_delta = d;
-            }
-            if (d < min_delta) {
-                min_delta = d;
-            }
-        }
-    }
-    cout << "sum_delta : " << sum_delta << endl;
-    cout << "max_delta : " << max_delta << endl;
-    cout << "min_delta : " << min_delta << endl;
-#endif
 
     // パラメタ更新
     update(prev_output, learning_rate);
@@ -100,40 +73,17 @@ void Layer::backward(const Layer &next,
     const vector<vector<float>> &next_weights = next.weights;
     const vector<vector<float>> &next_delta = next.delta;
     const unsigned int next_n_out = next.n_out;
-    float d, fu;
+    float d;
     for (int i_data = 0; i_data < n_data; ++i_data) {
         for (int i_out = 0; i_out < n_out; ++i_out) {
             d = 0.f;
-            fu = grad_activation(u[i_out][i_data]);
             for (int i_n_out = 0; i_n_out < next_n_out; ++i_n_out) {
                 // デルタを導出
-                d += fu * next_weights[i_n_out][i_out] *
-                     next_delta[i_n_out][i_data];
+                d += next_weights[i_n_out][i_out] * next_delta[i_n_out][i_data];
             }
-            delta[i_out][i_data] = d;
+            delta[i_out][i_data] = d * grad_activation(u[i_out][i_data]);
         }
     }
-
-#ifdef SHOW_DELTA
-    float sum_delta = 0.f;
-    float max_delta = -MAXFLOAT;
-    float min_delta = MAXFLOAT;
-    for (int i_out = 0; i_out < n_out; ++i_out) {
-        for (int i_data = 0; i_data < n_data; ++i_data) {
-            d = delta[i_out][i_data];
-            sum_delta += d;
-            if (d > max_delta) {
-                max_delta = d;
-            }
-            if (d < min_delta) {
-                min_delta = d;
-            }
-        }
-    }
-    cout << "sum_delta : " << sum_delta << endl;
-    cout << "max_delta : " << max_delta << endl;
-    cout << "min_delta : " << min_delta << endl;
-#endif
 
     // パラメタ更新
     update(prev_output, learning_rate);
@@ -143,11 +93,7 @@ void Layer::backward(const Layer &next,
 void Layer::update(const vector<vector<float>> &prev_output,
                    const float learning_rate) {
     float dw, db;
-#ifdef SHOW_DW
-    float sum_dw = 0;
-    float max_dw = -MAXFLOAT;
-    float min_dw = MAXFLOAT;
-#endif
+
     for (int i_out = 0; i_out < n_out; ++i_out) {
         for (int i_in = 0; i_in < n_in; ++i_in) {
             dw = 0.f;
@@ -157,25 +103,11 @@ void Layer::update(const vector<vector<float>> &prev_output,
                 dw += learning_rate * delta[i_out][i_data] *
                       prev_output[i_in][i_data];
                 db += learning_rate * delta[i_out][i_data];
-#ifdef SHOW_DW
-                sum_dw += dw;
-                if (dw > max_dw) {
-                    max_dw = dw;
-                }
-                if (dw < min_dw) {
-                    min_dw = dw;
-                }
-#endif
+
             }
             weights[i_out][i_in] -= (dw / n_data);
         }
         biases[i_out] -= (db / n_data);
     }
-
-#ifdef SHOW_DW
-    cout << "sum_dw : " << sum_dw << endl;
-    cout << "max_dw : " << max_dw << endl;
-    cout << "min_dw : " << min_dw << endl;
-#endif
 
 }
