@@ -6,10 +6,10 @@
 
 #include "TestMNIST.h"
 #include "TestLayer.h"
-//
-//int main(){
-//    test_mnist();
-//    test_layer();
-//}
+
+int main(){
+    test_mnist();
+    test_layer();
+}
 
 #endif
