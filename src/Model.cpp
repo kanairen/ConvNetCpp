@@ -4,10 +4,11 @@
 
 #include "Model.h"
 
-const vector<vector<float>> &Model::forward(vector<vector<float>> &inputs) {
+const vector<vector<float>> &Model::forward(
+        const vector<vector<float>> &inputs) {
     const vector<vector<float>> *output = &inputs;
-    for (int i = 0; i < layers.size(); i++) {
-        output = &(layers[i].forward(*output));
+    for (Layer &layer : layers) {
+        output = &(layer.forward(*output));
     }
     return *output;
 }
