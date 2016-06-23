@@ -2,7 +2,9 @@
 // Created by kanairen on 2016/06/14.
 //
 
-#ifndef DEBUG
+#include "../src/config.h"
+
+#ifndef CONV_NET_CPP_DEBUG
 
 #include "TestMNIST.h"
 #include "TestLayer.h"
