@@ -9,6 +9,7 @@
 #include <fstream>
 #include <vector>
 #include <string>
+#include "Data.h"
 
 using std::cout;
 using std::cerr;
@@ -17,7 +18,7 @@ using std::ifstream;
 using std::vector;
 using std::string;
 
-class MNIST {
+class MNIST : public DataSet<float, int> {
 private:
 
     static int toInteger(int i);
@@ -27,10 +28,6 @@ private:
     void loadLabels(string f_name, vector<int> &dst);
 
 public:
-    vector<vector<float>> x_train;
-    vector<vector<float>> x_test;
-    vector<int> y_train;
-    vector<int> y_test;
 
     MNIST(string f_x_train, string f_x_test, string f_y_train,
           string f_y_test) {
