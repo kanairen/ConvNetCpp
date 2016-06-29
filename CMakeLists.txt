@@ -14,7 +14,7 @@ set(SOURCE_FILES
         src/activation.h
         src/config.h
         src/Data.h
-        src/Optimizer.h
+        src/optimizer.h
         tests/suite.cpp
         tests/TestLayer.cpp
         tests/TestLayer.h

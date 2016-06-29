@@ -6,7 +6,7 @@
 #include "MNIST.h"
 #include "Layer.h"
 #include "Model.h"
-#include "Optimizer.h"
+#include "optimizer.h"
 #include "activation.h"
 
 #ifdef CONV_NET_CPP_DEBUG
