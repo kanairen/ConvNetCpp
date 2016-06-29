@@ -15,7 +15,8 @@ int MNIST::toInteger(int i) {
     return ((int) c1 << 24) + ((int) c2 << 16) + ((int) c3 << 8) + c4;
 }
 
-void MNIST::loadData(std::string f_name, vector<vector<float>> &dst) {
+void MNIST::loadData(std::string f_name, vector<vector<float>> &dst,
+                     unsigned int &dst_n_row, unsigned int &dst_n_col) {
 
     cout << "load data : " << f_name << endl;
 
@@ -37,6 +38,9 @@ void MNIST::loadData(std::string f_name, vector<vector<float>> &dst) {
     n_row = MNIST::toInteger(n_row);
     ifs.read((char *) &n_col, sizeof(n_col));
     n_col = MNIST::toInteger(n_col);
+
+    dst_n_row = (unsigned int)n_row;
+    dst_n_col = (unsigned int)n_col;
 
     std::cout << "magic number : " << magic_number << std::endl;
     std::cout << "number of images : " << n_imgs << std::endl;

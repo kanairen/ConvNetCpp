@@ -18,6 +18,8 @@ public:
     vector<Y> y_train;
     vector<Y> y_test;
 
+    virtual unsigned int xv_size() = 0;
+
     std::string toString() {
         std::stringstream ss;
         ss << "x_train : " << x_train.size();
@@ -26,6 +28,17 @@ public:
         ss << " y_test : " << y_test.size();
         return ss.str();
     }
+};
+
+template<class X, class Y>
+class ImageDataSet : public DataSet<X, Y> {
+protected:
+    unsigned int image_row;
+    unsigned int image_col;
+public:
+    virtual unsigned int getImageRow() = 0;
+
+    virtual unsigned int getImageCol() = 0;
 };
 
 #endif //CONVNETCPP_DATA_H
