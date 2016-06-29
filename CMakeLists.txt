@@ -11,13 +11,17 @@ set(SOURCE_FILES
         src/Model.h
         src/MNIST.cpp
         src/MNIST.h
+        src/activation.h
+        src/config.h
+        src/Data.h
+        src/Optimizer.h
         tests/suite.cpp
         tests/TestLayer.cpp
         tests/TestLayer.h
         tests/TestModel.cpp
         tests/TestModel.h
         tests/TestMNIST.cpp
-        tests/TestMNIST.h src/activation.h src/config.h src/Data.h)
+        tests/TestMNIST.h)
 
 include_directories("/usr/local/include/eigen3")
 
