@@ -5,14 +5,9 @@
 #import "Layer.h"
 
 Layer::Layer(unsigned int n_data, unsigned int n_in, unsigned int n_out,
-             float (*activation)(float), float (*grad_activation)(float)) :
-        n_data(n_data), n_in(n_in), n_out(n_out), activation(activation),
-        grad_activation(grad_activation),
-        weights(vector<vector<float>>(n_out, vector<float>(n_in, 0.f))),
-        biases(vector<float>(n_out, 0.f)),
-        delta(vector<vector<float>>(n_out, vector<float>(n_data, 0.f))),
-        u(vector<vector<float>>(n_out, vector<float>(n_data, 0.f))),
-        z(vector<vector<float>>(n_out, vector<float>(n_data, 0.f))) {
+             float (*activation)(float), float (*grad_activation)(float))
+        : AbstractLayer(n_data, n_in, n_out, activation, grad_activation),
+          weights(vector<vector<float>>(n_out, vector<float>(n_in, 0.f))) {
 
     // 乱数生成器
     std::random_device rnd;
@@ -67,12 +62,12 @@ void Layer::backward(const vector<vector<float>> &last_delta,
 
 }
 
-void Layer::backward(const Layer &next,
+void Layer::backward(const AbstractLayer &next,
                      const vector<vector<float>> &prev_output,
                      const float learning_rate) {
-    const vector<vector<float>> &next_weights = next.weights;
-    const vector<vector<float>> &next_delta = next.delta;
-    const unsigned int next_n_out = next.n_out;
+    const vector<vector<float>> &next_weights = next.get_weights();
+    const vector<vector<float>> &next_delta = next.get_delta();
+    const unsigned int next_n_out = next.get_n_out();
     float d;
     for (int i_data = 0; i_data < n_data; ++i_data) {
         for (int i_out = 0; i_out < n_out; ++i_out) {

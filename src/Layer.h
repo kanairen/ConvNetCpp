@@ -8,28 +8,16 @@
 #include <random>
 #include <vector>
 #include <iostream>
-#include <exception>
+#include "AbstractLayer.h"
 
 using std::vector;
 using std::cout;
 using std::endl;
 
-class Layer {
+class Layer : public AbstractLayer {
 private:
-    unsigned int n_data;
-    unsigned int n_in;
-    unsigned int n_out;
 
     vector<vector<float>> weights;
-    vector<float> biases;
-    vector<vector<float>> delta;
-
-    vector<vector<float>> u;
-    vector<vector<float>> z;
-
-    float (*activation)(float);
-
-    float (*grad_activation)(float);
 
     void update(const vector<vector<float>> &prev_output,
                 const float learning_rate);
@@ -42,7 +30,11 @@ public:
 
     const unsigned int get_n_out() const { return n_out; }
 
-    const vector<vector<float>> &get_z() { return z; }
+    const vector<vector<float>> &get_weights() const { return weights; }
+
+    const vector<vector<float>> &get_delta() const { return delta; }
+
+    const vector<vector<float>> &get_z() const { return z; };
 
     const vector<vector<float>> &forward(const vector<vector<float>> &input);
 
@@ -50,7 +42,7 @@ public:
                   const vector<vector<float>> &prev_output,
                   const float learning_rate);
 
-    void backward(const Layer &next,
+    void backward(const AbstractLayer &next,
                   const vector<vector<float>> &prev_output,
                   const float learning_rate);
 };
