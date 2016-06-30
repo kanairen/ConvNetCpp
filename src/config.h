@@ -7,4 +7,7 @@
 
 #define CONV_NET_CPP_DEBUG
 
+//#define DEBUG_MODEL
+//#define DEBUG_LAYER
+
 #endif //CONVNETCPP_CONFIG_H

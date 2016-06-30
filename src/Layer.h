@@ -34,7 +34,7 @@ public:
 
     const vector<vector<float>> &get_delta() const { return delta; }
 
-    const vector<vector<float>> &get_z() const { return z; };
+    const vector<vector<float>> &get_z() const { return z; }
 
     const vector<vector<float>> &forward(const vector<vector<float>> &input);
 

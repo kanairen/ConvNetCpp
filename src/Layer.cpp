@@ -43,12 +43,13 @@ const vector<vector<float>> &Layer::forward(
 void Layer::backward(const vector<vector<float>> &last_delta,
                      const vector<vector<float>> &prev_output,
                      const float learning_rate) {
-
+#ifdef DEBUG_LAYER
     if (last_delta.size() != delta.size() &&
         last_delta[0].size() != delta[0].size()) {
         std::cerr << "Layer::backward : size of delta is not correct.";
         exit(1);
     }
+#endif
 
     // 出力層のデルタとしてコピー
     for (int i = 0; i < last_delta.size(); ++i) {

@@ -34,11 +34,12 @@ void Model::backward(const vector<vector<float>> &inputs,
 
 void Model::softmax(const vector<vector<float>> &outputs,
                     vector<vector<float>> &y) {
-
+#ifdef DEBUG_MODEL
     if (outputs.size() != y.size() && outputs[0].size() != y[0].size()) {
         std::cerr << "error :  Model::softmax()" << endl;
         exit(1);
     }
+#endif
 
     float u, sum_exp, max_output;
     for (int j = 0; j < outputs[0].size(); ++j) {
@@ -68,11 +69,12 @@ void Model::softmax(const vector<vector<float>> &outputs,
 }
 
 void Model::argmax(const vector<vector<float>> &y, vector<int> &predict) {
-
+#ifdef DEBUG_MODEL
     if (y[0].size() != predict.size()) {
         std::cerr << "error :  Model::argmax()" << endl;
         exit(1);
     }
+#endif
 
     float max, tmp;
     int max_idx;
@@ -92,11 +94,12 @@ void Model::argmax(const vector<vector<float>> &y, vector<int> &predict) {
 }
 
 float Model::error(const vector<int> &predict, const vector<int> &answer) {
-
+#ifdef DEBUG_MODEL
     if (predict.size() != answer.size()) {
         std::cerr << "error :  Model::error()" << endl;
         exit(1);
     }
+#endif
 
     float num_error = 0.f;
     for (int i = 0; i < predict.size(); ++i) {
