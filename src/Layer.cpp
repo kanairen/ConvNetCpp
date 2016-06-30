@@ -52,8 +52,9 @@ void Layer::backward(const vector<vector<float>> &last_delta,
 #endif
 
     // 出力層のデルタとしてコピー
+    unsigned long last_delta_length = last_delta[0].size();
     for (int i = 0; i < last_delta.size(); ++i) {
-        for (int j = 0; j < last_delta[0].size(); ++j) {
+        for (int j = 0; j < last_delta_length; ++j) {
             delta[i][j] = last_delta[i][j];
         }
     }

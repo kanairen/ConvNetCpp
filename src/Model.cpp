@@ -42,11 +42,12 @@ void Model::softmax(const vector<vector<float>> &outputs,
 #endif
 
     float u, sum_exp, max_output;
+    unsigned long outputs_size = outputs.size();
     for (int j = 0; j < outputs[0].size(); ++j) {
 
         // 最大出力値を求める
         max_output = FLT_MIN;
-        for (int i = 0; i < outputs.size(); ++i) {
+        for (int i = 0; i < outputs_size; ++i) {
             if (outputs[i][j] > max_output) {
                 max_output = outputs[i][j];
             }
@@ -54,17 +55,17 @@ void Model::softmax(const vector<vector<float>> &outputs,
 
         // softmax関数の分子・分母を求める
         sum_exp = 0.f;
-        for (int i = 0; i < outputs.size(); ++i) {
+        for (int i = 0; i < outputs_size; ++i) {
             u = expf(outputs[i][j] - max_output);
             y[i][j] = u;
             sum_exp += u;
         }
 
         // softmax関数の出力値を求める
-        for (int i = 0; i < outputs.size(); ++i) {
+        for (int i = 0; i < outputs_size; ++i) {
             y[i][j] /= sum_exp;
         }
-        
+
     }
 }
 
@@ -78,10 +79,11 @@ void Model::argmax(const vector<vector<float>> &y, vector<int> &predict) {
 
     float max, tmp;
     int max_idx;
+    unsigned long y_size = y.size();
     for (int i = 0; i < y[0].size(); ++i) {
         max = y[0][i];
         max_idx = 0;
-        for (int j = 1; j < y.size(); ++j) {
+        for (int j = 1; j < y_size; ++j) {
             tmp = y[j][i];
             if (tmp > max) {
                 max = tmp;
