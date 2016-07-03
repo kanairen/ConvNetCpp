@@ -1,5 +1,5 @@
 //
-// Created by 金井廉 on 2016/06/30.
+// Created by kanairen on 2016/06/30.
 //
 
 #ifndef CONVNETCPP_ABSTRACTLAYER_H
