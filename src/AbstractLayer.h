@@ -41,9 +41,6 @@ protected:
               z(vector<vector<float>>(n_out, vector<float>(n_data, 0.f))) { };
 
 
-    virtual void update(const vector<vector<float>> &prev_output,
-                        const float learning_rate) = 0;
-
 public:
 
     virtual ~AbstractLayer() { };
@@ -119,6 +116,29 @@ public:
 
         // パラメタ更新
         update(prev_output, learning_rate);
+
+    }
+
+
+    virtual void update(const vector<vector<float>> &prev_output,
+                        const float learning_rate) {
+        float dw, db;
+
+        for (int i_out = 0; i_out < n_out; ++i_out) {
+            for (int i_in = 0; i_in < n_in; ++i_in) {
+                dw = 0.f;
+                db = 0.f;
+                for (int i_data = 0; i_data < n_data; ++i_data) {
+                    // オーバフローを防ぐため、先に学習率を掛ける
+                    dw += learning_rate * delta[i_out][i_data] *
+                          prev_output[i_in][i_data];
+                    db += learning_rate * delta[i_out][i_data];
+
+                }
+                weights[i_out][i_in] -= (dw / n_data);
+            }
+            biases[i_out] -= (db / n_data);
+        }
 
     }
 

@@ -15,10 +15,6 @@ using std::cout;
 using std::endl;
 
 class Layer : public AbstractLayer {
-private:
-
-    void update(const vector<vector<float>> &prev_output,
-                const float learning_rate);
 
 public:
     Layer(unsigned int n_data, unsigned int n_in, unsigned int n_out,
