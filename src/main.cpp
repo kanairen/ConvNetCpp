@@ -20,10 +20,10 @@ void mnist_full_connelct(char *argv[],
     // mnist
     MNIST mnist(argv[1], argv[2], argv[3], argv[4]);
 
-    AbstractLayer *layer_1 = new AbstractLayer(batch_size, input_size, n_class,
+    Layer *layer_1 = new Layer(batch_size, input_size, n_class,
                                                iden,
                                                g_iden);
-    vector<AbstractLayer *> v{layer_1};
+    vector<Layer *> v{layer_1};
 
     // optimize
     optimize(mnist, v, learning_rate, batch_size, n_iter, n_class);
@@ -41,15 +41,15 @@ void mnist_conv(char *argv[], unsigned int batch_size,
     // mnist
     MNIST mnist(argv[1], argv[2], argv[3], argv[4]);
 
-    AbstractLayer *layer_1 = new ConvLayer2d(batch_size,
+    Layer *layer_1 = new ConvLayer2d(batch_size,
                                              input_width, input_height,
                                              c_in, c_out, kw, kh, stride,
                                              iden, g_iden);
 
-    AbstractLayer *layer_2 = new AbstractLayer(batch_size, layer_1->get_n_out(),
+    Layer *layer_2 = new Layer(batch_size, layer_1->get_n_out(),
                                                n_class, iden, g_iden);
 
-    vector<AbstractLayer *> v{layer_1, layer_2};
+    vector<Layer *> v{layer_1, layer_2};
 
     // optimize
     optimize(mnist, v, learning_rate, batch_size, n_iter, n_class);

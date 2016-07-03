@@ -12,7 +12,7 @@
 
 using std::vector;
 
-class AbstractLayer {
+class Layer {
 protected:
     unsigned int n_data;
     unsigned int n_in;
@@ -30,11 +30,11 @@ protected:
 
     float (*grad_activation)(float);
 
-    AbstractLayer() = delete;
+    Layer() = delete;
 
 public:
 
-    AbstractLayer(unsigned int n_data, unsigned int n_in, unsigned int n_out,
+    Layer(unsigned int n_data, unsigned int n_in, unsigned int n_out,
                   float (*activation)(float), float (*grad_activation)(float))
             : n_data(n_data), n_in(n_in), n_out(n_out),
               activation(activation), grad_activation(grad_activation),
@@ -62,7 +62,7 @@ public:
     }
 
 
-    virtual ~AbstractLayer() { };
+    virtual ~Layer() { };
 
     virtual const unsigned int get_n_out() const { return n_out; }
 

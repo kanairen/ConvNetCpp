@@ -8,16 +8,16 @@
 #include <float.h>
 #include <cmath>
 #include <vector>
-#include "AbstractLayer.h"
+#include "Layer.h"
 
 using std::vector;
 
 class Model {
 private:
-    vector<AbstractLayer*> &layers;
+    vector<Layer*> &layers;
     vector<vector<float>> out_forward;
 public:
-    Model(vector<AbstractLayer*> &layers, unsigned int n_data) :
+    Model(vector<Layer*> &layers, unsigned int n_data) :
             layers(layers),
             out_forward(vector<vector<float>>(layers.back()->get_n_out(),
                                               vector<float>(n_data, 0.f))) { };

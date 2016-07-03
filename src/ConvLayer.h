@@ -6,13 +6,13 @@
 #define CONVNETCPP_CONVLAYER_H
 
 #include <random>
-#import "AbstractLayer.h"
+#import "Layer.h"
 
 namespace ConvLayerConst{
     static const int T_WEIGHT_DISABLED = -1;
 }
 
-class ConvLayer2d : public AbstractLayer {
+class ConvLayer2d : public Layer {
 private:
 
     // 成分数 (フィルタ幅)^2 × (入力チャネル) × （出力チャネル） のフィルタベクトル

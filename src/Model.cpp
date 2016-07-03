@@ -7,7 +7,7 @@
 const vector<vector<float>> &Model::forward(
         const vector<vector<float>> &inputs) {
     const vector<vector<float>> *output = &inputs;
-    for (AbstractLayer* layer : layers) {
+    for (Layer* layer : layers) {
         output = &(layer->forward(*output));
     }
     return *output;

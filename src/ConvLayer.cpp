@@ -10,7 +10,7 @@ ConvLayer2d::ConvLayer2d(unsigned int n_data,
                          unsigned int kw, unsigned int kh, unsigned int stride,
                          float (*activation)(float),
                          float (*grad_activation)(float))
-        : AbstractLayer(n_data, c_in * input_width * input_height,
+        : Layer(n_data, c_in * input_width * input_height,
                         ((input_width - kw) / stride) *
                         ((input_height - kh) / stride) * c_out,
                         activation, grad_activation),

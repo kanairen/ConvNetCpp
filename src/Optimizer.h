@@ -14,7 +14,7 @@ using std::vector;
 
 template<class X, class Y>
 void optimize(DataSet<X, Y> &data,
-              vector<AbstractLayer *> &layers,
+              vector<Layer *> &layers,
               float learning_rate,
               unsigned int batch_size,
               unsigned int n_iter,
