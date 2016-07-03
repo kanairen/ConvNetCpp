@@ -12,33 +12,80 @@
 
 #ifdef CONV_NET_CPP_DEBUG
 
-
-// コマンドライン引数にmnistへのパスを渡す
-int main(int argc, char *argv[]) {
-
-    float learning_rate = 0.01f;
-    unsigned int batch_size = 50;
-    unsigned int input_size = 28 * 28;
-    unsigned int n_iter = 1000;
-    unsigned int n_class = 10;
-
+void mnist_full_connelct(char *argv[],
+                         unsigned int batch_size,
+                         unsigned int input_size,
+                         unsigned int n_class,
+                         unsigned int n_iter,
+                         float learning_rate) {
     // mnist
     MNIST mnist(argv[1], argv[2], argv[3], argv[4]);
 
-    AbstractLayer *layer_1 = new ConvLayer2d(batch_size, 28, 28, 1, 16, 2, 2, 1,
-                                             iden, g_iden);
-    AbstractLayer *layer_2 = new Layer(batch_size, layer_1->get_n_out(),
-                                       n_class, iden, g_iden);
-    vector<AbstractLayer *> v{layer_1, layer_2};
-//    AbstractLayer* layer_1 = new Layer(batch_size, mnist.xv_size(), 10, iden, g_iden);
-//    AbstractLayer* layer_2 = new Layer(batch_size, 10, n_class, iden, g_iden);
-//    vector<AbstractLayer*> v{layer_1,layer_2};
+    AbstractLayer *layer_1 = new Layer(batch_size, input_size, n_class, iden,
+                                       g_iden);
+    vector<AbstractLayer *> v{layer_1};
 
     // optimize
     optimize(mnist, v, learning_rate, batch_size, n_iter, n_class);
 
     // release
     delete (layer_1);
+}
+
+void mnist_conv(char *argv[], unsigned int batch_size,
+                unsigned int input_width, unsigned int input_height,
+                unsigned int c_in, unsigned int c_out,
+                unsigned int kw, unsigned int kh, unsigned int stride,
+                unsigned int n_class, unsigned int n_iter,
+                float learning_rate) {
+    // mnist
+    MNIST mnist(argv[1], argv[2], argv[3], argv[4]);
+
+    AbstractLayer *layer_1 = new ConvLayer2d(batch_size,
+                                             input_width, input_height,
+                                             c_in, c_out, kw, kh, stride,
+                                             iden, g_iden);
+
+    AbstractLayer *layer_2 = new Layer(batch_size, layer_1->get_n_out(),
+                                       n_class, iden, g_iden);
+
+    vector<AbstractLayer *> v{layer_1, layer_2};
+
+    // optimize
+    optimize(mnist, v, learning_rate, batch_size, n_iter, n_class);
+
+    // release
+    delete (layer_1);
+    delete (layer_2);
+
+}
+
+
+// コマンドライン引数にmnistへのパスを渡す
+int main(int argc, char *argv[]) {
+
+    const float LEARNING_RATE = 0.01f;
+
+    const unsigned int BATCH_SIZE = 50;
+
+    const unsigned int WIDTH = 28;
+    const unsigned int HEIGHT = 28;
+    const unsigned int INPUT_SIZE = WIDTH * HEIGHT;
+
+    const unsigned int C_IN = 1;
+    const unsigned int C_OUT = 16;
+
+    const unsigned int KERNEL_WIDTH = 2;
+    const unsigned int KERNEL_HEIGHT = 2;
+
+    const unsigned int STRIDE = 1;
+
+    const unsigned int N_ITERATION = 1000;
+    const unsigned int N_CLASS = 10;
+
+    mnist_conv(argv, BATCH_SIZE, WIDTH, HEIGHT, C_IN, C_OUT, KERNEL_WIDTH,
+               KERNEL_HEIGHT, STRIDE, N_CLASS, N_ITERATION, LEARNING_RATE);
+
 
 }
 
