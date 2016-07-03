@@ -15,7 +15,7 @@ using std::vector;
 
 template<class X, class Y>
 void optimize(DataSet<X, Y> &data,
-              vector<Layer> &layers,
+              vector<AbstractLayer *> &layers,
               float learning_rate,
               unsigned int batch_size,
               unsigned int n_iter,
@@ -44,12 +44,12 @@ void optimize(DataSet<X, Y> &data,
     // 分割データセット配列
     vector<vector<vector<X>>> x_trains(n_batch_train,
                                        vector<vector<X>>(data.xv_size(),
-                                                          vector<X>(
-                                                                  batch_size)));
-    vector<vector<vector<X>>> x_tests(n_batch_test,
-                                      vector<vector<X>>(data.xv_size(),
                                                          vector<X>(
                                                                  batch_size)));
+    vector<vector<vector<X>>> x_tests(n_batch_test,
+                                      vector<vector<X>>(data.xv_size(),
+                                                        vector<X>(
+                                                                batch_size)));
     vector<vector<Y>> y_trains(n_batch_train, vector<Y>(batch_size));
     vector<vector<Y>> y_tests(n_batch_test, vector<Y>(batch_size));
 
@@ -110,6 +110,11 @@ void optimize(DataSet<X, Y> &data,
             batch_error_train = model.error(pred_train, y_trains[j]);
             average_error_train += batch_error_train;
 
+
+            cout << "average error(training data):" <<
+            average_error_train / (j+1) << "\n";
+
+
             // 出力層デルタ
             for (int k = 0; k < batch_size; ++k) {
                 sm_train[y_trains[j][k]][k] -= 1.f;
@@ -132,7 +137,11 @@ void optimize(DataSet<X, Y> &data,
                 batch_error_test = model.error(pred_test, y_tests[idx]);
                 average_error_test += batch_error_test;
 
+                cout << "average error(test data):" <<
+                average_error_test / (idx+1) << "\n";
+
             }
+
 
         }
 

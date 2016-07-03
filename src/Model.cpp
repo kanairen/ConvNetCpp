@@ -7,8 +7,8 @@
 const vector<vector<float>> &Model::forward(
         const vector<vector<float>> &inputs) {
     const vector<vector<float>> *output = &inputs;
-    for (Layer &layer : layers) {
-        output = &(layer.forward(*output));
+    for (AbstractLayer* layer : layers) {
+        output = &(layer->forward(*output));
     }
     return *output;
 }
@@ -20,12 +20,14 @@ void Model::backward(const vector<vector<float>> &inputs,
     const vector<vector<float>> *prev_output;
     for (int i = layers.size() - 1; i >= 0; --i) {
 
-        prev_output = (i == 0) ? &inputs : &layers[i - 1].get_z();
+        prev_output = (i == 0) ? &inputs : &layers[i - 1]->get_z();
 
         if (i == layers.size() - 1) {
-            layers[i].backward(last_delta, *prev_output, learning_rate);
+            layers[i]->backward(last_delta, *prev_output, learning_rate);
         } else {
-            layers[i].backward(layers[i + 1], *prev_output, learning_rate);
+            layers[i]->backward(layers[i + 1]->get_weights(),
+                                layers[i + 1]->get_delta(), *prev_output,
+                                learning_rate);
         }
 
     }

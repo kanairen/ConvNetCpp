@@ -14,12 +14,12 @@ using std::vector;
 
 class Model {
 private:
-    vector<Layer> &layers;
+    vector<AbstractLayer*> &layers;
     vector<vector<float>> out_forward;
 public:
-    Model(vector<Layer> &layers, unsigned int n_data) :
+    Model(vector<AbstractLayer*> &layers, unsigned int n_data) :
             layers(layers),
-            out_forward(vector<vector<float>>(layers.back().get_n_out(),
+            out_forward(vector<vector<float>>(layers.back()->get_n_out(),
                                               vector<float>(n_data, 0.f))) { };
 
     ~Model() { };

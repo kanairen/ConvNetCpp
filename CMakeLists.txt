@@ -8,6 +8,8 @@ set(SOURCE_FILES
         src/AbstractLayer.h
         src/Layer.cpp
         src/Layer.h
+        src/ConvLayer.cpp
+        src/ConvLayer.h
         src/Model.cpp
         src/Model.h
         src/MNIST.cpp
