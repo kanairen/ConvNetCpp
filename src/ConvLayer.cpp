@@ -4,7 +4,6 @@
 
 #include "ConvLayer.h"
 
-
 ConvLayer2d::ConvLayer2d(unsigned int n_data,
                          unsigned int input_width, unsigned int input_height,
                          unsigned int c_in, unsigned int c_out,
@@ -18,7 +17,8 @@ ConvLayer2d::ConvLayer2d(unsigned int n_data,
           input_width(input_width), input_height(input_height),
           c_in(c_in), c_out(c_out), kw(kw), kh(kh), stride(stride),
           h(vector<float>(kw * kh * c_in * c_out)),
-          t(vector<vector<int>>(n_out, vector<int>(n_in, T_WEIGHT_DISABLED))) {
+          t(vector<vector<int>>(n_out, vector<int>(n_in,
+                                                   ConvLayerConst::T_WEIGHT_DISABLED))) {
 
     // 乱数生成器
     std::random_device rnd;
@@ -63,13 +63,12 @@ ConvLayer2d::ConvLayer2d(unsigned int n_data,
     }
 
 
-
 }
 
 const vector<vector<float>> &ConvLayer2d::get_weights() {
     for (int j = 0; j < n_out; ++j) {
         for (int i = 0; i < n_in; ++i) {
-            if (t[j][i] == T_WEIGHT_DISABLED) {
+            if (t[j][i] == ConvLayerConst::T_WEIGHT_DISABLED) {
                 weights[j][i] = 0.f;
             } else {
                 weights[j][i] = h[t[j][i]];
@@ -94,7 +93,7 @@ void ConvLayer2d::update(const vector<vector<float>> &prev_output,
                       prev_output[i_in][i_data];
                 db += learning_rate * delta[i_out][i_data];
             }
-            if (t[i_out][i_in] != T_WEIGHT_DISABLED) {
+            if (t[i_out][i_in] != ConvLayerConst::T_WEIGHT_DISABLED) {
                 h[t[i_out][i_in]] -= (dw / n_data);
             }
         }

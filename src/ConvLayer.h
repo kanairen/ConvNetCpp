@@ -8,10 +8,12 @@
 #include <random>
 #import "AbstractLayer.h"
 
+namespace ConvLayerConst{
+    static const int T_WEIGHT_DISABLED = -1;
+}
+
 class ConvLayer2d : public AbstractLayer {
 private:
-
-    static const int T_WEIGHT_DISABLED = -1;
 
     // 成分数 (フィルタ幅)^2 × (入力チャネル) × （出力チャネル） のフィルタベクトル
     vector<float> h;
