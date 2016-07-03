@@ -35,7 +35,7 @@ protected:
 public:
 
     Layer(unsigned int n_data, unsigned int n_in, unsigned int n_out,
-                  float (*activation)(float), float (*grad_activation)(float))
+          float (*activation)(float), float (*grad_activation)(float))
             : n_data(n_data), n_in(n_in), n_out(n_out),
               activation(activation), grad_activation(grad_activation),
               weights(vector<vector<float>>(n_out, vector<float>(n_in, 0.f))),
@@ -61,7 +61,6 @@ public:
 
     }
 
-
     virtual ~Layer() { };
 
     virtual const unsigned int get_n_out() const { return n_out; }
@@ -72,7 +71,8 @@ public:
 
     virtual const vector<vector<float>> &get_weights() { return weights; }
 
-    const vector<vector<float>> &forward(const vector<vector<float>> &input) {
+    virtual const vector<vector<float>> &forward(
+            const vector<vector<float>> &input) {
         const vector<vector<float>> &w = get_weights();
         float out;
         for (int i_data = 0; i_data < n_data; ++i_data) {
@@ -89,9 +89,9 @@ public:
         return z;
     }
 
-    void backward(const vector<vector<float>> &last_delta,
-                  const vector<vector<float>> &prev_output,
-                  const float learning_rate) {
+    virtual void backward(const vector<vector<float>> &last_delta,
+                          const vector<vector<float>> &prev_output,
+                          const float learning_rate) {
 
 #ifdef DEBUG_LAYER
         if (last_delta.size() != delta.size() &&
@@ -115,10 +115,10 @@ public:
     }
 
 
-    void backward(const vector<vector<float>> &next_weights,
-                  const vector<vector<float>> &next_delta,
-                  const vector<vector<float>> &prev_output,
-                  const float learning_rate) {
+    virtual void backward(const vector<vector<float>> &next_weights,
+                          const vector<vector<float>> &next_delta,
+                          const vector<vector<float>> &prev_output,
+                          const float learning_rate) {
         unsigned long next_n_out = next_weights.size();
         float d;
         for (int i_data = 0; i_data < n_data; ++i_data) {
