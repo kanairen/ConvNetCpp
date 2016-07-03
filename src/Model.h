@@ -8,7 +8,7 @@
 #include <float.h>
 #include <cmath>
 #include <vector>
-#include "Layer.h"
+#include "AbstractLayer.h"
 
 using std::vector;
 

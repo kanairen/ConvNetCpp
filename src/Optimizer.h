@@ -8,7 +8,6 @@
 #include <vector>
 
 #include "Data.h"
-#include "Layer.h"
 #include "Model.h"
 
 using std::vector;

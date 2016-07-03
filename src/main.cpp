@@ -4,7 +4,6 @@
 
 #include "config.h"
 #include "MNIST.h"
-#include "Layer.h"
 #include "ConvLayer.h"
 #include "Model.h"
 #include "optimizer.h"
@@ -21,8 +20,9 @@ void mnist_full_connelct(char *argv[],
     // mnist
     MNIST mnist(argv[1], argv[2], argv[3], argv[4]);
 
-    AbstractLayer *layer_1 = new Layer(batch_size, input_size, n_class, iden,
-                                       g_iden);
+    AbstractLayer *layer_1 = new AbstractLayer(batch_size, input_size, n_class,
+                                               iden,
+                                               g_iden);
     vector<AbstractLayer *> v{layer_1};
 
     // optimize
@@ -46,8 +46,8 @@ void mnist_conv(char *argv[], unsigned int batch_size,
                                              c_in, c_out, kw, kh, stride,
                                              iden, g_iden);
 
-    AbstractLayer *layer_2 = new Layer(batch_size, layer_1->get_n_out(),
-                                       n_class, iden, g_iden);
+    AbstractLayer *layer_2 = new AbstractLayer(batch_size, layer_1->get_n_out(),
+                                               n_class, iden, g_iden);
 
     vector<AbstractLayer *> v{layer_1, layer_2};
 
@@ -82,9 +82,11 @@ int main(int argc, char *argv[]) {
 
     const unsigned int N_ITERATION = 1000;
     const unsigned int N_CLASS = 10;
-
-    mnist_conv(argv, BATCH_SIZE, WIDTH, HEIGHT, C_IN, C_OUT, KERNEL_WIDTH,
-               KERNEL_HEIGHT, STRIDE, N_CLASS, N_ITERATION, LEARNING_RATE);
+//
+//    mnist_conv(argv, BATCH_SIZE, WIDTH, HEIGHT, C_IN, C_OUT, KERNEL_WIDTH,
+//               KERNEL_HEIGHT, STRIDE, N_CLASS, N_ITERATION, LEARNING_RATE);
+    mnist_full_connelct(argv, BATCH_SIZE, INPUT_SIZE, N_CLASS, N_ITERATION,
+                        LEARNING_RATE);
 
 
 }

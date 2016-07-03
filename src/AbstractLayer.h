@@ -5,6 +5,8 @@
 #ifndef CONVNETCPP_ABSTRACTLAYER_H
 #define CONVNETCPP_ABSTRACTLAYER_H
 
+
+#include <random>
 #include <iostream>
 #include <vector>
 
@@ -30,6 +32,8 @@ protected:
 
     AbstractLayer() = delete;
 
+public:
+
     AbstractLayer(unsigned int n_data, unsigned int n_in, unsigned int n_out,
                   float (*activation)(float), float (*grad_activation)(float))
             : n_data(n_data), n_in(n_in), n_out(n_out),
@@ -38,10 +42,25 @@ protected:
               biases(vector<float>(n_out, 0.f)),
               delta(vector<vector<float>>(n_out, vector<float>(n_data, 0.f))),
               u(vector<vector<float>>(n_out, vector<float>(n_data, 0.f))),
-              z(vector<vector<float>>(n_out, vector<float>(n_data, 0.f))) { };
+              z(vector<vector<float>>(n_out, vector<float>(n_data, 0.f))) {
 
 
-public:
+        // 乱数生成器
+        std::random_device rnd;
+        std::mt19937 mt(rnd());
+        std::uniform_real_distribution<float> uniform(
+                -sqrtf(6.f / (n_in + n_out)),
+                sqrtf(6.f / (n_in + n_out)));
+
+        // 重みパラメタの初期化
+        for (vector<float> &row : weights) {
+            for (float &w : row) {
+                w = uniform(mt);
+            }
+        }
+
+    }
+
 
     virtual ~AbstractLayer() { };
 
