@@ -21,8 +21,7 @@ void mnist_full_connelct(char *argv[],
     MNIST mnist(argv[1], argv[2], argv[3], argv[4]);
 
     Layer *layer_1 = new Layer(batch_size, input_size, n_class,
-                                               iden,
-                                               g_iden);
+                               iden, g_iden);
     vector<Layer *> v{layer_1};
 
     // optimize
@@ -42,14 +41,16 @@ void mnist_conv(char *argv[], unsigned int batch_size,
     MNIST mnist(argv[1], argv[2], argv[3], argv[4]);
 
     Layer *layer_1 = new ConvLayer2d(batch_size,
-                                             input_width, input_height,
-                                             c_in, c_out, kw, kh, stride,
-                                             iden, g_iden);
+                                     input_width, input_height,
+                                     c_in, c_out, kw, kh, stride,
+                                     iden, g_iden);
 
     Layer *layer_2 = new Layer(batch_size, layer_1->get_n_out(),
-                                               n_class, iden, g_iden);
+                               n_class, iden, g_iden);
 
     vector<Layer *> v{layer_1, layer_2};
+
+    std::cout << "conv:n_out:" << layer_1->get_n_out() << std::endl;
 
     // optimize
     optimize(mnist, v, learning_rate, batch_size, n_iter, n_class);
@@ -66,7 +67,7 @@ int main(int argc, char *argv[]) {
 
     const float LEARNING_RATE = 0.01f;
 
-    const unsigned int BATCH_SIZE = 50;
+    const unsigned int BATCH_SIZE = 40;
 
     const unsigned int WIDTH = 28;
     const unsigned int HEIGHT = 28;
@@ -82,11 +83,11 @@ int main(int argc, char *argv[]) {
 
     const unsigned int N_ITERATION = 1000;
     const unsigned int N_CLASS = 10;
-//
-//    mnist_conv(argv, BATCH_SIZE, WIDTH, HEIGHT, C_IN, C_OUT, KERNEL_WIDTH,
-//               KERNEL_HEIGHT, STRIDE, N_CLASS, N_ITERATION, LEARNING_RATE);
-    mnist_full_connelct(argv, BATCH_SIZE, INPUT_SIZE, N_CLASS, N_ITERATION,
-                        LEARNING_RATE);
+
+    mnist_conv(argv, BATCH_SIZE, WIDTH, HEIGHT, C_IN, C_OUT, KERNEL_WIDTH,
+               KERNEL_HEIGHT, STRIDE, N_CLASS, N_ITERATION, LEARNING_RATE);
+//    mnist_full_connelct(argv, BATCH_SIZE, INPUT_SIZE, N_CLASS, N_ITERATION,
+//                        LEARNING_RATE);
 
 
 }

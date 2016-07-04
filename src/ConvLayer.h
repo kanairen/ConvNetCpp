@@ -47,11 +47,25 @@ private:
                           prev_output[i_in][i_data];
                     db += learning_rate * delta[i_out][i_data];
                 }
+                std::cout << dw << std::endl;
                 if (t[i_out][i_in] != ConvLayerConst::T_WEIGHT_DISABLED) {
                     h[t[i_out][i_in]] -= dw / n_data;
                 }
             }
             biases[i_out] -= db / n_data;
+        }
+
+    }
+
+    const unsigned int filter_outsize(unsigned int size,
+                                      unsigned int k,
+                                      unsigned int s,
+                                      unsigned int p,
+                                      bool is_covored_all) {
+        if (is_covored_all) {
+            return ((size + p * 2 - k + s - 1) / s) + 1;
+        } else {
+            return ((size + p * 2 - k) / s) + 1;
         }
 
     }
@@ -67,8 +81,8 @@ public:
                 float (*activation)(float),
                 float (*grad_activation)(float))
             : Layer(n_data, c_in * input_width * input_height,
-                    ((input_width - kw) / stride) *
-                    ((input_height - kh) / stride) * c_out,
+                    c_out * filter_outsize(input_width, kw, stride, 0, false) *
+                    filter_outsize(input_height, kh, stride, 0, false),
                     activation, grad_activation),
               input_width(input_width), input_height(input_height),
               c_in(c_in), c_out(c_out), kw(kw), kh(kh), stride(stride),
@@ -90,14 +104,17 @@ public:
 
         // tを初期化
         int j_out, i_in;
+        unsigned int output_width = filter_outsize(input_width, kw, stride, 0,
+                                                   false);
+        unsigned int output_height = filter_outsize(input_height, kh, stride, 0,
+                                                    false);
         for (int co = 0; co < c_out; ++co) {
             for (int ci = 0; ci < c_in; ++ci) {
                 for (int y = 0; y < input_height - kh; y += stride) {
                     for (int x = 0; x < input_width - kw; x += stride) {
 
-                        j_out = co * ((input_height - kh) / stride) *
-                                ((input_width - kw) / stride) +
-                                y / stride * ((input_width - kw) / stride) +
+                        j_out = co * output_height * output_width +
+                                y / stride * output_width +
                                 x / stride;
 
                         for (int ky = 0; ky < kh; ++ky) {
