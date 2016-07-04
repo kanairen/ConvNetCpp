@@ -32,6 +32,33 @@ protected:
 
     Layer() = delete;
 
+    virtual void update(const vector<vector<float>> &prev_output,
+                        const float learning_rate) {
+
+        /*
+         * 学習パラメタの更新を行う関数
+         *
+         * prev_output : 前層の出力
+         * learning_rate : 学習率(0≦learning_rate≦1)
+         */
+
+        float dw, db;
+
+        for (int i_out = 0; i_out < n_out; ++i_out) {
+            for (int i_in = 0; i_in < n_in; ++i_in) {
+                dw = 0.f;
+                db = 0.f;
+                for (int i_data = 0; i_data < n_data; ++i_data) {
+                    dw += delta[i_out][i_data] * prev_output[i_in][i_data];
+                    db += delta[i_out][i_data];
+                }
+                weights[i_out][i_in] -= learning_rate * (dw / n_data);
+            }
+            biases[i_out] -= learning_rate * (db / n_data);
+        }
+
+    }
+
 public:
 
     Layer(unsigned int n_data, unsigned int n_in, unsigned int n_out,
@@ -163,33 +190,6 @@ public:
 
     }
 
-
-    virtual void update(const vector<vector<float>> &prev_output,
-                        const float learning_rate) {
-
-        /*
-         * 学習パラメタの更新を行う関数
-         *
-         * prev_output : 前層の出力
-         * learning_rate : 学習率
-         */
-
-        float dw, db;
-
-        for (int i_out = 0; i_out < n_out; ++i_out) {
-            for (int i_in = 0; i_in < n_in; ++i_in) {
-                dw = 0.f;
-                db = 0.f;
-                for (int i_data = 0; i_data < n_data; ++i_data) {
-                    dw += delta[i_out][i_data] * prev_output[i_in][i_data];
-                    db += delta[i_out][i_data];
-                }
-                weights[i_out][i_in] -= learning_rate * (dw / n_data);
-            }
-            biases[i_out] -= learning_rate * (db / n_data);
-        }
-
-    }
 
 };
 
