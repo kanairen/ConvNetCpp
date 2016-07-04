@@ -5,8 +5,12 @@
 #include "MNIST.h"
 
 
-// 4バイト列を32bit整数に変換
 int MNIST::toInteger(int i) {
+
+    /*
+     * 4バイト列を32bit整数に変換
+     */
+
     unsigned char c1, c2, c3, c4;
     c1 = i & 255;
     c2 = (i >> 8) & 255;
@@ -17,6 +21,10 @@ int MNIST::toInteger(int i) {
 
 void MNIST::loadData(std::string f_name, vector<vector<float>> &dst,
                      unsigned int &dst_n_row, unsigned int &dst_n_col) {
+
+    /*
+     * MNIST文字データをファイルから読み込み
+     */
 
     cout << "load data : " << f_name << endl;
 
@@ -39,8 +47,8 @@ void MNIST::loadData(std::string f_name, vector<vector<float>> &dst,
     ifs.read((char *) &n_col, sizeof(n_col));
     n_col = MNIST::toInteger(n_col);
 
-    dst_n_row = (unsigned int)n_row;
-    dst_n_col = (unsigned int)n_col;
+    dst_n_row = (unsigned int) n_row;
+    dst_n_col = (unsigned int) n_col;
 
     std::cout << "magic number : " << magic_number << std::endl;
     std::cout << "number of images : " << n_imgs << std::endl;
@@ -62,6 +70,10 @@ void MNIST::loadData(std::string f_name, vector<vector<float>> &dst,
 }
 
 void MNIST::loadLabels(string f_name, vector<int> &dst) {
+
+    /*
+     * MNIST正解データをファイルから読み込み
+     */
 
     cout << "load labels : " << f_name << endl;
 

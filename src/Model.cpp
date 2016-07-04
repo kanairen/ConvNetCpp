@@ -6,8 +6,15 @@
 
 const vector<vector<float>> &Model::forward(
         const vector<vector<float>> &inputs) {
+
+    /*
+     * 全レイヤの順伝播
+     *
+     * inputs : n_in行 n_data列 の入力データ
+     */
+
     const vector<vector<float>> *output = &inputs;
-    for (Layer* layer : layers) {
+    for (Layer *layer : layers) {
         output = &(layer->forward(*output));
     }
     return *output;
@@ -16,6 +23,14 @@ const vector<vector<float>> &Model::forward(
 void Model::backward(const vector<vector<float>> &inputs,
                      const vector<vector<float>> &last_delta,
                      float learning_rate) {
+
+    /*
+     * 全レイヤの逆伝播＋学習パラメタ更新
+     *
+     * inputs : n_in行 n_data列 の入力データ
+     * last_delta : 出力層デルタ
+     * learning_rate : 学習率(0≦learning_rate≦1)
+     */
 
     const vector<vector<float>> *prev_output;
     for (int i = layers.size() - 1; i >= 0; --i) {
@@ -36,6 +51,14 @@ void Model::backward(const vector<vector<float>> &inputs,
 
 void Model::softmax(const vector<vector<float>> &outputs,
                     vector<vector<float>> &y) {
+
+    /*
+     * ソフトマックス関数
+     *
+     * output : 出力層の出力
+     * y : softmax関数値を格納する配列
+     */
+
 #ifdef DEBUG_MODEL
     if (outputs.size() != y.size() && outputs[0].size() != y[0].size()) {
         std::cerr << "error :  Model::softmax()" << endl;
@@ -72,6 +95,14 @@ void Model::softmax(const vector<vector<float>> &outputs,
 }
 
 void Model::argmax(const vector<vector<float>> &y, vector<int> &predict) {
+
+    /*
+     * 引数にとったベクトルy[i]中の最大値インデックスをpredict[i]に格納
+     *
+     * y : 入力ベクトル
+     * predict : yの各列ベクトルの最大値インデックスを格納する配列
+     */
+
 #ifdef DEBUG_MODEL
     if (y[0].size() != predict.size()) {
         std::cerr << "error :  Model::argmax()" << endl;
@@ -98,6 +129,14 @@ void Model::argmax(const vector<vector<float>> &y, vector<int> &predict) {
 }
 
 float Model::error(const vector<int> &predict, const vector<int> &answer) {
+
+    /*
+     * predictとanswerの各要素を比較し、誤りの割合を返す
+     *
+     * predict : 正解ラベルの予測
+     * answer : Ground-Truth
+     */
+
 #ifdef DEBUG_MODEL
     if (predict.size() != answer.size()) {
         std::cerr << "error :  Model::error()" << endl;

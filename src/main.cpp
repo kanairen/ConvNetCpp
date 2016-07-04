@@ -67,7 +67,7 @@ int main(int argc, char *argv[]) {
 
     const float LEARNING_RATE = 0.01f;
 
-    const unsigned int BATCH_SIZE = 40;
+    const unsigned int BATCH_SIZE = 25;
 
     const unsigned int WIDTH = 28;
     const unsigned int HEIGHT = 28;

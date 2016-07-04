@@ -21,7 +21,7 @@ void optimize(DataSet<X, Y> &data,
               unsigned int n_class) {
 
     /*
-     * Modelオブジェクトを最適化する関数
+     * Modelオブジェクトを最適化
      *
      * data : 学習・テスト用データセット
      * learning_rate : 学習率
@@ -94,12 +94,12 @@ void optimize(DataSet<X, Y> &data,
         average_error_train = 0.f;
         average_error_test = 0.f;
 
-        std::cout << i + 1 << "th iteration\n";
-
         // データセット一周当たりの学習・テスト時間を計測
         clock_t start = clock();
 
         for (int j = 0; j < n_batch_train; ++j) {
+
+            std::cout << i + 1 << "th iteration / " << j + 1 << "th batch\n";
 
             const vector<vector<X>> &train_output = model.forward(x_trains[j]);
 
@@ -109,9 +109,9 @@ void optimize(DataSet<X, Y> &data,
             batch_error_train = model.error(pred_train, y_trains[j]);
             average_error_train += batch_error_train;
 
-
+            cout << "batch error(training data):" << batch_error_train << "\n";
             cout << "average error(training data):" <<
-            average_error_train / (j+1) << "\n";
+            average_error_train / (j + 1) << "\n";
 
 
             // 出力層デルタ
@@ -137,7 +137,7 @@ void optimize(DataSet<X, Y> &data,
                 average_error_test += batch_error_test;
 
                 cout << "average error(test data):" <<
-                average_error_test / (idx+1) << "\n";
+                average_error_test / (idx + 1) << "\n";
 
             }
 

@@ -13,6 +13,11 @@ namespace ConvLayerConst {
 }
 
 class ConvLayer2d : public Layer {
+
+    /*
+     * 入力を二次元画像とする、ニューラルネットワークの畳み込み層クラス
+     */
+
 private:
 
     // 成分数 (フィルタ幅)^2 × (入力チャネル) × （出力チャネル） のフィルタベクトル
@@ -34,6 +39,13 @@ private:
 
     void update(const vector<vector<float>> &prev_output,
                 const float learning_rate) {
+
+        /*
+         * フィルタ重み・バイアス値を更新する
+         *
+         * prev_output : 前層の出力
+         * learning_rate : 学習率(0≦learning_rate≦1)
+         */
 
         float dw, db;
 
@@ -59,6 +71,10 @@ private:
                                       unsigned int s,
                                       unsigned int p,
                                       bool is_covored_all) {
+        /*
+         * 出力画像の一辺のサイズを導出する
+         */
+
         if (is_covored_all) {
             return ((size + p * 2 - k + s - 1) / s) + 1;
         } else {
@@ -70,13 +86,10 @@ private:
 public:
 
     ConvLayer2d(unsigned int n_data,
-                unsigned int input_width,
-                unsigned int input_height,
+                unsigned int input_width, unsigned int input_height,
                 unsigned int c_in, unsigned int c_out,
-                unsigned int kw, unsigned int kh,
-                unsigned int stride,
-                float (*activation)(float),
-                float (*grad_activation)(float))
+                unsigned int kw, unsigned int kh, unsigned int stride,
+                float (*activation)(float), float (*grad_activation)(float))
             : Layer(n_data, c_in * input_width * input_height,
                     c_out * filter_outsize(input_width, kw, stride, 0, false) *
                     filter_outsize(input_height, kh, stride, 0, false),
@@ -86,7 +99,6 @@ public:
               h(vector<float>(kw * kh * c_in * c_out)),
               t(vector<vector<int>>(n_out, vector<int>(n_in,
                                                        ConvLayerConst::T_WEIGHT_DISABLED))) {
-
 
         // 乱数生成器
         std::random_device rnd;
@@ -140,6 +152,11 @@ public:
     }
 
     const vector<vector<float>> &get_weights() {
+
+        /*
+         * 2D畳み込み版重み行列
+         */
+
         for (int j = 0; j < n_out; ++j) {
             for (int i = 0; i < n_in; ++i) {
                 if (t[j][i] == ConvLayerConst::T_WEIGHT_DISABLED) {
@@ -151,7 +168,6 @@ public:
         }
         return weights;
     }
-
 
 };
 

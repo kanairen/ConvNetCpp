@@ -73,6 +73,13 @@ public:
 
     virtual const vector<vector<float>> &forward(
             const vector<vector<float>> &input) {
+
+        /*
+         * 入力の重み付き和を順伝播する関数
+         *
+         * inputs : n_in行 n_data列 の入力データ
+         */
+
         const vector<vector<float>> &w = get_weights();
         float out;
         for (int i_data = 0; i_data < n_data; ++i_data) {
@@ -92,6 +99,14 @@ public:
     virtual void backward(const vector<vector<float>> &last_delta,
                           const vector<vector<float>> &prev_output,
                           const float learning_rate) {
+        /*
+         * 誤差逆伝播で微分導出に用いるデルタを計算する関数
+         * 出力層用
+         *
+         * last_delta : 出力層デルタ
+         * prev_output : 前層の出力
+         * learning_rate : 学習率
+         */
 
 #ifdef DEBUG_LAYER
         if (last_delta.size() != delta.size() &&
@@ -119,6 +134,16 @@ public:
                           const vector<vector<float>> &next_delta,
                           const vector<vector<float>> &prev_output,
                           const float learning_rate) {
+
+        /*
+         * 誤差逆伝播で微分導出に用いるデルタを計算する関数
+         *
+         * next_weight : 次層重み行列
+         * next_delta : 次層デルタ
+         * prev_output : 前層の出力
+         * learning_rate : 学習率(0≦learning_rate≦1)
+         */
+
         unsigned long next_n_out = next_weights.size();
         float d;
         for (int i_data = 0; i_data < n_data; ++i_data) {
@@ -141,6 +166,14 @@ public:
 
     virtual void update(const vector<vector<float>> &prev_output,
                         const float learning_rate) {
+
+        /*
+         * 学習パラメタの更新を行う関数
+         *
+         * prev_output : 前層の出力
+         * learning_rate : 学習率
+         */
+
         float dw, db;
 
         for (int i_out = 0; i_out < n_out; ++i_out) {
@@ -152,7 +185,6 @@ public:
                     dw += learning_rate * delta[i_out][i_data] *
                           prev_output[i_in][i_data];
                     db += learning_rate * delta[i_out][i_data];
-
                 }
                 weights[i_out][i_in] -= (dw / n_data);
             }
