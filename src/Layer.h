@@ -181,14 +181,12 @@ public:
                 dw = 0.f;
                 db = 0.f;
                 for (int i_data = 0; i_data < n_data; ++i_data) {
-                    // オーバフローを防ぐため、先に学習率を掛ける
-                    dw += learning_rate * delta[i_out][i_data] *
-                          prev_output[i_in][i_data];
-                    db += learning_rate * delta[i_out][i_data];
+                    dw += delta[i_out][i_data] * prev_output[i_in][i_data];
+                    db += delta[i_out][i_data];
                 }
-                weights[i_out][i_in] -= (dw / n_data);
+                weights[i_out][i_in] -= learning_rate * (dw / n_data);
             }
-            biases[i_out] -= (db / n_data);
+            biases[i_out] -= learning_rate * (db / n_data);
         }
 
     }
