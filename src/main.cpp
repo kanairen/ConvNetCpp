@@ -34,7 +34,8 @@ void mnist_full_connelct(char *argv[],
 void mnist_conv(char *argv[], unsigned int batch_size,
                 unsigned int input_width, unsigned int input_height,
                 unsigned int c_in, unsigned int c_out,
-                unsigned int kw, unsigned int kh, unsigned int stride,
+                unsigned int kw, unsigned int kh,
+                unsigned int sx, unsigned int sy,
                 unsigned int n_class, unsigned int n_iter,
                 float learning_rate) {
     // mnist
@@ -42,7 +43,7 @@ void mnist_conv(char *argv[], unsigned int batch_size,
 
     Layer *layer_1 = new ConvLayer2d(batch_size,
                                      input_width, input_height,
-                                     c_in, c_out, kw, kh, stride,
+                                     c_in, c_out, kw, kh, sx, sy,
                                      iden, g_iden);
 
     Layer *layer_2 = new Layer(batch_size, layer_1->get_n_out(),
@@ -79,13 +80,17 @@ int main(int argc, char *argv[]) {
     const unsigned int KERNEL_WIDTH = 2;
     const unsigned int KERNEL_HEIGHT = 2;
 
+    const unsigned int STRIDE_X = 1;
+    const unsigned int STRIDE_Y = 1;
+
     const unsigned int STRIDE = 1;
 
     const unsigned int N_ITERATION = 1000;
     const unsigned int N_CLASS = 10;
 
     mnist_conv(argv, BATCH_SIZE, WIDTH, HEIGHT, C_IN, C_OUT, KERNEL_WIDTH,
-               KERNEL_HEIGHT, STRIDE, N_CLASS, N_ITERATION, LEARNING_RATE);
+               KERNEL_HEIGHT, STRIDE_X, STRIDE_Y, N_CLASS, N_ITERATION,
+               LEARNING_RATE);
 //    mnist_full_connelct(argv, BATCH_SIZE, INPUT_SIZE, N_CLASS, N_ITERATION,
 //                        LEARNING_RATE);
 

@@ -24,7 +24,8 @@ protected:
     unsigned int kw;
     unsigned int kh;
 
-    unsigned int stride;
+    unsigned int sw;
+    unsigned int sh;
 
     const unsigned int filter_outsize(unsigned int size, unsigned int k,
                                       unsigned int s, unsigned int p,
@@ -46,14 +47,15 @@ public:
     GridLayer2d(unsigned int n_data,
                 unsigned int input_width, unsigned int input_height,
                 unsigned int c_in, unsigned int c_out,
-                unsigned int kw, unsigned int kh, unsigned int stride,
+                unsigned int kw, unsigned int kh,
+                unsigned int sx, unsigned int sy,
                 float (*activation)(float), float (*grad_activation)(float))
             : Layer(n_data, c_in * input_width * input_height,
-                    c_out * filter_outsize(input_width, kw, stride, 0, false) *
-                    filter_outsize(input_height, kh, stride, 0, false),
+                    c_out * filter_outsize(input_width, kw, sx, 0, false) *
+                    filter_outsize(input_height, kh, sy, 0, false),
                     activation, grad_activation),
               input_width(input_width), input_height(input_height),
-              c_in(c_in), c_out(c_out), kw(kw), kh(kh), stride(stride) { }
+              c_in(c_in), c_out(c_out), kw(kw), kh(kh), sw(sx), sh(sy) { }
 
 };
 
