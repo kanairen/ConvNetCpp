@@ -6,13 +6,13 @@
 #define CONVNETCPP_CONVLAYER_H
 
 #include <random>
-#import "Layer.h"
+#import "GridLayer.h"
 
 namespace ConvLayerConst {
     static const int T_WEIGHT_DISABLED = -1;
 }
 
-class ConvLayer2d : public Layer {
+class ConvLayer2d : public GridLayer2d {
 
     /*
      * 入力を二次元画像とする、ニューラルネットワークの畳み込み層クラス
@@ -25,17 +25,6 @@ private:
 
     // 入力画素(i, j)と重なるフィルタのインデックスを保持するベクトル
     vector<vector<int>> t;
-
-    unsigned int input_width;
-    unsigned int input_height;
-
-    unsigned int c_in;
-    unsigned int c_out;
-
-    unsigned int kw;
-    unsigned int kh;
-
-    unsigned int stride;
 
     void update(const vector<vector<float>> &prev_output,
                 const float learning_rate) {
@@ -66,23 +55,6 @@ private:
 
     }
 
-    const unsigned int filter_outsize(unsigned int size,
-                                      unsigned int k,
-                                      unsigned int s,
-                                      unsigned int p,
-                                      bool is_covored_all) {
-        /*
-         * 出力画像の一辺のサイズを導出する
-         */
-
-        if (is_covored_all) {
-            return ((size + p * 2 - k + s - 1) / s) + 1;
-        } else {
-            return ((size + p * 2 - k) / s) + 1;
-        }
-
-    }
-
 public:
 
     ConvLayer2d(unsigned int n_data,
@@ -90,15 +62,11 @@ public:
                 unsigned int c_in, unsigned int c_out,
                 unsigned int kw, unsigned int kh, unsigned int stride,
                 float (*activation)(float), float (*grad_activation)(float))
-            : Layer(n_data, c_in * input_width * input_height,
-                    c_out * filter_outsize(input_width, kw, stride, 0, false) *
-                    filter_outsize(input_height, kh, stride, 0, false),
-                    activation, grad_activation),
-              input_width(input_width), input_height(input_height),
-              c_in(c_in), c_out(c_out), kw(kw), kh(kh), stride(stride),
+            : GridLayer2d(n_data, input_width, input_height, c_in, c_out, kw,
+                          kh, stride, activation, grad_activation),
               h(vector<float>(kw * kh * c_in * c_out)),
-              t(vector<vector<int>>(n_out, vector<int>(n_in,
-                                                       ConvLayerConst::T_WEIGHT_DISABLED))) {
+              t(vector<vector<int>>(n_out, vector<int>(
+                      n_in, ConvLayerConst::T_WEIGHT_DISABLED))) {
 
         // 乱数生成器
         std::random_device rnd;
