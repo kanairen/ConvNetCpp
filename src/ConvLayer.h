@@ -87,12 +87,15 @@ public:
               t(vector<vector<int>>(n_out, vector<int>(n_in,
                                                        ConvLayerConst::T_WEIGHT_DISABLED))) {
 
+
         // 乱数生成器
         std::random_device rnd;
         std::mt19937 mt(rnd());
+        int f_in = c_in * kw * kh;
+        int f_out = c_out * kw * kh;
         std::uniform_real_distribution<float> uniform(
-                -sqrtf(6.f / (n_in + n_out)),
-                sqrtf(6.f / (n_in + n_out)));
+                -sqrtf(6.f / (f_in + f_out)),
+                sqrtf(6.f / (f_in + f_out)));
 
         // filter要素を初期化
         for (float &f : h) {
