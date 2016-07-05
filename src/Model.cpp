@@ -10,7 +10,7 @@ const vector<vector<float>> &Model::forward(
     /*
      * 全レイヤの順伝播
      *
-     * inputs : n_in行 n_data列 の入力データ
+     * inputs : 入力データ行列
      */
 
     const vector<vector<float>> *output = &inputs;
@@ -27,9 +27,9 @@ void Model::backward(const vector<vector<float>> &inputs,
     /*
      * 全レイヤの逆伝播＋学習パラメタ更新
      *
-     * inputs : n_in行 n_data列 の入力データ
-     * last_delta : 出力層デルタ
-     * learning_rate : 学習率(0≦learning_rate≦1)
+     * inputs : 入力データ行列
+     * last_delta : 出力層デルタ行列
+     * learning_rate : 学習率 (0≦learning_rate≦1)
      */
 
     const vector<vector<float>> *prev_output;

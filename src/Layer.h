@@ -13,6 +13,11 @@
 using std::vector;
 
 class Layer {
+
+    /*
+     * ニューラルネットワークの全結合クラス
+     */
+
 protected:
     unsigned int n_data;
     unsigned int n_in;
