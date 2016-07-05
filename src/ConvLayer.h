@@ -47,7 +47,8 @@ private:
                     db += delta[i_out][i_data];
                 }
                 if (t[i_out][i_in] != ConvLayerConst::T_WEIGHT_DISABLED) {
-                    h[t[i_out][i_in]] -= learning_rate * dw / n_data;
+                    // n_dataで割る必要はない？
+                    h[t[i_out][i_in]] -= learning_rate * dw;
                 }
             }
             biases[i_out] -= learning_rate * db / n_data;
