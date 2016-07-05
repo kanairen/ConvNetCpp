@@ -5,9 +5,9 @@
 #include "config.h"
 #include "MNIST.h"
 #include "ConvLayer.h"
+#include "MaxPoolLayer.h"
 #include "Model.h"
 #include "optimizer.h"
-#include "activation.h"
 
 #ifdef CONV_NET_CPP_DEBUG
 
