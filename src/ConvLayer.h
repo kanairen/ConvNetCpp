@@ -62,9 +62,11 @@ public:
                 unsigned int c_in, unsigned int c_out,
                 unsigned int kw, unsigned int kh,
                 unsigned int sx, unsigned int sy,
+                unsigned int px, unsigned int py,
                 float (*activation)(float), float (*grad_activation)(float))
             : GridLayer2d(n_data, input_width, input_height, c_in, c_out, kw,
-                          kh, sx, sy, activation, grad_activation, false),
+                          kh, sx, sy, px, py, activation, grad_activation,
+                          false),
               h(vector<float>(kw * kh * c_in * c_out)),
               t(vector<vector<int>>(n_out, vector<int>(
                       n_in, ConvLayerConst::T_WEIGHT_DISABLED))) {

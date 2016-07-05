@@ -36,20 +36,21 @@ void mnist_conv(char *argv[], unsigned int batch_size,
                 unsigned int c_in, unsigned int c_out,
                 unsigned int kw, unsigned int kh,
                 unsigned int sx, unsigned int sy,
+                unsigned int px, unsigned int py,
                 unsigned int n_class, unsigned int n_iter,
                 float learning_rate) {
     // mnist
     MNIST mnist(argv[1], argv[2], argv[3], argv[4]);
 
-    Layer *layer_1 = new ConvLayer2d(batch_size,
-                                     input_width, input_height,
-                                     c_in, c_out, kw, kh, sx, sy,
-                                     iden, g_iden);
+    ConvLayer2d *layer_1 = new ConvLayer2d(batch_size,
+                                           input_width, input_height,
+                                           c_in, c_out, kw, kh, sx, sy, px, py,
+                                           iden, g_iden);
 
-    Layer *layer_2 = new Layer(batch_size, layer_1->get_n_out(),
+    Layer *layer_3 = new Layer(batch_size, layer_1->get_n_out(),
                                n_class, iden, g_iden);
 
-    vector<Layer *> v{layer_1, layer_2};
+    vector<Layer *> v{layer_1, layer_3};
 
     std::cout << "conv:n_out:" << layer_1->get_n_out() << std::endl;
 
@@ -58,7 +59,6 @@ void mnist_conv(char *argv[], unsigned int batch_size,
 
     // release
     delete (layer_1);
-    delete (layer_2);
 
 }
 
@@ -83,12 +83,15 @@ int main(int argc, char *argv[]) {
     const unsigned int STRIDE_X = 1;
     const unsigned int STRIDE_Y = 1;
 
+    const unsigned int PADDING_X = 0;
+    const unsigned int PADDING_Y = 0;
+
     const unsigned int N_ITERATION = 1000;
     const unsigned int N_CLASS = 10;
 
     mnist_conv(argv, BATCH_SIZE, WIDTH, HEIGHT, C_IN, C_OUT, KERNEL_WIDTH,
-               KERNEL_HEIGHT, STRIDE_X, STRIDE_Y, N_CLASS, N_ITERATION,
-               LEARNING_RATE);
+               KERNEL_HEIGHT, STRIDE_X, STRIDE_Y, PADDING_X, PADDING_Y, N_CLASS,
+               N_ITERATION, LEARNING_RATE);
 //    mnist_full_connelct(argv, BATCH_SIZE, INPUT_SIZE, N_CLASS, N_ITERATION,
 //                        LEARNING_RATE);
 
