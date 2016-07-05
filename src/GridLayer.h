@@ -18,14 +18,17 @@ protected:
     unsigned int input_width;
     unsigned int input_height;
 
+    unsigned int output_width;
+    unsigned int output_height;
+
     unsigned int c_in;
     unsigned int c_out;
 
     unsigned int kw;
     unsigned int kh;
 
-    unsigned int sw;
-    unsigned int sh;
+    unsigned int sx;
+    unsigned int sy;
 
     const unsigned int filter_outsize(unsigned int size, unsigned int k,
                                       unsigned int s, unsigned int p,
@@ -49,13 +52,20 @@ public:
                 unsigned int c_in, unsigned int c_out,
                 unsigned int kw, unsigned int kh,
                 unsigned int sx, unsigned int sy,
-                float (*activation)(float), float (*grad_activation)(float))
-            : Layer(n_data, c_in * input_width * input_height,
-                    c_out * filter_outsize(input_width, kw, sx, 0, false) *
-                    filter_outsize(input_height, kh, sy, 0, false),
-                    activation, grad_activation),
-              input_width(input_width), input_height(input_height),
-              c_in(c_in), c_out(c_out), kw(kw), kh(kh), sw(sx), sh(sy) { }
+                float (*activation)(float), float (*grad_activation)(float),
+                bool is_weight_init_enabled)
+            : input_width(input_width), input_height(input_height),
+              output_width(filter_outsize(input_width, kw, sx, 0, false)),
+              output_height(filter_outsize(input_height, kh, sy, 0, false)),
+              c_in(c_in), c_out(c_out), kw(kw), kh(kh), sx(sx), sy(sy),
+              Layer(n_data, c_in * input_width * input_height,
+                    c_out * filter_outsize(input_height, kh, sy, 0, false) *
+                    filter_outsize(input_width, kw, sx, 0, false),
+                    activation, grad_activation) { }
+
+    virtual unsigned int get_output_width() { return output_width; }
+
+    virtual unsigned int get_output_height() { return output_height; }
 
 };
 

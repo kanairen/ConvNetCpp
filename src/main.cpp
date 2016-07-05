@@ -83,8 +83,6 @@ int main(int argc, char *argv[]) {
     const unsigned int STRIDE_X = 1;
     const unsigned int STRIDE_Y = 1;
 
-    const unsigned int STRIDE = 1;
-
     const unsigned int N_ITERATION = 1000;
     const unsigned int N_CLASS = 10;
 

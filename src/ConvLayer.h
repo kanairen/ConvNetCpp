@@ -64,7 +64,7 @@ public:
                 unsigned int sx, unsigned int sy,
                 float (*activation)(float), float (*grad_activation)(float))
             : GridLayer2d(n_data, input_width, input_height, c_in, c_out, kw,
-                          kh, sx, sy, activation, grad_activation),
+                          kh, sx, sy, activation, grad_activation, false),
               h(vector<float>(kw * kh * c_in * c_out)),
               t(vector<vector<int>>(n_out, vector<int>(
                       n_in, ConvLayerConst::T_WEIGHT_DISABLED))) {
@@ -85,10 +85,6 @@ public:
 
         // tを初期化
         int j_out, i_in;
-        unsigned int output_width = filter_outsize(input_width, kw, sx, 0,
-                                                   false);
-        unsigned int output_height = filter_outsize(input_height, kh, sy, 0,
-                                                    false);
         for (int co = 0; co < c_out; ++co) {
             for (int ci = 0; ci < c_in; ++ci) {
                 for (int y = 0; y < input_height - kh; y += sy) {
