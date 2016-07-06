@@ -6,8 +6,9 @@
 #define CONVNETCPP_CONFIG_H
 
 #define CONV_NET_CPP_DEBUG
-
+//
 //#define DEBUG_MODEL
 //#define DEBUG_LAYER
+//#define DEBUG_SOFTMAX_LAYER
 
 #endif //CONVNETCPP_CONFIG_H

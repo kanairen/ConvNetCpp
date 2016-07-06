@@ -5,7 +5,6 @@
 #ifndef CONVNETCPP_MODEL_H
 #define CONVNETCPP_MODEL_H
 
-#include <float.h>
 #include <cmath>
 #include <vector>
 #include "Layer.h"
@@ -28,9 +27,6 @@ public:
 
     void backward(const vector<vector<float>> &inputs,
                   const vector<vector<float>> &last_delta, float learning_rate);
-
-    static void softmax(const vector<vector<float>> &outputs,
-                        vector<vector<float>> &y);
 
     static void argmax(const vector<vector<float>> &y,
                        vector<int> &predict);

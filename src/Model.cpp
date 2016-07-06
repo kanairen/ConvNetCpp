@@ -32,66 +32,34 @@ void Model::backward(const vector<vector<float>> &inputs,
      * learning_rate : 学習率 (0≦learning_rate≦1)
      */
 
+//#ifdef DEBUG_MODEL
+//    if (typeid(layers[0]) != typeid(SoftMaxLayer)) {
+//        std::cerr <<
+//        "ERROR(Model::backward()) : output layer is not SoftMaxLayer" <<
+//        std::endl;
+//        exit(1);
+//    }
+//#endif
+
     const vector<vector<float>> *prev_output;
+    const vector<vector<float>> *next_weight = nullptr;
+    const vector<vector<float>> *next_delta = &last_delta;
+
     for (int i = layers.size() - 1; i >= 0; --i) {
 
         prev_output = (i == 0) ? &inputs : &layers[i - 1]->get_z();
 
-        if (i == layers.size() - 1) {
-            layers[i]->backward(last_delta, *prev_output, learning_rate);
-        } else {
-            layers[i]->backward(layers[i + 1]->get_weights(),
-                                layers[i + 1]->get_delta(), *prev_output,
-                                learning_rate);
-        }
+
+        layers[i]->backward(*next_weight,
+                            *next_delta,
+                            *prev_output,
+                            learning_rate);
+
+        next_weight = &layers[i]->get_weights();
+        next_delta = &layers[i]->get_delta();
 
     }
 
-}
-
-void Model::softmax(const vector<vector<float>> &outputs,
-                    vector<vector<float>> &y) {
-
-    /*
-     * ソフトマックス関数
-     *
-     * output : 出力層の出力
-     * y : softmax関数値を格納する配列
-     */
-
-#ifdef DEBUG_MODEL
-    if (outputs.size() != y.size() && outputs[0].size() != y[0].size()) {
-        std::cerr << "error :  Model::softmax()" << endl;
-        exit(1);
-    }
-#endif
-
-    float u, sum_exp, max_output;
-    unsigned long outputs_size = outputs.size();
-    for (int j = 0; j < outputs[0].size(); ++j) {
-
-        // 最大出力値を求める
-        max_output = FLT_MIN;
-        for (int i = 0; i < outputs_size; ++i) {
-            if (outputs[i][j] > max_output) {
-                max_output = outputs[i][j];
-            }
-        }
-
-        // softmax関数の分子・分母を求める
-        sum_exp = 0.f;
-        for (int i = 0; i < outputs_size; ++i) {
-            u = expf(outputs[i][j] - max_output);
-            y[i][j] = u;
-            sum_exp += u;
-        }
-
-        // softmax関数の出力値を求める
-        for (int i = 0; i < outputs_size; ++i) {
-            y[i][j] /= sum_exp;
-        }
-
-    }
 }
 
 void Model::argmax(const vector<vector<float>> &y, vector<int> &predict) {

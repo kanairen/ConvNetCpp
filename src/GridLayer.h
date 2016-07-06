@@ -1,5 +1,5 @@
 //
-// Created by 金井廉 on 2016/07/04.
+// Created by kanairen on 2016/07/04.
 //
 
 #ifndef CONVNETCPP_GRIDLAYER_H

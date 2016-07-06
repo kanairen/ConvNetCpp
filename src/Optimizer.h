@@ -79,7 +79,6 @@ void optimize(DataSet<X, Y> &data,
 
     // softmaxの結果を格納する配列
     vector<vector<X>> sm_train(n_class, vector<X>(batch_size));
-    vector<vector<X>> sm_test(n_class, vector<X>(batch_size));
 
     // argmaxの結果を格納する配列
     vector<Y> pred_train(batch_size);
@@ -107,8 +106,7 @@ void optimize(DataSet<X, Y> &data,
 
             const vector<vector<X>> &train_output = model.forward(x_trains[j]);
 
-            model.softmax(train_output, sm_train);
-            model.argmax(sm_train, pred_train);
+            model.argmax(train_output, pred_train);
 
             batch_error_train = model.error(pred_train, y_trains[j]);
             average_error_train += batch_error_train;
@@ -119,8 +117,13 @@ void optimize(DataSet<X, Y> &data,
 
 
             // 出力層デルタ
-            for (int k = 0; k < batch_size; ++k) {
-                sm_train[y_trains[j][k]][k] -= 1.f;
+            for (int k = 0; k < train_output.size(); ++k) {
+                for (int l = 0; l < batch_size; ++l) {
+                    sm_train[k][l] = train_output[k][l];
+                    if(k == y_trains[j][l]){
+                        sm_train[k][l] -= 1.f;
+                    }
+                }
             }
 
             // 逆伝播
@@ -139,8 +142,7 @@ void optimize(DataSet<X, Y> &data,
                 const vector<vector<X>> &test_output = model.forward(
                         x_tests[idx]);
 
-                model.softmax(test_output, sm_test);
-                model.argmax(sm_test, pred_test);
+                model.argmax(test_output, pred_test);
 
                 batch_error_test = model.error(pred_test, y_tests[idx]);
                 average_error_test += batch_error_test;

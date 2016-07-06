@@ -20,7 +20,7 @@ set(SOURCE_FILES
         tests/TestModel.cpp
         tests/TestModel.h
         tests/TestMNIST.cpp
-        tests/TestMNIST.h)
+        tests/TestMNIST.h src/SoftMaxLayer.h)
 
 include_directories("/usr/local/include/eigen3")
 

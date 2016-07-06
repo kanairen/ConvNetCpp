@@ -4,6 +4,7 @@
 
 #include "config.h"
 #include "MNIST.h"
+#include "SoftMaxLayer.h"
 #include "ConvLayer.h"
 #include "MaxPoolLayer.h"
 #include "Model.h"
@@ -20,9 +21,9 @@ void mnist_full_connelct(char *argv[],
     // mnist
     MNIST mnist(argv[1], argv[2], argv[3], argv[4]);
 
-    Layer *layer_1 = new Layer(batch_size, input_size, n_class,
-                               iden, g_iden);
-    vector<Layer *> v{layer_1};
+    Layer *layer_1 = new Layer(batch_size, input_size, 10000, iden, g_iden);
+    Layer *layer_2 = new SoftMaxLayer(batch_size, layer_1->get_n_out(), n_class);
+    vector<Layer *> v{layer_1, layer_2};
 
     // optimize
     optimize(mnist, v, learning_rate, batch_size, n_iter, n_class);
@@ -89,11 +90,11 @@ int main(int argc, char *argv[]) {
     const unsigned int N_ITERATION = 1000;
     const unsigned int N_CLASS = 10;
 
-    mnist_conv(argv, BATCH_SIZE, WIDTH, HEIGHT, C_IN, C_OUT, KERNEL_WIDTH,
-               KERNEL_HEIGHT, STRIDE_X, STRIDE_Y, PADDING_X, PADDING_Y, N_CLASS,
-               N_ITERATION, LEARNING_RATE);
-//    mnist_full_connelct(argv, BATCH_SIZE, INPUT_SIZE, N_CLASS, N_ITERATION,
-//                        LEARNING_RATE);
+//    mnist_conv(argv, BATCH_SIZE, WIDTH, HEIGHT, C_IN, C_OUT, KERNEL_WIDTH,
+//               KERNEL_HEIGHT, STRIDE_X, STRIDE_Y, PADDING_X, PADDING_Y, N_CLASS,
+//               N_ITERATION, LEARNING_RATE);
+    mnist_full_connelct(argv, BATCH_SIZE, INPUT_SIZE, N_CLASS, N_ITERATION,
+                        LEARNING_RATE);
 
 
 }

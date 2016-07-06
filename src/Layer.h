@@ -132,38 +132,6 @@ public:
         return z;
     }
 
-    virtual void backward(const vector<vector<float>> &last_delta,
-                          const vector<vector<float>> &prev_output,
-                          const float learning_rate) {
-        /*
-         * 誤差逆伝播で微分導出に用いるデルタを計算する関数
-         * 出力層用
-         *
-         * last_delta : 出力層デルタ
-         * prev_output : 前層の出力
-         * learning_rate : 学習率
-         */
-
-#ifdef DEBUG_LAYER
-        if (last_delta.size() != delta.size() &&
-            last_delta[0].size() != delta[0].size()) {
-            std::cerr << "Layer::backward : size of delta is not correct.";
-            exit(1);
-        }
-#endif
-
-        // 出力層のデルタとしてコピー
-        unsigned long last_delta_length = last_delta[0].size();
-        for (int i = 0; i < last_delta.size(); ++i) {
-            for (int j = 0; j < last_delta_length; ++j) {
-                delta[i][j] = last_delta[i][j];
-            }
-        }
-
-        // パラメタ更新
-        update(prev_output, learning_rate);
-
-    }
 
 
     virtual void backward(const vector<vector<float>> &next_weights,
