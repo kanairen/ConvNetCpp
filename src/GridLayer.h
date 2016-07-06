@@ -57,7 +57,7 @@ public:
                 unsigned int sx, unsigned int sy,
                 unsigned int px, unsigned int py,
                 float (*activation)(float), float (*grad_activation)(float),
-                bool is_weight_init_enabled)
+                bool is_weight_init_enabled = false)
             : input_width(input_width), input_height(input_height),
               output_width(filter_outsize(input_width, kw, sx, 0, false)),
               output_height(filter_outsize(input_height, kh, sy, 0, false)),
@@ -66,7 +66,7 @@ public:
               Layer(n_data, c_in * input_width * input_height,
                     c_out * filter_outsize(input_height, kh, sy, py, false) *
                     filter_outsize(input_width, kw, sx, px, false),
-                    activation, grad_activation) { }
+                    activation, grad_activation, is_weight_init_enabled) { }
 
     virtual unsigned int get_output_width() { return output_width; }
 

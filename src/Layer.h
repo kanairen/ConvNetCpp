@@ -67,7 +67,8 @@ protected:
 public:
 
     Layer(unsigned int n_data, unsigned int n_in, unsigned int n_out,
-          float (*activation)(float), float (*grad_activation)(float))
+          float (*activation)(float), float (*grad_activation)(float),
+          bool is_weight_init_enabled = true)
             : n_data(n_data), n_in(n_in), n_out(n_out),
               activation(activation), grad_activation(grad_activation),
               weights(vector<vector<float>>(n_out, vector<float>(n_in, 0.f))),
@@ -76,19 +77,22 @@ public:
               u(vector<vector<float>>(n_out, vector<float>(n_data, 0.f))),
               z(vector<vector<float>>(n_out, vector<float>(n_data, 0.f))) {
 
+        if (is_weight_init_enabled) {
 
-        // 乱数生成器
-        std::random_device rnd;
-        std::mt19937 mt(rnd());
-        std::uniform_real_distribution<float> uniform(
-                -sqrtf(6.f / (n_in + n_out)),
-                sqrtf(6.f / (n_in + n_out)));
+            // 乱数生成器
+            std::random_device rnd;
+            std::mt19937 mt(rnd());
+            std::uniform_real_distribution<float> uniform(
+                    -sqrtf(6.f / (n_in + n_out)),
+                    sqrtf(6.f / (n_in + n_out)));
 
-        // 重みパラメタの初期化
-        for (vector<float> &row : weights) {
-            for (float &w : row) {
-                w = uniform(mt);
+            // 重みパラメタの初期化
+            for (vector<float> &row : weights) {
+                for (float &w : row) {
+                    w = uniform(mt);
+                }
             }
+
         }
 
     }
