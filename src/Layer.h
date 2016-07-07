@@ -120,18 +120,17 @@ public:
         float out;
         for (int i_data = 0; i_data < n_data; ++i_data) {
             for (int i_out = 0; i_out < n_out; ++i_out) {
-                out = 0.f;
+                out = biases[i_out];
                 for (int i_in = 0; i_in < n_in; ++i_in) {
                     out += w[i_out][i_in] * input[i_in][i_data];
                 }
-                out += biases[i_out];
                 u[i_out][i_data] = out;
                 z[i_out][i_data] = activation(out);
             }
         }
+
         return z;
     }
-
 
 
     virtual void backward(const vector<vector<float>> &next_weights,
@@ -161,6 +160,7 @@ public:
                 delta[i_out][i_data] = d * grad_activation(u[i_out][i_data]);
             }
         }
+
 
         // パラメタ更新
         update(prev_output, learning_rate);

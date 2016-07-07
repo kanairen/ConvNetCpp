@@ -25,18 +25,29 @@ public:
          * inputs : n_in行 n_data列 の入力データ
          */
 
-        float out;
+        float out, max_out, sum_exp;
         for (int i_data = 0; i_data < n_data; ++i_data) {
+            sum_exp = 0;
+            max_out = FLT_MIN;
             for (int i_out = 0; i_out < n_out; ++i_out) {
                 out = 0.f;
                 for (int i_in = 0; i_in < n_in; ++i_in) {
                     out += weights[i_out][i_in] * input[i_in][i_data];
                 }
                 out += biases[i_out];
+                if (out > max_out) {
+                    max_out = out;
+                }
                 u[i_out][i_data] = out;
             }
+            for (int i_out = 0; i_out < n_out; ++i_out) {
+                z[i_out][i_data] = expf(u[i_out][i_data] - max_out);
+                sum_exp += z[i_out][i_data];
+            }
+            for (int i_out = 0; i_out < n_out; ++i_out) {
+                z[i_out][i_data] /= sum_exp;
+            }
         }
-        softmax(u, z);
         return z;
     }
 
@@ -67,43 +78,6 @@ public:
 
     }
 
-    static void softmax(const vector<vector<float>> &outputs,
-                        vector<vector<float>> &y) {
-
-        /*
-         * ソフトマックス関数
-         *
-         * output : 出力行列
-         * y : softmax関数値を格納する配列
-         */
-
-        float u, sum_exp, max_output;
-        unsigned long outputs_size = outputs.size();
-        for (int j = 0; j < outputs[0].size(); ++j) {
-
-            // 最大出力値を求める
-            max_output = FLT_MIN;
-            for (int i = 0; i < outputs_size; ++i) {
-                if (outputs[i][j] > max_output) {
-                    max_output = outputs[i][j];
-                }
-            }
-
-            // softmax関数の分子・分母を求める
-            sum_exp = 0.f;
-            for (int i = 0; i < outputs_size; ++i) {
-                u = expf(outputs[i][j] - max_output);
-                y[i][j] = u;
-                sum_exp += u;
-            }
-
-            // softmax関数の出力値を求める
-            for (int i = 0; i < outputs_size; ++i) {
-                y[i][j] /= sum_exp;
-            }
-
-        }
-    }
 
 };
 
