@@ -77,6 +77,39 @@ public:
         return z;
     }
 
+    void backward(const vector<vector<float>> &next_weights,
+                  const vector<vector<float>> &next_delta,
+                  const vector<vector<float>> &prev_output,
+                  const float learning_rate) {
+
+        /*
+         * 誤差逆伝播で微分導出に用いるデルタを計算する関数
+         * プーリングレイヤなので、updateはしない
+         *
+         * next_weight : 次層重み行列
+         * next_delta : 次層デルタ
+         * prev_output : 前層の出力
+         * learning_rate : 学習率(0≦learning_rate≦1)
+         */
+
+
+        unsigned long next_n_out = next_weights.size();
+        float d;
+        for (int i_data = 0; i_data < n_data; ++i_data) {
+            for (int i_out = 0; i_out < n_out; ++i_out) {
+                d = 0.f;
+                for (int i_n_out = 0; i_n_out < next_n_out; ++i_n_out) {
+                    // デルタを導出
+                    d += next_weights[i_n_out][i_out] *
+                         next_delta[i_n_out][i_data];
+                }
+                // 順伝播の活性化関数が恒等写像なので、活性化関数の導関数は使わない
+                delta[i_out][i_data] = d * u[i_out][i_data];
+            }
+        }
+
+    }
+
 
 };
 
