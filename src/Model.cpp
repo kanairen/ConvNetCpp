@@ -49,13 +49,13 @@ void Model::backward(const vector<vector<float>> &inputs,
 
         prev_output = (i == 0) ? &inputs : &layers[i - 1]->get_z();
 
-
         layers[i]->backward(*next_weight,
                             *next_delta,
                             *prev_output,
                             learning_rate);
 
         next_weight = &layers[i]->get_weights();
+
         next_delta = &layers[i]->get_delta();
 
     }
