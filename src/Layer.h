@@ -148,20 +148,23 @@ public:
          */
 
         unsigned long next_n_out = next_weights.size();
-        float d;
-        for (int i_data = 0; i_data < n_data; ++i_data) {
-            for (int i_out = 0; i_out < n_out; ++i_out) {
-                d = 0.f;
-                for (int i_n_out = 0; i_n_out < next_n_out; ++i_n_out) {
-                    // デルタを導出
-                    d += next_weights[i_n_out][i_out] *
-                         next_delta[i_n_out][i_data];
-                }
-                delta[i_out][i_data] = d * grad_activation(u[i_out][i_data]);
-            }
+
+        // キャッシュヒット率を上げるため、i_n_outループを一番外側に持ってきている
+        for (int i_out = 0; i_out < n_out; ++i_out) {
+            std::fill(delta[i_out].begin(), delta[i_out].end(), 0.f);
         }
 
-
+        for (int i_n_out = 0; i_n_out < next_n_out; ++i_n_out) {
+            for (int i_out = 0; i_out < n_out; ++i_out) {
+                for (int i_data = 0; i_data < n_data; ++i_data) {
+                    // デルタを導出
+                    delta[i_out][i_data] += next_weights[i_n_out][i_out] *
+                                            next_delta[i_n_out][i_data] *
+                                            grad_activation(u[i_out][i_data]);
+                }
+            }
+        }
+        
         // パラメタ更新
         update(prev_output, learning_rate);
 
