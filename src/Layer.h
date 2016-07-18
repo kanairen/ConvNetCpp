@@ -61,14 +61,19 @@ protected:
 #endif
         float dw, db, d;
 
-        for (int i_out = 0; i_out < n_out; ++i_out) {
+        const int n_i = n_in;
+        const int n_o = n_out;
+        const int n_d = n_data;
+        int i_out, i_in, i_data,idx_w;
+
+        for (i_out = 0; i_out < n_o; ++i_out) {
             db = 0.f;
-            for (int i_in = 0; i_in < n_in; ++i_in) {
+            for (i_in = 0; i_in < n_i; ++i_in) {
                 dw = 0.f;
-                for (int i_data = 0; i_data < n_data; ++i_data) {
-                    d = delta[i_out * n_data + i_data];
-                    dw += d * prev_output[i_in * n_data + i_data];
-                    if (i_in == n_in - 1) {
+                for (i_data = 0; i_data < n_d; ++i_data) {
+                    d = delta[i_out * n_d + i_data];
+                    dw += d * prev_output[i_in * n_d + i_data];
+                    if (i_in == n_i - 1) {
                         db += d;
                     }
                 }
@@ -138,16 +143,20 @@ public:
         const vector<float> &w = get_weights();
 
         float out;
-        unsigned int idx;
-        for (int i_data = 0; i_data < n_data; ++i_data) {
-            for (int i_out = 0; i_out < n_out; ++i_out) {
+        const int n_d = n_data;
+        const int n_o = n_out;
+        const int n_i = n_in;
+        int i_data, i_out, i_in, idx_output;
+
+        for (i_data = 0; i_data < n_d; ++i_data) {
+            for (i_out = 0; i_out < n_o; ++i_out) {
                 out = biases[i_out];
-                for (int i_in = 0; i_in < n_in; ++i_in) {
-                    out += w[i_out * n_in + i_in] *
-                           input[i_in * n_data + i_data];
+                for (i_in = 0; i_in < n_i; ++i_in) {
+                    out += w[i_out * n_i + i_in] * input[i_in * n_d + i_data];
                 }
-                u[i_out * n_data + i_data] = out;
-                z[i_out * n_data + i_data] = activation(out);
+                idx_output = i_out * n_d + i_data;
+                u[idx_output] = out;
+                z[idx_output] = activation(out);
             }
         }
 
