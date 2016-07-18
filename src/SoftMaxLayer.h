@@ -24,7 +24,9 @@ public:
          *
          * input : n_in行 n_data列 の入力データ
          */
-
+#ifdef PROFILE_ENABLED
+        time_t start = clock();
+#endif
         float out, max_out, sum_exp;
         for (int i_data = 0; i_data < n_data; ++i_data) {
             sum_exp = 0.f;
@@ -50,6 +52,10 @@ public:
                 z[i_out * n_data + i_data] /= sum_exp;
             }
         }
+#ifdef PROFILE_ENABLED
+        std::cout << "SoftMaxLayer::forward : " <<
+        (float) (clock() - start) / CLOCKS_PER_SEC << "s" << std::endl;
+#endif
         return z;
     }
 
@@ -67,13 +73,19 @@ public:
          * prev_output : 前層の出力
          * learning_rate : 学習率
          */
-
+#ifdef PROFILE_ENABLED
+        time_t start = clock();
+#endif
         // 出力層のデルタとしてコピー
         std::copy(last_delta.begin(), last_delta.end(), delta.begin());
 
         // パラメタ更新
         update(prev_output, learning_rate);
 
+#ifdef PROFILE_ENABLED
+        std::cout << "SoftMaxLayer::backward : " <<
+        (float) (clock() - start) / CLOCKS_PER_SEC << "s" << std::endl;
+#endif
     }
 
 

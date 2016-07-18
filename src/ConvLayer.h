@@ -35,6 +35,10 @@ private:
          * learning_rate : 学習率(0≦learning_rate≦1)
          */
 
+#ifdef PROFILE_ENABLED
+        time_t start = clock();
+#endif
+
         float dw, db, d;
 
         for (int i_out = 0; i_out < n_out; ++i_out) {
@@ -54,6 +58,11 @@ private:
             }
             biases[i_out] -= learning_rate * db / n_data;
         }
+
+#ifdef PROFILE_ENABLED
+        std::cout << "ConvLayer2d::update : " <<
+        (float) (clock() - start) / CLOCKS_PER_SEC << "s" << std::endl;
+#endif
 
     }
 
@@ -125,6 +134,10 @@ public:
          * 2D畳み込み版重み行列
          */
 
+#ifdef PROFILE_ENABLED
+        time_t start = clock();
+#endif
+
         for (int j = 0; j < n_out; ++j) {
             for (int i = 0; i < n_in; ++i) {
                 if (t[j * n_in + i] == ConvLayerConst::T_WEIGHT_DISABLED) {
@@ -134,6 +147,12 @@ public:
                 }
             }
         }
+
+#ifdef PROFILE_ENABLED
+        std::cout << "ConvLayer2d::get_weights : " <<
+        (float) (clock() - start) / CLOCKS_PER_SEC << "s" << std::endl;
+#endif
+
         return weights;
     }
 

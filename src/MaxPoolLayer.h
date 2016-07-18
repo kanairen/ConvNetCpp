@@ -29,6 +29,10 @@ public:
          * inputs : n_in行 n_data列 の入力データ
          */
 
+#ifdef PROFILE_ENABLED
+        time_t start = clock();
+#endif
+
         int j_out, i_in;
         int max_idx;
         float p_value, max;
@@ -74,6 +78,12 @@ public:
 
 
         }
+
+#ifdef PROFILE_ENABLED
+        std::cout << "MaxPoolLayer2d::forward : " <<
+        (float) (clock() - start) / CLOCKS_PER_SEC << "s" << std::endl;
+#endif
+
         return z;
     }
 
@@ -93,6 +103,10 @@ public:
          * learning_rate : 学習率(0≦learning_rate≦1)
          */
 
+#ifdef PROFILE_ENABLED
+        time_t start = clock();
+#endif
+
         float d;
         for (int i_data = 0; i_data < n_data; ++i_data) {
             for (int i_out = 0; i_out < n_out; ++i_out) {
@@ -107,6 +121,10 @@ public:
             }
         }
 
+#ifdef PROFILE_ENABLED
+        std::cout << "MaxPoolLayer2d::backward : " <<
+        (float) (clock() - start) / CLOCKS_PER_SEC << "s" << std::endl;
+#endif
     }
 
 

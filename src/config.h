@@ -11,4 +11,6 @@
 //#define DEBUG_LAYER
 //#define DEBUG_SOFTMAX_LAYER
 
+#define PROFILE_ENABLED
+
 #endif //CONVNETCPP_CONFIG_H

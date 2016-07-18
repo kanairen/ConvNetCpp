@@ -5,7 +5,7 @@
 #ifndef CONVNETCPP_ABSTRACTLAYER_H
 #define CONVNETCPP_ABSTRACTLAYER_H
 
-
+#include "config.h"
 #include <random>
 #include <iostream>
 #include <vector>
@@ -56,6 +56,9 @@ protected:
          * learning_rate : 学習率(0≦learning_rate≦1)
          */
 
+#ifdef PROFILE_ENABLED
+        time_t start = clock();
+#endif
         float dw, db, d;
 
         for (int i_out = 0; i_out < n_out; ++i_out) {
@@ -73,7 +76,10 @@ protected:
             }
             biases[i_out] -= learning_rate * (db / n_data);
         }
-
+#ifdef PROFILE_ENABLED
+        std::cout << "Layer::update : " <<
+        (float) (clock() - start) / CLOCKS_PER_SEC << "s" << std::endl;
+#endif
     }
 
 public:
@@ -125,9 +131,14 @@ public:
          * input : n_in行 n_data列 の入力データ
          */
 
+#ifdef PROFILE_ENABLED
+        time_t start = clock();
+#endif
+
         const vector<float> &w = get_weights();
 
         float out;
+        unsigned int idx;
         for (int i_data = 0; i_data < n_data; ++i_data) {
             for (int i_out = 0; i_out < n_out; ++i_out) {
                 out = biases[i_out];
@@ -139,6 +150,11 @@ public:
                 z[i_out * n_data + i_data] = activation(out);
             }
         }
+
+#ifdef PROFILE_ENABLED
+        std::cout << "Layer::forward : " <<
+        (float) (clock() - start) / CLOCKS_PER_SEC << "s" << std::endl;
+#endif
 
         return z;
     }
@@ -159,6 +175,10 @@ public:
          * learning_rate : 学習率(0≦learning_rate≦1)
          */
 
+#ifdef PROFILE_ENABLED
+        time_t start = clock();
+#endif
+
         std::fill(delta.begin(), delta.end(), 0.f);
 
         // キャッシュヒット率を上げるため、i_n_outループを一番外側に持ってきている
@@ -176,6 +196,11 @@ public:
 
         // パラメタ更新
         update(prev_output, learning_rate);
+
+#ifdef PROFILE_ENABLED
+        std::cout << "Layer::backward : " <<
+        (float) (clock() - start) / CLOCKS_PER_SEC << "s" << std::endl;
+#endif
 
     }
 
