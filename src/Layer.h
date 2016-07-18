@@ -59,13 +59,15 @@ protected:
         float dw, db, d;
 
         for (int i_out = 0; i_out < n_out; ++i_out) {
+            db = 0.f;
             for (int i_in = 0; i_in < n_in; ++i_in) {
                 dw = 0.f;
-                db = 0.f;
                 for (int i_data = 0; i_data < n_data; ++i_data) {
                     d = delta[i_out * n_data + i_data];
                     dw += d * prev_output[i_in * n_data + i_data];
-                    db += d;
+                    if (i_in == n_in - 1) {
+                        db += d;
+                    }
                 }
                 weights[i_out * n_in + i_in] -= learning_rate * (dw / n_data);
             }
@@ -128,7 +130,7 @@ public:
         float out;
         for (int i_data = 0; i_data < n_data; ++i_data) {
             for (int i_out = 0; i_out < n_out; ++i_out) {
-                out = biases.at(i_out);
+                out = biases[i_out];
                 for (int i_in = 0; i_in < n_in; ++i_in) {
                     out += w[i_out * n_in + i_in] *
                            input[i_in * n_data + i_data];
