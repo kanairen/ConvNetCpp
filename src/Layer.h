@@ -66,6 +66,9 @@ protected:
         const int n_d = n_data;
         int i_out, i_in, i_data,idx_w;
 
+        // W ← W - ε * dw / N　のうち、ε/Nを先に計算してしまう
+        const float lr = learning_rate / n_d;
+
         for (i_out = 0; i_out < n_o; ++i_out) {
             db = 0.f;
             for (i_in = 0; i_in < n_i; ++i_in) {
@@ -77,14 +80,16 @@ protected:
                         db += d;
                     }
                 }
-                weights[i_out * n_in + i_in] -= learning_rate * (dw / n_data);
+                weights[i_out * n_i + i_in] -= lr * dw;
             }
-            biases[i_out] -= learning_rate * (db / n_data);
+            biases[i_out] -= lr * db;
         }
+
 #ifdef PROFILE_ENABLED
         std::cout << "Layer::update : " <<
         (float) (clock() - start) / CLOCKS_PER_SEC << "s" << std::endl;
 #endif
+
     }
 
 public:
