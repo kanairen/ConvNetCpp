@@ -27,29 +27,35 @@ public:
 #ifdef PROFILE_ENABLED
         time_t start = clock();
 #endif
+        const int n_d = n_data;
+        const int n_o = n_out;
+        const int n_i = n_in;
+        int i_data, i_out, i_in;
+
         float out, max_out, sum_exp;
-        for (int i_data = 0; i_data < n_data; ++i_data) {
+
+        for (i_data = 0; i_data < n_d; ++i_data) {
             sum_exp = 0.f;
             max_out = FLT_MIN;
-            for (int i_out = 0; i_out < n_out; ++i_out) {
+            for (i_out = 0; i_out < n_o; ++i_out) {
                 out = 0.f;
-                for (int i_in = 0; i_in < n_in; ++i_in) {
-                    out += weights[i_out * n_in + i_in] *
-                           input[i_in * n_data + i_data];
+                for (i_in = 0; i_in < n_i; ++i_in) {
+                    out += weights[i_out * n_i + i_in] *
+                           input[i_in * n_d + i_data];
                 }
                 out += biases[i_out];
                 if (out > max_out) {
                     max_out = out;
                 }
-                u[i_out * n_data + i_data] = out;
+                u[i_out * n_d + i_data] = out;
             }
-            for (int i_out = 0; i_out < n_out; ++i_out) {
-                z[i_out * n_data + i_data] = expf(
-                        u[i_out * n_data + i_data] - max_out);
-                sum_exp += z[i_out * n_data + i_data];
+            for (i_out = 0; i_out < n_o; ++i_out) {
+                z[i_out * n_d + i_data] = expf(
+                        u[i_out * n_d + i_data] - max_out);
+                sum_exp += z[i_out * n_d + i_data];
             }
-            for (int i_out = 0; i_out < n_out; ++i_out) {
-                z[i_out * n_data + i_data] /= sum_exp;
+            for (i_out = 0; i_out < n_o; ++i_out) {
+                z[i_out * n_d + i_data] /= sum_exp;
             }
         }
 #ifdef PROFILE_ENABLED

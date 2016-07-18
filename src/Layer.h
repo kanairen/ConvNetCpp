@@ -64,7 +64,7 @@ protected:
         const int n_i = n_in;
         const int n_o = n_out;
         const int n_d = n_data;
-        int i_out, i_in, i_data,idx_w;
+        int i_out, i_in, i_data, idx_w;
 
         // W ← W - ε * dw / N　のうち、ε/Nを先に計算してしまう
         const float lr = learning_rate / n_d;
@@ -76,7 +76,7 @@ protected:
                 for (i_data = 0; i_data < n_d; ++i_data) {
                     d = delta[i_out * n_d + i_data];
                     dw += d * prev_output[i_in * n_d + i_data];
-                    if (i_in == n_i - 1) {
+                    if (i_in == 0) {
                         db += d;
                     }
                 }
