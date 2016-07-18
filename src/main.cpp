@@ -127,14 +127,14 @@ int main(int argc, char *argv[]) {
     const unsigned int N_ITERATION = 1000;
     const unsigned int N_CLASS = 10;
 
-    mnist_conv_pool(argv, BATCH_SIZE, WIDTH, HEIGHT, C_IN, C_OUT, KERNEL_WIDTH,
-                    KERNEL_HEIGHT, STRIDE_X, STRIDE_Y, PADDING_X, PADDING_Y,
-                    N_CLASS, N_ITERATION, LEARNING_RATE);
+//    mnist_conv_pool(argv, BATCH_SIZE, WIDTH, HEIGHT, C_IN, C_OUT, KERNEL_WIDTH,
+//                    KERNEL_HEIGHT, STRIDE_X, STRIDE_Y, PADDING_X, PADDING_Y,
+//                    N_CLASS, N_ITERATION, LEARNING_RATE);
 //    mnist_conv(argv, BATCH_SIZE, WIDTH, HEIGHT, C_IN, C_OUT, KERNEL_WIDTH,
 //               KERNEL_HEIGHT, STRIDE_X, STRIDE_Y, PADDING_X, PADDING_Y, N_CLASS,
 //               N_ITERATION, LEARNING_RATE);
-//    mnist_full_connelct(argv, BATCH_SIZE, INPUT_SIZE, N_CLASS, N_ITERATION,
-//                        LEARNING_RATE);
+    mnist_full_connelct(argv, BATCH_SIZE, INPUT_SIZE, N_CLASS, N_ITERATION,
+                        LEARNING_RATE);
 
 
 }

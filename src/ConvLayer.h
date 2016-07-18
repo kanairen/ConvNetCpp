@@ -24,10 +24,9 @@ private:
     vector<float> h;
 
     // 入力画素(i, j)と重なるフィルタのインデックスを保持するベクトル
-    vector<vector<int>> t;
+    vector<int> t;
 
-    void update(const vector<vector<float>> &prev_output,
-                const float learning_rate) {
+    void update(const vector<float> &prev_output, const float learning_rate) {
 
         /*
          * フィルタ重み・バイアス値を更新する
@@ -36,19 +35,21 @@ private:
          * learning_rate : 学習率(0≦learning_rate≦1)
          */
 
-        float dw, db;
+        float dw, db, d;
 
         for (int i_out = 0; i_out < n_out; ++i_out) {
             for (int i_in = 0; i_in < n_in; ++i_in) {
                 dw = 0.f;
                 db = 0.f;
                 for (int i_data = 0; i_data < n_data; ++i_data) {
-                    dw += delta[i_out][i_data] * prev_output[i_in][i_data];
-                    db += delta[i_out][i_data];
+                    d = delta[i_out * n_data + i_data];
+                    dw += d * prev_output[i_in * n_data + i_data];
+                    db += d;
                 }
-                if (t[i_out][i_in] != ConvLayerConst::T_WEIGHT_DISABLED) {
+                if (t[i_out * n_in + i_in] !=
+                    ConvLayerConst::T_WEIGHT_DISABLED) {
                     // n_dataで割る必要はない？
-                    h[t[i_out][i_in]] -= learning_rate * dw;
+                    h[t[i_out * n_in + i_in]] -= learning_rate * dw;
                 }
             }
             biases[i_out] -= learning_rate * db / n_data;
@@ -69,8 +70,7 @@ public:
                           kh, sx, sy, px, py, activation, grad_activation,
                           false),
               h(vector<float>(kw * kh * c_in * c_out)),
-              t(vector<vector<int>>(n_out, vector<int>(
-                      n_in, ConvLayerConst::T_WEIGHT_DISABLED))) {
+              t(vector<int>(n_out * n_in, ConvLayerConst::T_WEIGHT_DISABLED)) {
 
         // 乱数生成器
         std::random_device rnd;
@@ -103,10 +103,10 @@ public:
                                        y * input_width + x +
                                        ky * input_width + kx;
 
-                                t[j_out][i_in] = co * c_in * kh * kw +
-                                                 ci * kh * kw +
-                                                 ky * kw +
-                                                 kx;
+                                t[j_out * n_in + i_in] = co * c_in * kh * kw +
+                                                         ci * kh * kw +
+                                                         ky * kw +
+                                                         kx;
                             }
                         }
 
@@ -119,7 +119,7 @@ public:
 
     }
 
-    const vector<vector<float>> &get_weights() {
+    const vector<float> &get_weights() {
 
         /*
          * 2D畳み込み版重み行列
@@ -127,10 +127,10 @@ public:
 
         for (int j = 0; j < n_out; ++j) {
             for (int i = 0; i < n_in; ++i) {
-                if (t[j][i] == ConvLayerConst::T_WEIGHT_DISABLED) {
-                    weights[j][i] = 0.f;
+                if (t[j * n_in + i] == ConvLayerConst::T_WEIGHT_DISABLED) {
+                    weights[j * n_in + i] = 0.f;
                 } else {
-                    weights[j][i] = h[t[j][i]];
+                    weights[j * n_in + i] = h[t[j * n_in + i]];
                 }
             }
         }

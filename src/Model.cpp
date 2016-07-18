@@ -4,8 +4,7 @@
 
 #include "Model.h"
 
-const vector<vector<float>> &Model::forward(
-        const vector<vector<float>> &inputs) {
+const vector<float> &Model::forward(const vector<float> &inputs) {
 
     /*
      * 全レイヤの順伝播
@@ -13,16 +12,15 @@ const vector<vector<float>> &Model::forward(
      * inputs : 入力データ行列
      */
 
-    const vector<vector<float>> *output = &inputs;
+    const vector<float> *output = &inputs;
     for (Layer *layer : layers) {
         output = &(layer->forward(*output));
     }
     return *output;
 }
 
-void Model::backward(const vector<vector<float>> &inputs,
-                     const vector<vector<float>> &last_delta,
-                     float learning_rate) {
+void Model::backward(const vector<float> &inputs,
+                     const vector<float> &last_delta, float learning_rate) {
 
     /*
      * 全レイヤの逆伝播＋学習パラメタ更新
@@ -41,9 +39,10 @@ void Model::backward(const vector<vector<float>> &inputs,
 //    }
 //#endif
 
-    const vector<vector<float>> *prev_output;
-    const vector<vector<float>> *next_weight = nullptr;
-    const vector<vector<float>> *next_delta = &last_delta;
+    const vector<float> *prev_output;
+    const vector<float> *next_weight = nullptr;
+    const vector<float> *next_delta = &last_delta;
+    unsigned int next_n_out = layers.back()->get_n_out();
 
     for (int i = layers.size() - 1; i >= 0; --i) {
 
@@ -52,17 +51,21 @@ void Model::backward(const vector<vector<float>> &inputs,
         layers[i]->backward(*next_weight,
                             *next_delta,
                             *prev_output,
+                            next_n_out,
                             learning_rate);
 
         next_weight = &layers[i]->get_weights();
 
         next_delta = &layers[i]->get_delta();
 
+        next_n_out = layers[i]->get_n_out();
+
     }
 
 }
 
-void Model::argmax(const vector<vector<float>> &y, vector<int> &predict) {
+void Model::argmax(const vector<float> &y, vector<int> &predict,
+                   const unsigned int n_out, const unsigned int n_data) {
 
     /*
      * 引数にとったベクトルy[i]中の最大値インデックスをpredict[i]に格納
@@ -80,12 +83,11 @@ void Model::argmax(const vector<vector<float>> &y, vector<int> &predict) {
 
     float max, tmp;
     int max_idx;
-    unsigned long y_size = y.size();
-    for (int i = 0; i < y[0].size(); ++i) {
-        max = y[0][i];
+    for (int i = 0; i < n_data; ++i) {
+        max = y[i];
         max_idx = 0;
-        for (int j = 1; j < y_size; ++j) {
-            tmp = y[j][i];
+        for (int j = 1; j < n_out; ++j) {
+            tmp = y[j * n_data + i];
             if (tmp > max) {
                 max = tmp;
                 max_idx = j;

@@ -21,7 +21,7 @@ public:
                           kh, kw, kh, px, py, iden, g_iden, false) { }
 
 
-    const vector<vector<float>> &forward(const vector<vector<float>> &input) {
+    const vector<float> &forward(const vector<float> &input) {
 
         /*
          * 入力の重み付き和を順伝播する関数
@@ -51,21 +51,21 @@ public:
                                            y * input_width + x +
                                            ky * input_width + kx;
 
-                                    p_value = input[i_in][i_data];
+                                    p_value = input[i_in * n_data + i_data];
 
                                     if (p_value > max) {
                                         max = p_value;
                                         max_idx = i_in;
                                     }
 
-                                    weights[j_out][i_in] = 0.f;
+                                    weights[j_out * n_in + i_in] = 0.f;
 
                                 }
                             }
 
-                            weights[j_out][max_idx] = 1.f;
-                            u[j_out][i_data] = max;
-                            z[j_out][i_data] = max;
+                            weights[j_out * n_in + max_idx] = 1.f;
+                            u[j_out * n_data + i_data] = max;
+                            z[j_out * n_data + i_data] = max;
 
                         }
                     }
@@ -77,9 +77,10 @@ public:
         return z;
     }
 
-    void backward(const vector<vector<float>> &next_weights,
-                  const vector<vector<float>> &next_delta,
-                  const vector<vector<float>> &prev_output,
+    void backward(const vector<float> &next_weights,
+                  const vector<float> &next_delta,
+                  const vector<float> &prev_output,
+                  const unsigned int next_n_out,
                   const float learning_rate) {
 
         /*
@@ -92,19 +93,17 @@ public:
          * learning_rate : 学習率(0≦learning_rate≦1)
          */
 
-
-        unsigned long next_n_out = next_weights.size();
         float d;
         for (int i_data = 0; i_data < n_data; ++i_data) {
             for (int i_out = 0; i_out < n_out; ++i_out) {
                 d = 0.f;
                 for (int i_n_out = 0; i_n_out < next_n_out; ++i_n_out) {
                     // デルタを導出
-                    d += next_weights[i_n_out][i_out] *
-                         next_delta[i_n_out][i_data];
+                    d += next_weights[i_n_out * n_out + i_out] *
+                         next_delta[i_n_out * n_data + i_data];
                 }
                 // 順伝播の活性化関数が恒等写像なので、活性化関数の導関数は使わない
-                delta[i_out][i_data] = d * u[i_out][i_data];
+                delta[i_out * n_data + i_data] = d * u[i_out * n_data + i_data];
             }
         }
 

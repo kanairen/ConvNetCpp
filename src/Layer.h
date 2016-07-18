@@ -19,25 +19,34 @@ class Layer {
      */
 
 protected:
-    unsigned int n_data;
-    unsigned int n_in;
-    unsigned int n_out;
+    unsigned int n_data; // データ数
+    unsigned int n_in; // 入力ユニット数
+    unsigned int n_out; // 出力ユニット数
 
-    vector<vector<float>> weights;
+    // 重み行列
+    vector<float> weights;
 
+    // バイアスベクトル
     vector<float> biases;
-    vector<vector<float>> delta;
 
-    vector<vector<float>> u;
-    vector<vector<float>> z;
+    // Backwardで用いるデルタ
+    vector<float> delta;
 
+    // データごとのForwardの重み付き和行列
+    vector<float> u;
+
+    // uの各要素に活性化関数を適用した行列
+    vector<float> z;
+
+    // 活性化関数
     float (*activation)(float);
 
+    // 活性化関数微分形
     float (*grad_activation)(float);
 
     Layer() = delete;
 
-    virtual void update(const vector<vector<float>> &prev_output,
+    virtual void update(const vector<float> &prev_output,
                         const float learning_rate) {
 
         /*
@@ -47,17 +56,18 @@ protected:
          * learning_rate : 学習率(0≦learning_rate≦1)
          */
 
-        float dw, db;
+        float dw, db, d;
 
         for (int i_out = 0; i_out < n_out; ++i_out) {
             for (int i_in = 0; i_in < n_in; ++i_in) {
                 dw = 0.f;
                 db = 0.f;
                 for (int i_data = 0; i_data < n_data; ++i_data) {
-                    dw += delta[i_out][i_data] * prev_output[i_in][i_data];
-                    db += delta[i_out][i_data];
+                    d = delta[i_out * n_data + i_data];
+                    dw += d * prev_output[i_in * n_data + i_data];
+                    db += d;
                 }
-                weights[i_out][i_in] -= learning_rate * (dw / n_data);
+                weights[i_out * n_in + i_in] -= learning_rate * (dw / n_data);
             }
             biases[i_out] -= learning_rate * (db / n_data);
         }
@@ -71,11 +81,11 @@ public:
           bool is_weight_init_enabled = true)
             : n_data(n_data), n_in(n_in), n_out(n_out),
               activation(activation), grad_activation(grad_activation),
-              weights(vector<vector<float>>(n_out, vector<float>(n_in, 0.f))),
+              weights(vector<float>(n_out * n_in, 0.f)),
               biases(vector<float>(n_out, 0.f)),
-              delta(vector<vector<float>>(n_out, vector<float>(n_data, 0.f))),
-              u(vector<vector<float>>(n_out, vector<float>(n_data, 0.f))),
-              z(vector<vector<float>>(n_out, vector<float>(n_data, 0.f))) {
+              delta(vector<float>(n_out * n_data, 0.f)),
+              u(vector<float>(n_out * n_data, 0.f)),
+              z(vector<float>(n_out * n_data, 0.f)) {
 
         if (is_weight_init_enabled) {
 
@@ -87,10 +97,8 @@ public:
                     sqrtf(6.f / (n_in + n_out)));
 
             // 重みパラメタの初期化
-            for (vector<float> &row : weights) {
-                for (float &w : row) {
-                    w = uniform(mt);
-                }
+            for (float &w : weights) {
+                w = uniform(mt);
             }
 
         }
@@ -101,31 +109,32 @@ public:
 
     virtual const unsigned int get_n_out() const { return n_out; }
 
-    virtual const vector<vector<float>> &get_delta() const { return delta; }
+    virtual const vector<float> &get_delta() const { return delta; }
 
-    virtual const vector<vector<float>> &get_z() const { return z; }
+    virtual const vector<float> &get_z() const { return z; }
 
-    virtual const vector<vector<float>> &get_weights() { return weights; }
+    virtual const vector<float> &get_weights() { return weights; }
 
-    virtual const vector<vector<float>> &forward(
-            const vector<vector<float>> &input) {
+    virtual const vector<float> &forward(const vector<float> &input) {
 
         /*
          * 入力の重み付き和を順伝播する関数
          *
-         * inputs : n_in行 n_data列 の入力データ
+         * input : n_in行 n_data列 の入力データ
          */
 
-        const vector<vector<float>> &w = get_weights();
+        const vector<float> &w = get_weights();
+
         float out;
         for (int i_data = 0; i_data < n_data; ++i_data) {
             for (int i_out = 0; i_out < n_out; ++i_out) {
-                out = biases[i_out];
+                out = biases.at(i_out);
                 for (int i_in = 0; i_in < n_in; ++i_in) {
-                    out += w[i_out][i_in] * input[i_in][i_data];
+                    out += w[i_out * n_in + i_in] *
+                           input[i_in * n_data + i_data];
                 }
-                u[i_out][i_data] = out;
-                z[i_out][i_data] = activation(out);
+                u[i_out * n_data + i_data] = out;
+                z[i_out * n_data + i_data] = activation(out);
             }
         }
 
@@ -133,9 +142,10 @@ public:
     }
 
 
-    virtual void backward(const vector<vector<float>> &next_weights,
-                          const vector<vector<float>> &next_delta,
-                          const vector<vector<float>> &prev_output,
+    virtual void backward(const vector<float> &next_weights,
+                          const vector<float> &next_delta,
+                          const vector<float> &prev_output,
+                          const unsigned int next_n_out,
                           const float learning_rate) {
 
         /*
@@ -147,24 +157,21 @@ public:
          * learning_rate : 学習率(0≦learning_rate≦1)
          */
 
-        unsigned long next_n_out = next_weights.size();
+        std::fill(delta.begin(), delta.end(), 0.f);
 
         // キャッシュヒット率を上げるため、i_n_outループを一番外側に持ってきている
-        for (int i_out = 0; i_out < n_out; ++i_out) {
-            std::fill(delta[i_out].begin(), delta[i_out].end(), 0.f);
-        }
-
         for (int i_n_out = 0; i_n_out < next_n_out; ++i_n_out) {
             for (int i_out = 0; i_out < n_out; ++i_out) {
                 for (int i_data = 0; i_data < n_data; ++i_data) {
                     // デルタを導出
-                    delta[i_out][i_data] += next_weights[i_n_out][i_out] *
-                                            next_delta[i_n_out][i_data] *
-                                            grad_activation(u[i_out][i_data]);
+                    delta[i_out * n_data + i_data] +=
+                            next_weights[i_n_out * n_out + i_out] *
+                            next_delta[i_n_out * n_data + i_data] *
+                            grad_activation(u[i_out * n_data + i_data]);
                 }
             }
         }
-        
+
         // パラメタ更新
         update(prev_output, learning_rate);
 

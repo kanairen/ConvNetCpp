@@ -41,14 +41,10 @@ void optimize(DataSet<X, Y> &data,
     cout << "n_batch_test : " << n_batch_test << endl;
 
     // 分割データセット配列
-    vector<vector<vector<X>>> x_trains(n_batch_train,
-                                       vector<vector<X>>(data.xv_size(),
-                                                         vector<X>(
-                                                                 batch_size)));
-    vector<vector<vector<X>>> x_tests(n_batch_test,
-                                      vector<vector<X>>(data.xv_size(),
-                                                        vector<X>(
-                                                                batch_size)));
+    vector<vector<X>> x_trains(n_batch_train,
+                               vector<X>(data.xv_size() * batch_size));
+    vector<vector<X>> x_tests(n_batch_test,
+                              vector<X>(data.xv_size() * batch_size));
     vector<vector<Y>> y_trains(n_batch_train, vector<Y>(batch_size));
     vector<vector<Y>> y_tests(n_batch_test, vector<Y>(batch_size));
 
@@ -57,7 +53,8 @@ void optimize(DataSet<X, Y> &data,
 
         for (int k = 0; k < batch_size; ++k) {
             for (int j = 0; j < data.xv_size(); ++j) {
-                x_trains[i][j][k] = data.x_train[j][i * batch_size + k];
+                x_trains[i][j * batch_size + k] = data.x_train[j][
+                        i * batch_size + k];
             }
             y_trains[i][k] = data.y_train[i * batch_size + k];
         }
@@ -66,7 +63,8 @@ void optimize(DataSet<X, Y> &data,
             unsigned long idx = i / (n_batch_train / n_batch_test);
             for (int k = 0; k < batch_size; ++k) {
                 for (int j = 0; j < data.xv_size(); ++j) {
-                    x_tests[idx][j][k] = data.x_test[j][idx * batch_size + k];
+                    x_tests[idx][j * batch_size + k] = data.x_test[j][
+                            idx * batch_size + k];
                 }
                 y_tests[idx][k] = data.y_test[idx * batch_size + k];
             }
@@ -78,7 +76,7 @@ void optimize(DataSet<X, Y> &data,
     Model model(layers, batch_size);
 
     // softmaxの結果を格納する配列
-    vector<vector<X>> sm_train(n_class, vector<X>(batch_size));
+    vector<X> sm_train(n_class * batch_size);
 
     // argmaxの結果を格納する配列
     vector<Y> pred_train(batch_size);
@@ -104,9 +102,9 @@ void optimize(DataSet<X, Y> &data,
 
             train_start = clock();
 
-            const vector<vector<X>> &train_output = model.forward(x_trains[j]);
+            const vector<X> &train_output = model.forward(x_trains[j]);
 
-            model.argmax(train_output, pred_train);
+            model.argmax(train_output, pred_train, n_class, batch_size);
 
             batch_error_train = model.error(pred_train, y_trains[j]);
             average_error_train += batch_error_train;
@@ -115,13 +113,13 @@ void optimize(DataSet<X, Y> &data,
             cout << "average error(training data):" <<
             average_error_train / (j + 1) << "\n";
 
-
             // 出力層デルタ
             for (int k = 0; k < train_output.size(); ++k) {
                 for (int l = 0; l < batch_size; ++l) {
-                    sm_train[k][l] = train_output[k][l];
-                    if(k == y_trains[j][l]){
-                        sm_train[k][l] -= 1.f;
+                    sm_train[k * batch_size + l] = train_output[k * batch_size +
+                                                                l];
+                    if (k == y_trains[j][l]) {
+                        sm_train[k * batch_size + l] -= 1.f;
                     }
                 }
             }
@@ -139,10 +137,9 @@ void optimize(DataSet<X, Y> &data,
 
                 test_start = clock();
 
-                const vector<vector<X>> &test_output = model.forward(
-                        x_tests[idx]);
+                const vector<X> &test_output = model.forward(x_tests[idx]);
 
-                model.argmax(test_output, pred_test);
+                model.argmax(test_output, pred_test, n_class, batch_size);
 
                 batch_error_test = model.error(pred_test, y_tests[idx]);
                 average_error_test += batch_error_test;

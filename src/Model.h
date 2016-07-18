@@ -13,23 +13,23 @@ using std::vector;
 
 class Model {
 private:
-    vector<Layer*> &layers;
-    vector<vector<float>> out_forward;
+    vector<Layer *> &layers;
+    vector<float> out_forward;
 public:
-    Model(vector<Layer*> &layers, unsigned int n_data) :
+    Model(vector<Layer *> &layers, unsigned int n_data) :
             layers(layers),
-            out_forward(vector<vector<float>>(layers.back()->get_n_out(),
-                                              vector<float>(n_data, 0.f))) { };
+            out_forward(vector<float>(layers.back()->get_n_out() * n_data,
+                                      0.f)) { };
 
     ~Model() { };
 
-    const vector<vector<float>> &forward(const vector<vector<float>> &inputs);
+    const vector<float> &forward(const vector<float> &inputs);
 
-    void backward(const vector<vector<float>> &inputs,
-                  const vector<vector<float>> &last_delta, float learning_rate);
+    void backward(const vector<float> &inputs,
+                  const vector<float> &last_delta, float learning_rate);
 
-    static void argmax(const vector<vector<float>> &y,
-                       vector<int> &predict);
+    static void argmax(const vector<float> &y, vector<int> &predict,
+                       const unsigned int n_out, const unsigned int n_data);
 
     static float error(const vector<int> &predict, const vector<int> &answer);
 
