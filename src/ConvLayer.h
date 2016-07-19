@@ -48,15 +48,15 @@ private:
 
         for (i_out = 0; i_out < n_o; ++i_out) {
             for (i_in = 0; i_in < n_i; ++i_in) {
-                dw = 0.f;
-                db = 0.f;
-                for (i_data = 0; i_data < n_d; ++i_data) {
-                    d = delta[i_out * n_d + i_data];
-                    dw += d * prev_output[i_in * n_d + i_data];
-                    db += d;
-                }
                 if (t[i_out * n_i + i_in] !=
                     ConvLayerConst::T_WEIGHT_DISABLED) {
+                    dw = 0.f;
+                    db = 0.f;
+                    for (i_data = 0; i_data < n_d; ++i_data) {
+                        d = delta[i_out * n_d + i_data];
+                        dw += d * prev_output[i_in * n_d + i_data];
+                        db += d;
+                    }
                     // n_dataで割る必要はない？
                     h[t[i_out * n_i + i_in]] -= learning_rate * dw;
                 }
