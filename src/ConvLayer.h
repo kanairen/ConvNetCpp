@@ -41,22 +41,27 @@ private:
 
         float dw, db, d;
 
-        for (int i_out = 0; i_out < n_out; ++i_out) {
-            for (int i_in = 0; i_in < n_in; ++i_in) {
+        const int n_o = n_out;
+        const int n_i = n_in;
+        const int n_d = n_data;
+        int i_out, i_in, i_data;
+
+        for (i_out = 0; i_out < n_o; ++i_out) {
+            for (i_in = 0; i_in < n_i; ++i_in) {
                 dw = 0.f;
                 db = 0.f;
-                for (int i_data = 0; i_data < n_data; ++i_data) {
-                    d = delta[i_out * n_data + i_data];
-                    dw += d * prev_output[i_in * n_data + i_data];
+                for (i_data = 0; i_data < n_d; ++i_data) {
+                    d = delta[i_out * n_d + i_data];
+                    dw += d * prev_output[i_in * n_d + i_data];
                     db += d;
                 }
-                if (t[i_out * n_in + i_in] !=
+                if (t[i_out * n_i + i_in] !=
                     ConvLayerConst::T_WEIGHT_DISABLED) {
                     // n_dataで割る必要はない？
-                    h[t[i_out * n_in + i_in]] -= learning_rate * dw;
+                    h[t[i_out * n_i + i_in]] -= learning_rate * dw;
                 }
             }
-            biases[i_out] -= learning_rate * db / n_data;
+            biases[i_out] -= learning_rate * db / n_d;
         }
 
 #ifdef PROFILE_ENABLED
