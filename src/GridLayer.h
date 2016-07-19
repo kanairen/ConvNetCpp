@@ -100,7 +100,7 @@ public:
         for (i_out = 0; i_out < n_o; ++i_out) {
             for (i_in = 0; i_in < n_i; ++i_in) {
                 w_elem = w[i_out * n_i + i_in];
-                if (w_elem * w_elem > 0) {
+                if (w_elem != 0) {
                     for (i_data = 0; i_data < n_d; ++i_data) {
                         out = biases[i_out] +
                               w_elem * input[i_in * n_d + i_data];
