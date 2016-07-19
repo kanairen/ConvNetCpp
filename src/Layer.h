@@ -208,17 +208,25 @@ public:
         time_t start = clock();
 #endif
 
+        const int n_o = n_out;
+        const int n_d = n_data;
+        int i_n_out, i_out, i_data;
+        float next_w;
+
         std::fill(delta.begin(), delta.end(), 0.f);
 
         // キャッシュヒット率を上げるため、i_n_outループを一番外側に持ってきている
-        for (int i_n_out = 0; i_n_out < next_n_out; ++i_n_out) {
-            for (int i_out = 0; i_out < n_out; ++i_out) {
-                for (int i_data = 0; i_data < n_data; ++i_data) {
-                    // デルタを導出
-                    delta[i_out * n_data + i_data] +=
-                            next_weights[i_n_out * n_out + i_out] *
-                            next_delta[i_n_out * n_data + i_data] *
-                            grad_activation(u[i_out * n_data + i_data]);
+        for (i_n_out = 0; i_n_out < next_n_out; ++i_n_out) {
+            for (i_out = 0; i_out < n_o; ++i_out) {
+                next_w = next_weights[i_n_out * n_o + i_out];
+                if (next_w != 0) {
+                    for (i_data = 0; i_data < n_d; ++i_data) {
+                        // デルタを導出
+                        delta[i_out * n_d + i_data] +=
+                                next_w *
+                                next_delta[i_n_out * n_d + i_data] *
+                                grad_activation(u[i_out * n_d + i_data]);
+                    }
                 }
             }
         }
