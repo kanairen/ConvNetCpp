@@ -46,6 +46,9 @@ private:
         const int n_d = n_data;
         int i_out, i_in, i_data;
 
+        // W ← W - ε * dw / N　のうち、ε/Nを先に計算してしまう
+        const float lr = learning_rate / n_d;
+
         for (i_out = 0; i_out < n_o; ++i_out) {
             for (i_in = 0; i_in < n_i; ++i_in) {
                 if (t[i_out * n_i + i_in] !=
@@ -61,7 +64,7 @@ private:
                     h[t[i_out * n_i + i_in]] -= learning_rate * dw;
                 }
             }
-            biases[i_out] -= learning_rate * db / n_d;
+            biases[i_out] -= lr * db;
         }
 
 #ifdef PROFILE_ENABLED
