@@ -153,11 +153,16 @@ public:
         const int n_i = n_in;
         int i_data, i_out, i_in, idx_output;
 
+        float w_elem,input_elem;
+
         for (i_data = 0; i_data < n_d; ++i_data) {
             for (i_out = 0; i_out < n_o; ++i_out) {
                 out = biases[i_out];
                 for (i_in = 0; i_in < n_i; ++i_in) {
-                    out += w[i_out * n_i + i_in] * input[i_in * n_d + i_data];
+                    w_elem = w[i_out * n_i + i_in];
+                    if (w_elem * w_elem > 0) {
+                        out += w_elem * input[i_in * n_d + i_data];
+                    }
                 }
                 idx_output = i_out * n_d + i_data;
                 u[idx_output] = out;
