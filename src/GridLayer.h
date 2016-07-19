@@ -72,6 +72,53 @@ public:
 
     virtual unsigned int get_output_height() { return output_height; }
 
+    const vector<float> &forward(const vector<float> &input) {
+
+        /*
+         * 入力の重み付き和を順伝播する関数
+         *
+         * input : n_in行 n_data列 の入力データ
+         */
+
+#ifdef PROFILE_ENABLED
+        time_t start = clock();
+#endif
+
+        const vector<float> &w = get_weights();
+
+        float out;
+        const int n_d = n_data;
+        const int n_o = n_out;
+        const int n_i = n_in;
+        int i_data, i_out, i_in, idx_output;
+
+        float w_elem;
+
+        std::fill(u.begin(), u.end(), 0.f);
+        std::fill(z.begin(), z.end(), 0.f);
+
+        for (i_out = 0; i_out < n_o; ++i_out) {
+            for (i_in = 0; i_in < n_i; ++i_in) {
+                w_elem = w[i_out * n_i + i_in];
+                if (w_elem * w_elem > 0) {
+                    for (i_data = 0; i_data < n_d; ++i_data) {
+                        out = biases[i_out] +
+                              w_elem * input[i_in * n_d + i_data];
+                        idx_output = i_out * n_d + i_data;
+                        u[idx_output] += out;
+                        z[idx_output] += activation(out);
+                    }
+                }
+            }
+        }
+
+#ifdef PROFILE_ENABLED
+        std::cout << "Layer::forward : " <<
+        (float) (clock() - start) / CLOCKS_PER_SEC << "s" << std::endl;
+#endif
+
+        return z;
+    }
 };
 
 
