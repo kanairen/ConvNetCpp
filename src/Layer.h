@@ -64,7 +64,7 @@ protected:
         const int n_i = n_in;
         const int n_o = n_out;
         const int n_d = n_data;
-        int i_out, i_in, i_data, idx_w;
+        int i_out, i_in, i_data;
 
         // W ← W - ε * dw / N　のうち、ε/Nを先に計算してしまう
         const float lr = learning_rate / n_d;
@@ -145,21 +145,36 @@ public:
         time_t start = clock();
 #endif
 
+        constexpr int out_arr_size = 4;
+
         const vector<float> &w = get_weights();
 
-        float out;
+        float out, bias;
+        float out_arr[out_arr_size];
         const int n_d = n_data;
         const int n_o = n_out;
         const int n_i = n_in;
         int i_data, i_out, i_in, idx_output;
+        int out_ni = 0, out_nd = 0;
 
-        for (i_data = 0; i_data < n_d; ++i_data) {
-            for (i_out = 0; i_out < n_o; ++i_out) {
-                out = biases[i_out];
-                for (i_in = 0; i_in < n_i; ++i_in) {
-                    out += w[i_out * n_i + i_in] * input[i_in * n_d + i_data];
+        for (i_out = 0; i_out < n_o; ++i_out) {
+            out_ni += n_i;
+            out_nd += n_d;
+            bias = biases[i_out];
+            for (i_data = 0; i_data < n_d; ++i_data) {
+                out = bias;
+                for (int i = 0; i < out_arr_size; ++i) {
+                    out_arr[i] = 0;
                 }
-                idx_output = i_out * n_d + i_data;
+                for (i_in = 0; i_in < n_i; i_in += out_arr_size) {
+//                    out += w[out_ni + i_in] * input[i_in * n_d + i_data];
+                    for (int i = 0; i < out_arr_size; ++i) {
+                        out_arr[i] += w[out_ni + i_in + i] *
+                                      input[(i_in + i) * n_d + i_data];
+                    }
+                }
+                out += out_arr[0] + out_arr[1] + out_arr[2] + out_arr[3];
+                idx_output = out_nd + i_data;
                 u[idx_output] = out;
                 z[idx_output] = activation(out);
             }
