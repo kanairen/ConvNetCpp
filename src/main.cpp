@@ -30,7 +30,8 @@ void mnist_full_connelct(char *argv[],
     optimize(mnist, v, learning_rate, batch_size, n_iter, n_class);
 
     // release
-    delete (layer_1);
+    delete layer_1;
+    delete layer_2;
 }
 
 void mnist_conv(char *argv[], unsigned int batch_size,
@@ -60,7 +61,8 @@ void mnist_conv(char *argv[], unsigned int batch_size,
     optimize(mnist, v, learning_rate, batch_size, n_iter, n_class);
 
     // release
-    delete (layer_1);
+    delete layer_1;
+    delete layer_2;
 
 }
 
@@ -95,9 +97,9 @@ void mnist_conv_pool(char *argv[], unsigned int batch_size,
     optimize(mnist, v, learning_rate, batch_size, n_iter, n_class);
 
     // release
-    delete (layer_1);
-    delete (layer_2);
-    delete (layer_3);
+    delete layer_1;
+    delete layer_2;
+    delete layer_3;
 
 }
 
