@@ -157,12 +157,14 @@ public:
         int i_data, i_out, i_in, idx_output;
         int out_ni = 0, out_nd = 0;
 
+
         for (i_out = 0; i_out < n_o; ++i_out) {
             out_ni += n_i;
             out_nd += n_d;
             bias = biases[i_out];
             for (i_data = 0; i_data < n_d; ++i_data) {
                 out = bias;
+
                 for (int i = 0; i < out_arr_size; ++i) {
                     out_arr[i] = 0;
                 }
