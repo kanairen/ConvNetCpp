@@ -153,13 +153,13 @@ void mnist_conv_pool(string f_x_train, string f_x_test,
 
 }
 
-typedef void (*func_void)(string, string, string, string);
+typedef void (*func_mnist)(string, string, string, string);
 
 
 // コマンドライン引数にmnistへのパスを渡す
 int main(int argc, char *argv[]) {
 
-    std::map<string, func_void> functions;
+    std::map<string, func_mnist> functions;
     functions["full_connect"] = mnist_full_connect;
     functions["conv"] = mnist_conv;
     functions["conv_pool"] = mnist_conv_pool;
