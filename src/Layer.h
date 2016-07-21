@@ -10,7 +10,12 @@
 #include <iostream>
 #include <vector>
 
+#include <Eigen/Core>
+
 using std::vector;
+
+using Eigen::MatrixXf;
+using Eigen::VectorXf;
 
 class Layer {
 
@@ -245,5 +250,91 @@ public:
 
 
 };
+
+
+class Layer_ {
+
+    /*
+     * ニューラルネットワークの全結合クラス
+     */
+
+protected:
+
+    unsigned int n_data; // データ数
+    unsigned int n_in; // 入力ユニット数
+    unsigned int n_out; // 出力ユニット数
+
+    // 重み行列
+    MatrixXf weights;
+
+    // バイアスベクトル
+    VectorXf biases;
+
+    // Backwardで用いるデルタ
+    MatrixXf delta;
+
+    // データごとのForwardの重み付き和行列
+    MatrixXf u;
+
+    // uの各要素に活性化関数を適用した行列
+    MatrixXf z;
+
+    // 活性化関数
+    float (*activation)(float);
+
+    // 活性化関数微分形
+    float (*grad_activation)(float);
+
+    Layer_() = delete;
+
+public:
+
+    Layer_(unsigned int n_data, unsigned int n_in, unsigned int n_out,
+           float (*activation)(float), float (*grad_activation)(float),
+           bool is_weight_init_enabled = true)
+            : n_data(n_data), n_in(n_in), n_out(n_out),
+              activation(activation), grad_activation(grad_activation),
+              weights(MatrixXf::Zero(n_out, n_in)),
+              biases(VectorXf::Zero(n_out)),
+              delta(MatrixXf::Zero(n_out, n_data)),
+              u(MatrixXf::Zero(n_out, n_data)),
+              z(MatrixXf::Zero(n_out, n_data)) {
+
+        if (is_weight_init_enabled) {
+
+            // 乱数生成器
+            std::random_device rnd;
+            std::mt19937 mt(rnd());
+            std::uniform_real_distribution<float> uniform(
+                    -sqrtf(6.f / (n_in + n_out)),
+                    sqrtf(6.f / (n_in + n_out)));
+
+            // 重みパラメタの初期化
+            for (int j = 0; j < n_in; ++j) {
+                for (int i = 0; i < n_out; ++i) {
+                    weights(i, j) = uniform(mt);
+                }
+            }
+
+        }
+
+    }
+
+
+    virtual ~Layer_() { };
+
+    virtual const unsigned int get_n_out() const { return n_out; }
+
+    virtual const MatrixXf &get_delta() const { return delta; }
+
+    virtual const MatrixXf &get_z() const { return z; }
+
+    virtual const MatrixXf &get_weights() { return weights; }
+
+    virtual const VectorXf &get_biases() { return biases; }
+
+
+};
+
 
 #endif //CONVNETCPP_ABSTRACTLAYER_H
