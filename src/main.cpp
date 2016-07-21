@@ -2,6 +2,8 @@
 // Created by kanairen on 2016/06/15.
 //
 
+#include <map>
+
 #include "config.h"
 #include "MNIST.h"
 #include "SoftMaxLayer.h"
@@ -12,109 +14,27 @@
 
 #ifdef CONV_NET_CPP_DEBUG
 
-void mnist_full_connelct(char *argv[],
-                         unsigned int batch_size,
-                         unsigned int input_size,
-                         unsigned int n_class,
-                         unsigned int n_iter,
-                         float learning_rate) {
-
-    // mnist
-    MNIST mnist(argv[1], argv[2], argv[3], argv[4]);
-
-    Layer *layer_1 = new Layer(batch_size, input_size, 10000, iden, g_iden);
-    Layer *layer_2 = new SoftMaxLayer(batch_size, layer_1->get_n_out(),
-                                      n_class);
-    vector<Layer *> v{layer_1, layer_2};
-
-    // optimize
-    optimize(mnist, v, learning_rate, batch_size, n_iter, n_class);
-
-    // release
-    delete layer_1;
-    delete layer_2;
-}
-
-void mnist_conv(char *argv[], unsigned int batch_size,
-                unsigned int input_width, unsigned int input_height,
-                unsigned int c_in, unsigned int c_out,
-                unsigned int kw, unsigned int kh,
-                unsigned int sx, unsigned int sy,
-                unsigned int px, unsigned int py,
-                unsigned int n_class, unsigned int n_iter,
-                float learning_rate) {
-    // mnist
-    MNIST mnist(argv[1], argv[2], argv[3], argv[4]);
-
-    Layer *layer_1 = new ConvLayer2d(batch_size,
-                                     input_width, input_height,
-                                     c_in, c_out, kw, kh, sx, sy, px, py,
-                                     iden, g_iden);
-
-    Layer *layer_2 = new SoftMaxLayer(batch_size, layer_1->get_n_out(),
-                                      n_class);
-
-    vector<Layer *> v{layer_1, layer_2};
-
-    std::cout << "conv:n_out:" << layer_1->get_n_out() << std::endl;
-
-    // optimize
-    optimize(mnist, v, learning_rate, batch_size, n_iter, n_class);
-
-    // release
-    delete layer_1;
-    delete layer_2;
-
-}
-
-
-void mnist_conv_pool(char *argv[], unsigned int batch_size,
-                     unsigned int input_width, unsigned int input_height,
-                     unsigned int c_in, unsigned int c_out,
-                     unsigned int kw, unsigned int kh,
-                     unsigned int sx, unsigned int sy,
-                     unsigned int px, unsigned int py,
-                     unsigned int n_class, unsigned int n_iter,
-                     float learning_rate) {
-    // mnist
-    MNIST mnist(argv[1], argv[2], argv[3], argv[4]);
-
-    GridLayer2d *layer_1 = new ConvLayer2d(batch_size,
-                                           input_width, input_height,
-                                           c_in, c_out, kw, kh, sx, sy, px, py,
-                                           iden, g_iden);
-
-    Layer *layer_2 = new MaxPoolLayer2d(batch_size,
-                                        layer_1->get_output_width(),
-                                        layer_1->get_output_height(),
-                                        c_out, kw, kh, px, py);
-
-    Layer *layer_3 = new SoftMaxLayer(batch_size, layer_2->get_n_out(),
-                                      n_class);
-
-    vector<Layer *> v{layer_1, layer_2, layer_3};
-
-    // optimize
-    optimize(mnist, v, learning_rate, batch_size, n_iter, n_class);
-
-    // release
-    delete layer_1;
-    delete layer_2;
-    delete layer_3;
-
-}
-
-// コマンドライン引数にmnistへのパスを渡す
-int main(int argc, char *argv[]) {
+namespace cnc {
 
     const float LEARNING_RATE = 0.01f;
 
     const unsigned int BATCH_SIZE = 25;
 
-    const unsigned int WIDTH = 28;
-    const unsigned int HEIGHT = 28;
-    const unsigned int INPUT_SIZE = WIDTH * HEIGHT;
+    const unsigned int MNIST_WIDTH = 28;
+    const unsigned int MNIST_HEIGHT = 28;
+    const unsigned int INPUT_SIZE = MNIST_WIDTH * MNIST_HEIGHT;
 
+    const unsigned int N_ITERATION = 1000;
+    const unsigned int N_CLASS = 10;
+
+    // full connect layer
+    const unsigned int N_HIDDEN_UNITS = 10000;
+
+    float (*const LAYER_ACTIVATION)(float) = iden;
+
+    float (*const LAYER_GRAD_ACTIVATION)(float) = g_iden;
+
+    // grid layer
     const unsigned int C_IN = 1;
     const unsigned int C_OUT = 16;
 
@@ -127,18 +47,142 @@ int main(int argc, char *argv[]) {
     const unsigned int PADDING_X = 0;
     const unsigned int PADDING_Y = 0;
 
-    const unsigned int N_ITERATION = 1000;
-    const unsigned int N_CLASS = 10;
+    float (*const CONV_ACTIVATION)(float) = iden;
+
+    float (*const CONV_GRAD_ACTIVATION)(float) = g_iden;
 
 
-//    mnist_conv_pool(argv, BATCH_SIZE, WIDTH, HEIGHT, C_IN, C_OUT, KERNEL_WIDTH,
-//                    KERNEL_HEIGHT, STRIDE_X, STRIDE_Y, PADDING_X, PADDING_Y,
-//                    N_CLASS, N_ITERATION, LEARNING_RATE);
-//    mnist_conv(argv, BATCH_SIZE, WIDTH, HEIGHT, C_IN, C_OUT, KERNEL_WIDTH,
-//               KERNEL_HEIGHT, STRIDE_X, STRIDE_Y, PADDING_X, PADDING_Y, N_CLASS,
-//               N_ITERATION, LEARNING_RATE);
-    mnist_full_connelct(argv, BATCH_SIZE, INPUT_SIZE, N_CLASS, N_ITERATION,
-                        LEARNING_RATE);
+};
+
+void mnist_full_connect(string f_x_train, string f_x_test,
+                        string f_y_train, string f_y_test) {
+
+    // mnist
+    MNIST mnist(f_x_train, f_x_test, f_y_train, f_y_test);
+
+    Layer *layer_1 = new Layer(cnc::BATCH_SIZE,
+                               cnc::INPUT_SIZE,
+                               cnc::N_HIDDEN_UNITS,
+                               cnc::LAYER_ACTIVATION,
+                               cnc::LAYER_GRAD_ACTIVATION);
+
+    Layer *layer_2 = new SoftMaxLayer(cnc::BATCH_SIZE,
+                                      layer_1->get_n_out(),
+                                      cnc::N_CLASS);
+
+    vector<Layer *> v{layer_1, layer_2};
+
+    // optimize
+    optimize(mnist, v, cnc::LEARNING_RATE, cnc::BATCH_SIZE,
+             cnc::N_ITERATION, cnc::N_CLASS);
+
+    // release
+    delete layer_1;
+    delete layer_2;
+}
+
+void mnist_conv(string f_x_train, string f_x_test,
+                string f_y_train, string f_y_test) {
+    // mnist
+    MNIST mnist(f_x_train, f_x_test, f_y_train, f_y_test);
+
+    Layer *layer_1 = new ConvLayer2d(cnc::BATCH_SIZE,
+                                     cnc::MNIST_WIDTH, cnc::MNIST_HEIGHT,
+                                     cnc::C_IN, cnc::C_OUT,
+                                     cnc::KERNEL_WIDTH, cnc::KERNEL_HEIGHT,
+                                     cnc::STRIDE_X, cnc::STRIDE_Y,
+                                     cnc::PADDING_X, cnc::PADDING_Y,
+                                     cnc::CONV_ACTIVATION,
+                                     cnc::CONV_GRAD_ACTIVATION);
+
+    Layer *layer_2 = new SoftMaxLayer(cnc::BATCH_SIZE,
+                                      layer_1->get_n_out(),
+                                      cnc::N_CLASS);
+
+    vector<Layer *> v{layer_1, layer_2};
+
+    std::cout << "conv:n_out:" << layer_1->get_n_out() << std::endl;
+
+    // optimize
+    optimize(mnist, v, cnc::LEARNING_RATE, cnc::BATCH_SIZE, cnc::N_ITERATION,
+             cnc::N_CLASS);
+
+    // release
+    delete layer_1;
+    delete layer_2;
+
+}
+
+
+void mnist_conv_pool(string f_x_train, string f_x_test,
+                     string f_y_train, string f_y_test) {
+    // mnist
+    MNIST mnist(f_x_train, f_x_test, f_y_train, f_y_test);
+
+    GridLayer2d *layer_1 = new ConvLayer2d(cnc::BATCH_SIZE,
+                                           cnc::MNIST_WIDTH, cnc::MNIST_HEIGHT,
+                                           cnc::C_IN, cnc::C_OUT,
+                                           cnc::KERNEL_WIDTH,
+                                           cnc::KERNEL_HEIGHT,
+                                           cnc::STRIDE_X, cnc::STRIDE_Y,
+                                           cnc::PADDING_X, cnc::PADDING_Y,
+                                           cnc::CONV_ACTIVATION,
+                                           cnc::CONV_GRAD_ACTIVATION);
+
+    Layer *layer_2 = new MaxPoolLayer2d(cnc::BATCH_SIZE,
+                                        layer_1->get_output_width(),
+                                        layer_1->get_output_height(),
+                                        cnc::C_OUT,
+                                        cnc::KERNEL_WIDTH, cnc::KERNEL_HEIGHT,
+                                        cnc::PADDING_X, cnc::PADDING_Y);
+
+    Layer *layer_3 = new SoftMaxLayer(cnc::BATCH_SIZE,
+                                      layer_2->get_n_out(),
+                                      cnc::N_CLASS);
+
+    vector<Layer *> v{layer_1, layer_2, layer_3};
+
+    // optimize
+    optimize(mnist, v, cnc::LEARNING_RATE, cnc::BATCH_SIZE, cnc::N_ITERATION,
+             cnc::N_CLASS);
+
+    // release
+    delete layer_1;
+    delete layer_2;
+    delete layer_3;
+
+}
+
+typedef void (*func_void)(string, string, string, string);
+
+
+// コマンドライン引数にmnistへのパスを渡す
+int main(int argc, char *argv[]) {
+
+    std::map<string, func_void> functions;
+    functions["full_connect"] = mnist_full_connect;
+    functions["conv"] = mnist_conv;
+    functions["conv_pool"] = mnist_conv_pool;
+
+    if (argc < 5) {
+        std::cerr << "The number of command line arguments is incorrect." <<
+        std::endl;
+        exit(1);
+    }
+
+    string function_name = argv[1];
+
+    string f_x_train = argv[2];
+    string f_x_test = argv[3];
+    string f_y_train = argv[4];
+    string f_y_test = argv[5];
+
+    if (functions.find(function_name) == functions.end()) {
+        std::cerr << "function name is incorrect." << std::endl;
+        exit(1);
+    } else {
+        functions[function_name](f_x_train, f_x_test, f_y_train, f_y_test);
+    }
 
 
 }
