@@ -354,10 +354,9 @@ public:
         const MatrixXf &w = get_weights();
 
         u = (w * input).colwise() + biases;
-        z = u;
         for (int j = 0; j < z.cols(); ++j) {
             for (int i = 0; i < z.rows(); ++i) {
-                z(i, j) = activation(z(i, j));
+                z(i, j) = activation(u(i, j));
             }
         }
 
