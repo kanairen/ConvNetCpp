@@ -4,9 +4,10 @@
 
 #include "TestLayer.h"
 
-int main(){
+int main() {
 
     // test Layer
     test_init();
     test_forward();
+    test_backward();
 }

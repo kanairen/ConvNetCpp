@@ -290,6 +290,35 @@ protected:
 
     Layer_() = delete;
 
+
+    virtual void update(const MatrixXf &prev_output,
+                        const float learning_rate) {
+
+        /*
+         * 学習パラメタの更新を行う関数
+         *
+         * prev_output : 前層の出力
+         * learning_rate : 学習率(0≦learning_rate≦1)
+         */
+
+#ifdef PROFILE_ENABLED
+        time_t start = clock();
+#endif
+
+        // W ← W - ε * dw / N　のうち、ε/Nを先に計算してしまう
+        const float lr = learning_rate / n_data;
+
+        weights.array() -= (delta * prev_output.transpose()).array() * lr;
+
+        biases -= delta * ones_vec * lr;
+
+#ifdef PROFILE_ENABLED
+        std::cout << "Layer::update : " <<
+        (float) (clock() - start) / CLOCKS_PER_SEC << "s" << std::endl;
+#endif
+
+    }
+
 public:
 
     Layer_(unsigned int n_data, unsigned int n_in, unsigned int n_out,
@@ -303,7 +332,7 @@ public:
               delta(MatrixXf::Zero(n_out, n_data)),
               u(MatrixXf::Zero(n_out, n_data)),
               z(MatrixXf::Zero(n_out, n_data)),
-              ones_vec(VectorXf::Ones(n_out)) {
+              ones_vec(VectorXf::Ones(n_data)) {
 
         if (is_weight_init_enabled) {
 
@@ -367,6 +396,44 @@ public:
 
         return z;
     }
+
+    virtual void backward(const MatrixXf &next_weights,
+                          const MatrixXf &next_delta,
+                          const MatrixXf &prev_output,
+                          const unsigned int next_n_out,
+                          const float learning_rate) {
+
+        /*
+         * 誤差逆伝播で微分導出に用いるデルタを計算する関数
+         *
+         * next_weight : 次層重み行列
+         * next_delta : 次層デルタ
+         * prev_output : 前層の出力
+         * learning_rate : 学習率(0≦learning_rate≦1)
+         */
+
+#ifdef PROFILE_ENABLED
+        time_t start = clock();
+#endif
+
+        delta = next_weights.transpose() * next_delta;
+
+        for (int j = 0; j < n_data; ++j) {
+            for (int i = 0; i < n_out; ++i) {
+                delta(i, j) = delta(i, j) * grad_activation(u(i, j));
+            }
+        }
+
+        // パラメタ更新
+        update(prev_output, learning_rate);
+
+#ifdef PROFILE_ENABLED
+        std::cout << "Layer::backward : " <<
+        (float) (clock() - start) / CLOCKS_PER_SEC << "s" << std::endl;
+#endif
+
+    }
+
 
 };
 
