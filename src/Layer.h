@@ -279,6 +279,9 @@ protected:
     // uの各要素に活性化関数を適用した行列
     MatrixXf z;
 
+    // 要素が全て１のベクトル
+    VectorXf ones_vec;
+
     // 活性化関数
     float (*activation)(float);
 
@@ -291,14 +294,16 @@ public:
 
     Layer_(unsigned int n_data, unsigned int n_in, unsigned int n_out,
            float (*activation)(float), float (*grad_activation)(float),
-           bool is_weight_init_enabled = true)
+           bool is_weight_init_enabled = true,
+           float weight_constant_value = 0.f)
             : n_data(n_data), n_in(n_in), n_out(n_out),
               activation(activation), grad_activation(grad_activation),
-              weights(MatrixXf::Zero(n_out, n_in)),
+              weights(MatrixXf::Constant(n_out, n_in, weight_constant_value)),
               biases(VectorXf::Zero(n_out)),
               delta(MatrixXf::Zero(n_out, n_data)),
               u(MatrixXf::Zero(n_out, n_data)),
-              z(MatrixXf::Zero(n_out, n_data)) {
+              z(MatrixXf::Zero(n_out, n_data)),
+              ones_vec(VectorXf::Ones(n_out)) {
 
         if (is_weight_init_enabled) {
 
@@ -320,7 +325,6 @@ public:
 
     }
 
-
     virtual ~Layer_() { };
 
     virtual const unsigned int get_n_out() const { return n_out; }
@@ -331,8 +335,39 @@ public:
 
     virtual const MatrixXf &get_weights() { return weights; }
 
+    virtual const void set_weights(const MatrixXf &w) { weights = w; }
+
     virtual const VectorXf &get_biases() { return biases; }
 
+    virtual const MatrixXf &forward(const MatrixXf &input) {
+
+        /*
+         * 入力の重み付き和を順伝播する関数
+         *
+         * input : n_in行 n_data列 の入力データ
+         */
+
+#ifdef PROFILE_ENABLED
+        time_t start = clock();
+#endif
+
+        const MatrixXf &w = get_weights();
+
+        u = (w * input).colwise() + biases;
+        z = u;
+        for (int j = 0; j < z.cols(); ++j) {
+            for (int i = 0; i < z.rows(); ++i) {
+                z(i, j) = activation(z(i, j));
+            }
+        }
+
+#ifdef PROFILE_ENABLED
+        std::cout << "Layer::forward : " <<
+        (float) (clock() - start) / CLOCKS_PER_SEC << "s" << std::endl;
+#endif
+
+        return z;
+    }
 
 };
 

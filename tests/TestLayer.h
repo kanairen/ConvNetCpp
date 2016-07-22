@@ -10,17 +10,18 @@
 
 #undef NODEBUG
 
+
 void test_init() {
 
     std::cout << "TestLayer::test_init()... " << std::endl;
 
-    const unsigned int n_data = 10;
+    const unsigned int n_data = 5;
     const unsigned int n_in = 3;
     const unsigned int n_out = 4;
     float (*activation)(float) = iden;
     float (*grad_activation)(float) = g_iden;
 
-    Layer_ layer(n_data, n_in, n_out, activation, g_iden);
+    Layer_ layer(n_data, n_in, n_out, activation, grad_activation);
 
     const MatrixXf &weights = layer.get_weights();
     const VectorXf &biases = layer.get_biases();
@@ -53,6 +54,23 @@ void test_init() {
 }
 
 void test_forward() {
+
+    const unsigned int n_data = 5;
+    const unsigned int n_in = 3;
+    const unsigned int n_out = 4;
+    float (*activation)(float) = iden;
+    float (*grad_activation)(float) = g_iden;
+
+    Layer_ layer(n_data, n_in, n_out, activation, grad_activation, false, 1);
+
+    MatrixXf input(n_in, n_data);
+    input << 1, 4, 7, 10, 13,
+            2, 5, 8, 11, 14,
+            3, 6, 9, 12, 15;
+
+    std::cout << "output : " << std::endl;
+    std::cout << layer.forward(input) << std::endl;
+
 
 }
 

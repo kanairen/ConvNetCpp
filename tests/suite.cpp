@@ -8,4 +8,5 @@ int main(){
 
     // test Layer
     test_init();
+    test_forward();
 }
