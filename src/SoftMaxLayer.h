@@ -93,6 +93,14 @@ public:
         (float) (clock() - start) / CLOCKS_PER_SEC << "s" << std::endl;
 #endif
     }
+};
+
+class SoftMaxLayer_ : public Layer_ {
+public:
+    SoftMaxLayer_(unsigned int n_data, unsigned int n_in, unsigned int n_out)
+            : Layer_(n_data, n_in, n_out, iden, g_iden) { }
+
+    ~SoftMaxLayer_() { }
 
 
 };
