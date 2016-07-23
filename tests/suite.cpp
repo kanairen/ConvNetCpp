@@ -4,6 +4,7 @@
 
 #include "TestLayer.h"
 #include "TestSoftMaxLayer.h"
+#include "TestGridLayer.h"
 
 int main() {
 
@@ -12,8 +13,11 @@ int main() {
     layer::test_forward();
     layer::test_backward();
 
-    // test softmax Layer
+    // test Softmax Layer
     sm_layer::test_init();
     sm_layer::test_forward();
     sm_layer::test_backward();
+
+    // test Grid Layer
+    grid_layer::test_init();
 }
