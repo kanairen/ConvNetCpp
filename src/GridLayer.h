@@ -147,7 +147,9 @@ protected:
     unsigned int px;
     unsigned int py;
 
-    const unsigned int filter_outsize(unsigned int size, unsigned int k,
+public:
+
+    static const unsigned int filter_outsize(unsigned int size, unsigned int k,
                                       unsigned int s, unsigned int p,
                                       bool is_covored_all) {
         /*
@@ -161,8 +163,6 @@ protected:
         }
 
     }
-
-public:
 
     GridLayer2d_(unsigned int n_data,
                  unsigned int input_width, unsigned int input_height,

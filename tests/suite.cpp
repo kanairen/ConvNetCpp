@@ -20,4 +20,5 @@ int main() {
 
     // test Grid Layer
     grid_layer::test_init();
+    grid_layer::test_filter_outsize();
 }
