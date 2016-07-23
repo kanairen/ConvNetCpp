@@ -142,6 +142,37 @@ public:
         return z;
     }
 
+
+    void backward(const MatrixXf &next_weights,
+                          const MatrixXf &next_delta,
+                          const MatrixXf &prev_output,
+                          const unsigned int next_n_out,
+                          const float learning_rate) {
+
+        /*
+         * 誤差逆伝播で微分導出に用いるデルタを計算する関数
+         * 出力層用
+         *
+         * last_delta : 出力層デルタ
+         * prev_output : 前層の出力
+         * learning_rate : 学習率
+         */
+#ifdef PROFILE_ENABLED
+        time_t start = clock();
+#endif
+
+        // 出力層のデルタとしてコピー
+        delta = next_delta;
+
+        // パラメタ更新
+        update(prev_output, learning_rate);
+
+#ifdef PROFILE_ENABLED
+        std::cout << "SoftMaxLayer::backward : " <<
+        (float) (clock() - start) / CLOCKS_PER_SEC << "s" << std::endl;
+#endif
+    }
+
 };
 
 #endif //CONVNETCPP_SOFTMAXLAYER_H

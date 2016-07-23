@@ -15,4 +15,5 @@ int main() {
     // test softmax Layer
     sm_layer::test_init();
     sm_layer::test_forward();
+    sm_layer::test_backward();
 }

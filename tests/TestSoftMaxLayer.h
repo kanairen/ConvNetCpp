@@ -85,6 +85,38 @@ namespace sm_layer {
 
     }
 
+    void test_backward() {
+
+        std::cout << "TestSoftMaxLayer::test_backward()... " << std::endl;
+
+        const unsigned int n_data = 3;
+        const unsigned int n_in = 2;
+        const unsigned int n_out = 4;
+        const unsigned int next_n_out = 6;
+
+        SoftMaxLayer_ layer(n_data, n_in, n_out, false, 1.f);
+
+        MatrixXf dummy_weight(n_out, n_in);
+        MatrixXf dummy_prev_output(n_in, n_data);
+        MatrixXf &&last_delta = (MatrixXf &&) MatrixXf::Ones(n_out, n_data);
+
+        layer.backward(dummy_weight, last_delta, dummy_prev_output, next_n_out,
+                       1);
+
+        std::cout << "last_delta : " << std::endl;
+        std::cout << last_delta << std::endl;
+
+        std::cout << "delta : " << std::endl;
+        std::cout << layer.get_delta() << std::endl;
+
+        std::cout << "last_delta(0,0) = 100 " << std::endl;
+        last_delta(0, 0) = 100;
+        std::cout << last_delta(0, 0) << std::endl;
+
+        std::cout << "delta(0,0) = ..." << std::endl;
+        std::cout << layer.get_delta()(0, 0) << std::endl;
+
+    }
 }
 
 #endif //CONVNETCPP_TESTSOFTMAXLAYER_H
