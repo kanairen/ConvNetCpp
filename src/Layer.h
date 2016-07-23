@@ -360,6 +360,8 @@ public:
 
     virtual const MatrixXf &get_delta() const { return delta; }
 
+    virtual const MatrixXf &get_u() const { return u; }
+
     virtual const MatrixXf &get_z() const { return z; }
 
     virtual const MatrixXf &get_weights() { return weights; }

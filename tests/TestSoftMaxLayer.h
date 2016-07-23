@@ -47,6 +47,44 @@ namespace sm_layer {
 
     }
 
+    void test_forward() {
+
+        std::cout << "TestSoftMaxLayer::test_forward()... " << std::endl;
+
+        const unsigned int n_data = 3;
+        const unsigned int n_in = 2;
+        const unsigned int n_out = 4;
+
+        SoftMaxLayer_ layer(n_data, n_in, n_out, false, 1.f);
+
+        MatrixXf input(n_in, n_data);
+        input << 1, 3, 5,
+                2, 4, 6;
+
+        const MatrixXf &output = layer.forward(input);
+
+        MatrixXf result_u(n_out, n_data);
+        result_u << 3, 7, 11,
+                3, 7, 11,
+                3, 7, 11,
+                3, 7, 11;
+
+        assert(layer.get_u() == result_u);
+
+        MatrixXf result_z(n_out, n_data);
+        result_z << 0.25, 0.25, 0.25,
+                0.25, 0.25, 0.25,
+                0.25, 0.25, 0.25,
+                0.25, 0.25, 0.25;
+
+        assert(output == result_z);
+
+        std::cout << "output : " << std::endl;
+        std::cout << output << std::endl;
+
+
+    }
+
 }
 
 #endif //CONVNETCPP_TESTSOFTMAXLAYER_H

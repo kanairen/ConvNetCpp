@@ -97,11 +97,50 @@ public:
 
 class SoftMaxLayer_ : public Layer_ {
 public:
-    SoftMaxLayer_(unsigned int n_data, unsigned int n_in, unsigned int n_out)
-            : Layer_(n_data, n_in, n_out, iden, g_iden) { }
+    SoftMaxLayer_(unsigned int n_data, unsigned int n_in, unsigned int n_out,
+                  bool is_weight_init_enabled = true,
+                  float weight_constant_value = 0.f)
+            : Layer_(n_data, n_in, n_out, iden, g_iden, is_weight_init_enabled,
+                     weight_constant_value) { }
 
     ~SoftMaxLayer_() { }
 
+
+    const MatrixXf &forward(const MatrixXf &input) {
+
+        /*
+         * 入力の重み付き和を順伝播する関数
+         *
+         * input : n_in行 n_data列 の入力データ
+         */
+#ifdef PROFILE_ENABLED
+        time_t start = clock();
+#endif
+
+        const MatrixXf &w = get_weights();
+
+        u = (w * input).colwise() + biases;
+
+        z = (u.colwise() - u.rowwise().maxCoeff());
+
+        for (int j = 0; j < z.cols(); ++j) {
+            for (int i = 0; i < z.rows(); ++i) {
+                z(i, j) = expf(z(i, j));
+            }
+        }
+
+        auto sum_z = z.colwise().sum();
+
+        for (int j = 0; j < z.cols(); ++j) {
+            z.col(j) /= sum_z[j];
+        }
+
+#ifdef PROFILE_ENABLED
+        std::cout << "SoftMaxLayer::forward : " <<
+        (float) (clock() - start) / CLOCKS_PER_SEC << "s" << std::endl;
+#endif
+        return z;
+    }
 
 };
 
