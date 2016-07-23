@@ -3,11 +3,15 @@
 //
 
 #include "TestLayer.h"
+#include "TestSoftMaxLayer.h"
 
 int main() {
 
     // test Layer
-    test_init();
-    test_forward();
-    test_backward();
+    layer::test_init();
+    layer::test_forward();
+    layer::test_backward();
+
+    // test softmax Layer
+    sm_layer::test_init();
 }
