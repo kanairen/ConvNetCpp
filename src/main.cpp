@@ -153,6 +153,107 @@ void mnist_conv_pool(string f_x_train, string f_x_test,
 
 }
 
+
+void mnist_full_connect_eigen(string f_x_train, string f_x_test,
+                              string f_y_train, string f_y_test) {
+
+    // mnist
+    MNIST mnist(f_x_train, f_x_test, f_y_train, f_y_test);
+
+    Layer_ *layer_1 = new Layer_(cnc::BATCH_SIZE,
+                                 cnc::INPUT_SIZE,
+                                 cnc::N_HIDDEN_UNITS,
+                                 cnc::LAYER_ACTIVATION,
+                                 cnc::LAYER_GRAD_ACTIVATION);
+
+    Layer_ *layer_2 = new SoftMaxLayer_(cnc::BATCH_SIZE,
+                                        layer_1->get_n_out(),
+                                        cnc::N_CLASS);
+
+    vector<Layer_ *> v{layer_1, layer_2};
+
+    // optimize
+    optimize_(mnist, v, cnc::LEARNING_RATE, cnc::BATCH_SIZE,
+              cnc::N_ITERATION, cnc::N_CLASS);
+
+    // release
+    delete layer_1;
+    delete layer_2;
+}
+
+void mnist_conv_eigen(string f_x_train, string f_x_test,
+                      string f_y_train, string f_y_test) {
+    // mnist
+    MNIST mnist(f_x_train, f_x_test, f_y_train, f_y_test);
+
+    Layer_ *layer_1 = new ConvLayer2d_(cnc::BATCH_SIZE,
+                                       cnc::MNIST_WIDTH, cnc::MNIST_HEIGHT,
+                                       cnc::C_IN, cnc::C_OUT,
+                                       cnc::KERNEL_WIDTH, cnc::KERNEL_HEIGHT,
+                                       cnc::STRIDE_X, cnc::STRIDE_Y,
+                                       cnc::PADDING_X, cnc::PADDING_Y,
+                                       cnc::CONV_ACTIVATION,
+                                       cnc::CONV_GRAD_ACTIVATION);
+
+    Layer_ *layer_2 = new SoftMaxLayer_(cnc::BATCH_SIZE,
+                                        layer_1->get_n_out(),
+                                        cnc::N_CLASS);
+
+    vector<Layer_ *> v{layer_1, layer_2};
+
+    std::cout << "conv:n_out:" << layer_1->get_n_out() << std::endl;
+
+    // optimize
+    optimize_(mnist, v, cnc::LEARNING_RATE, cnc::BATCH_SIZE, cnc::N_ITERATION,
+              cnc::N_CLASS);
+
+    // release
+    delete layer_1;
+    delete layer_2;
+
+}
+
+
+void mnist_conv_pool_eigen(string f_x_train, string f_x_test,
+                           string f_y_train, string f_y_test) {
+    // mnist
+    MNIST mnist(f_x_train, f_x_test, f_y_train, f_y_test);
+
+    GridLayer2d_ *layer_1 = new ConvLayer2d_(cnc::BATCH_SIZE,
+                                             cnc::MNIST_WIDTH,
+                                             cnc::MNIST_HEIGHT,
+                                             cnc::C_IN, cnc::C_OUT,
+                                             cnc::KERNEL_WIDTH,
+                                             cnc::KERNEL_HEIGHT,
+                                             cnc::STRIDE_X, cnc::STRIDE_Y,
+                                             cnc::PADDING_X, cnc::PADDING_Y,
+                                             cnc::CONV_ACTIVATION,
+                                             cnc::CONV_GRAD_ACTIVATION);
+
+    Layer_ *layer_2 = new MaxPoolLayer2d_(cnc::BATCH_SIZE,
+                                          layer_1->get_output_width(),
+                                          layer_1->get_output_height(),
+                                          cnc::C_OUT,
+                                          cnc::KERNEL_WIDTH, cnc::KERNEL_HEIGHT,
+                                          cnc::PADDING_X, cnc::PADDING_Y);
+
+    Layer_ *layer_3 = new SoftMaxLayer_(cnc::BATCH_SIZE,
+                                        layer_2->get_n_out(),
+                                        cnc::N_CLASS);
+
+    vector<Layer_ *> v{layer_1, layer_2, layer_3};
+
+    // optimize
+    optimize_(mnist, v, cnc::LEARNING_RATE, cnc::BATCH_SIZE, cnc::N_ITERATION,
+              cnc::N_CLASS);
+
+    // release
+    delete layer_1;
+    delete layer_2;
+    delete layer_3;
+
+}
+
 typedef void (*func_mnist)(string, string, string, string);
 
 
@@ -160,9 +261,14 @@ typedef void (*func_mnist)(string, string, string, string);
 int main(int argc, char *argv[]) {
 
     std::map<string, func_mnist> functions;
+
     functions["full_connect"] = mnist_full_connect;
     functions["conv"] = mnist_conv;
     functions["conv_pool"] = mnist_conv_pool;
+
+    functions["full_connect_eigen"] = mnist_full_connect_eigen;
+    functions["conv_eigen"] = mnist_conv_eigen;
+    functions["conv_pool_eigen"] = mnist_conv_pool_eigen;
 
     if (argc < 5) {
         std::cerr << "The number of command line arguments is incorrect." <<
