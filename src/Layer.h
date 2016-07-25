@@ -102,10 +102,11 @@ public:
 
     Layer(unsigned int n_data, unsigned int n_in, unsigned int n_out,
           float (*activation)(float), float (*grad_activation)(float),
-          bool is_weight_init_enabled = true)
+          bool is_weight_init_enabled = true,
+          float weight_constant_value = 0.f)
             : n_data(n_data), n_in(n_in), n_out(n_out),
               activation(activation), grad_activation(grad_activation),
-              weights(vector<float>(n_out * n_in, 0.f)),
+              weights(vector<float>(n_out * n_in, weight_constant_value)),
               biases(vector<float>(n_out, 0.f)),
               delta(vector<float>(n_out * n_data, 0.f)),
               u(vector<float>(n_out * n_data, 0.f)),
