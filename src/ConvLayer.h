@@ -60,8 +60,7 @@ private:
                         dw += d * prev_output[i_in * n_d + i_data];
                         db += d;
                     }
-                    // n_dataで割る必要はない？
-                    h[t[i_out * n_i + i_in]] -= learning_rate * dw;
+                    h[t[i_out * n_i + i_in]] -= lr * dw;
                 }
             }
             biases[i_out] -= lr * db;
@@ -206,8 +205,7 @@ private:
 
         for (i_out = 0; i_out < n_o; ++i_out) {
             for (i_in = 0; i_in < n_i; ++i_in) {
-                if (t(i_out, i_in) !=
-                    ConvLayerConst::T_WEIGHT_DISABLED) {
+                if (t(i_out, i_in) != ConvLayerConst::T_WEIGHT_DISABLED) {
                     dw = 0.f;
                     db = 0.f;
                     for (i_data = 0; i_data < n_d; ++i_data) {
@@ -312,12 +310,12 @@ public:
         time_t start = clock();
 #endif
 
-        for (int i = 0; i < n_in; ++i) {
-            for (int j = 0; j < n_out; ++j) {
-                if (t(j, i) == ConvLayerConst::T_WEIGHT_DISABLED) {
-                    weights(j, i) = 0.f;
+        for (int j = 0; j < n_in; ++j) {
+            for (int i = 0; i < n_out; ++i) {
+                if (t(i, j) == ConvLayerConst::T_WEIGHT_DISABLED) {
+                    weights(i, j) = 0.f;
                 } else {
-                    weights(j, i) = h(t(j, i));
+                    weights(i, j) = h(t(i, j));
                 }
             }
         }
