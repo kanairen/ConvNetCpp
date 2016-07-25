@@ -127,6 +127,8 @@ class GridLayer2d_ : public Layer_ {
  * 入力を二次元画像とする、ニューラルネットワークの隠れ層クラス
  */
 
+//TODO cover all of output_size
+
 protected:
 
     unsigned int input_width;
