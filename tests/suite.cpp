@@ -6,6 +6,7 @@
 #include "TestSoftMaxLayer.h"
 #include "TestGridLayer.h"
 #include "TestConvLayer.h"
+#include "TestMaxPoolLayer.h"
 
 int main() {
 
@@ -26,4 +27,10 @@ int main() {
     // test Convolution Layer
     conv_layer::test_init();
     conv_layer::test_backward();
+
+    // test MaxPooling Layer
+    max_pool_layer::test_init();
+    max_pool_layer::test_forward();
+    max_pool_layer::test_backward();
+
 }
