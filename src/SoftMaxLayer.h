@@ -122,7 +122,7 @@ public:
 
         u = (w * input).colwise() + biases;
 
-        const VectorXf &&max_u = u.rowwise().maxCoeff();
+        const VectorXf &&max_u = u.colwise().maxCoeff();
 
         for (int j = 0; j < z.cols(); ++j) {
             for (int i = 0; i < z.rows(); ++i) {
