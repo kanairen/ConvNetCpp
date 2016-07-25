@@ -5,6 +5,7 @@
 #include "TestLayer.h"
 #include "TestSoftMaxLayer.h"
 #include "TestGridLayer.h"
+#include "TestConvLayer.h"
 
 int main() {
 
@@ -21,4 +22,8 @@ int main() {
     // test Grid Layer
     grid_layer::test_init();
     grid_layer::test_filter_outsize();
+
+    // test Convolution Layer
+    conv_layer::test_init();
+    conv_layer::test_backward();
 }
