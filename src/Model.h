@@ -9,12 +9,16 @@
 #include <vector>
 #include "Layer.h"
 
+using Eigen::VectorXi;
 using std::vector;
 
 class Model {
 private:
     vector<Layer *> &layers;
     vector<float> out_forward;
+
+    Model() = delete;
+
 public:
     Model(vector<Layer *> &layers, unsigned int n_data) :
             layers(layers),
