@@ -75,6 +75,35 @@ namespace layer {
         std::cout << "output : " << std::endl;
         std::cout << layer.forward(input) << std::endl;
 
+        Layer layer_vec(n_data, n_in, n_out, activation, grad_activation, false,
+                        1);
+
+        // Layer(vector ver)::forward()
+        int count = 0;
+        vector<float> in(n_in * n_data);
+        for (int j = 0; j < n_data; ++j) {
+            for (int i = 0; i < n_in; ++i) {
+                in[i * n_data + j] = ++count;
+            }
+        }
+
+        for (int i = 0; i < n_in; ++i) {
+            for (int j = 0; j < n_data; ++j) {
+                std::cout << in[i * n_data + j] << " ";
+            }
+            std::cout << std::endl;
+        }
+
+        const vector<float> &out = layer_vec.forward(in);
+
+        std::cout << "output(vector ver) : " << std::endl;
+        for (int i = 0; i < n_out; ++i) {
+            for (int j = 0; j < n_data; ++j) {
+                std::cout << out[i * n_data + j] << " ";
+            }
+            std::cout << std::endl;
+        }
+
 
     }
 
@@ -149,6 +178,44 @@ namespace layer {
         std::cout << "forward : " << std::endl;
         std::cout << layer.forward(input) << std::endl;
 
+
+        // Layer(vector ver)::forward()
+        Layer layer_vec(n_data, n_in, n_out, activation, grad_activation, false,
+                        1.f);
+
+        vector<float> in{1, 3, 5, 2, 4, 6};
+
+        vector<float> next_w(next_n_out * n_out, 1.f);
+        vector<float> next_d(next_n_out * n_data, 1.f);
+
+        std::cout << "output(vector ver) : " << std::endl;
+        const vector<float> &out = layer_vec.forward(in);
+        for (int i = 0; i < n_out; ++i) {
+            for (int j = 0; j < n_data; ++j) {
+                std::cout << out[i * n_data + j] << " ";
+            }
+            std::cout << std::endl;
+        }
+
+        layer_vec.backward(next_w, next_d, in, next_n_out, 1.f);
+
+        std::cout << "delta(vector ver) : " << std::endl;
+        const vector<float> &delta_vec = layer_vec.get_delta();
+        for (int i = 0; i < n_out; ++i) {
+            for (int j = 0; j < n_data; ++j) {
+                std::cout << delta_vec[i * n_data + j] << " ";
+            }
+            std::cout << std::endl;
+        }
+
+        std::cout << "weight_after(vector ver) : " << std::endl;
+        const vector<float> &w_vec = layer_vec.get_weights();
+         for (int i = 0; i < n_out; ++i) {
+            for (int j = 0; j < n_in; ++j) {
+                std::cout << w_vec[i * n_in + j] << " ";
+            }
+            std::cout << std::endl;
+        }
     }
 }
 #endif //CONVNETCPP_TESTLAYER_H
