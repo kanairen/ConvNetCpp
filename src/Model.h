@@ -103,8 +103,7 @@ public:
 
     }
 
-    static void argmax(MatrixXf &y, VectorXi &predict,
-                       const unsigned int n_out, const unsigned int n_data) {
+    static void argmax(const MatrixXf &y, VectorXi &predict) {
 
 
         /*
@@ -114,10 +113,19 @@ public:
          * predict : yの各列ベクトルの最大値インデックスを格納する配列
          */
 
-        MatrixXf::Index max_idx;
+        float tmp, max;
+        int max_idx;
         for (int j = 0; j < y.cols(); ++j) {
-            y.col(j).maxCoeff(&max_idx);
-            predict(j) = (int) max_idx;
+            max = y(0, j);
+            max_idx = 0;
+            for (int i = 1; i < y.rows(); ++i) {
+                tmp = y(i, j);
+                if (tmp > max) {
+                    max = tmp;
+                    max_idx = i;
+                }
+            }
+            predict(j) = max_idx;
         }
 
     }
