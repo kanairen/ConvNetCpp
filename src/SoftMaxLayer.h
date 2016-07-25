@@ -98,9 +98,10 @@ public:
 class SoftMaxLayer_ : public Layer_ {
 public:
     SoftMaxLayer_(unsigned int n_data, unsigned int n_in, unsigned int n_out,
-                  bool is_weight_init_enabled = true,
+                  bool is_weight_rand_init_enabled = true,
                   float weight_constant_value = 0.f)
-            : Layer_(n_data, n_in, n_out, iden, g_iden, is_weight_init_enabled,
+            : Layer_(n_data, n_in, n_out, iden, g_iden,
+                     is_weight_rand_init_enabled,
                      weight_constant_value) { }
 
     ~SoftMaxLayer_() { }
@@ -144,10 +145,10 @@ public:
 
 
     void backward(const MatrixXf &next_weights,
-                          const MatrixXf &next_delta,
-                          const MatrixXf &prev_output,
-                          const unsigned int next_n_out,
-                          const float learning_rate) {
+                  const MatrixXf &next_delta,
+                  const MatrixXf &prev_output,
+                  const unsigned int next_n_out,
+                  const float learning_rate) {
 
         /*
          * 誤差逆伝播で微分導出に用いるデルタを計算する関数

@@ -14,6 +14,7 @@
 
 using std::vector;
 
+using Eigen::MatrixXi;
 using Eigen::MatrixXf;
 using Eigen::VectorXf;
 
@@ -323,7 +324,7 @@ public:
 
     Layer_(unsigned int n_data, unsigned int n_in, unsigned int n_out,
            float (*activation)(float), float (*grad_activation)(float),
-           bool is_weight_init_enabled = true,
+           bool is_weight_rand_init_enabled = true,
            float weight_constant_value = 0.f)
             : n_data(n_data), n_in(n_in), n_out(n_out),
               activation(activation), grad_activation(grad_activation),
@@ -334,7 +335,7 @@ public:
               z(MatrixXf::Zero(n_out, n_data)),
               ones_vec(VectorXf::Ones(n_data)) {
 
-        if (is_weight_init_enabled) {
+        if (is_weight_rand_init_enabled) {
 
             // 乱数生成器
             std::random_device rnd;
@@ -355,6 +356,8 @@ public:
     }
 
     virtual ~Layer_() { };
+
+    virtual const unsigned int get_n_in() const { return n_in; }
 
     virtual const unsigned int get_n_out() const { return n_out; }
 
