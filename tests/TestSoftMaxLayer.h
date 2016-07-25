@@ -11,6 +11,8 @@ namespace sm_layer {
 
     void test_init() {
 
+        std::cout << "TestSoftMaxLayer::test_init()... " << std::endl;
+
         const unsigned int n_data = 3;
         const unsigned int n_in = 2;
         const unsigned int n_out = 4;
