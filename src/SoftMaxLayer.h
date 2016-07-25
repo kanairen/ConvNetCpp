@@ -122,11 +122,11 @@ public:
 
         u = (w * input).colwise() + biases;
 
-        z = (u.colwise() - u.rowwise().maxCoeff());
+        const VectorXf &&max_u = u.rowwise().maxCoeff();
 
         for (int j = 0; j < z.cols(); ++j) {
             for (int i = 0; i < z.rows(); ++i) {
-                z(i, j) = expf(z(i, j));
+                z(i, j) = expf(u(i, j) - max_u[j]);
             }
         }
 
