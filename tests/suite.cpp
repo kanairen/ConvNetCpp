@@ -8,6 +8,8 @@
 #include "TestConvLayer.h"
 #include "TestMaxPoolLayer.h"
 
+#include "TestModel.h"
+
 int main() {
 
     // test Layer
@@ -32,5 +34,11 @@ int main() {
     max_pool_layer::test_init();
     max_pool_layer::test_forward();
     max_pool_layer::test_backward();
+
+    // test Model
+    model::test_init();
+    model::test_forward();
+    model::test_backward();
+
 
 }
