@@ -351,6 +351,8 @@ public:
 
     virtual const MatrixXf &get_delta() const { return delta; }
 
+    virtual void set_delta(const MatrixXf &d) { delta = d; }
+
     virtual const MatrixXf &get_u() const { return u; }
 
     virtual const MatrixXf &get_z() const { return z; }
