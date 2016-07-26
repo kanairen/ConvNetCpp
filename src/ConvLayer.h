@@ -220,6 +220,8 @@ private:
             biases(i_out) -= lr * db;
         }
 
+        update_weights();
+
 #ifdef PROFILE_ENABLED
         std::cout << "ConvLayer2d::update : " <<
         (float) (clock() - start) / CLOCKS_PER_SEC << "s" << std::endl;
@@ -295,12 +297,13 @@ public:
             }
         }
 
+        update_weights();
 
     }
 
     const VectorXf &get_filters() { return h; }
 
-    const MatrixXf &get_weights() {
+    void update_weights() {
 
         /*
          * 2D畳み込み版重み行列
@@ -321,11 +324,10 @@ public:
         }
 
 #ifdef PROFILE_ENABLED
-        std::cout << "ConvLayer2d::get_weights : " <<
+        std::cout << "ConvLayer2d::update_weights : " <<
         (float) (clock() - start) / CLOCKS_PER_SEC << "s" << std::endl;
 #endif
 
-        return weights;
     }
 
 };
