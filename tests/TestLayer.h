@@ -1,5 +1,5 @@
 //
-// Created by 金井廉 on 2016/07/21.
+// Created by kanairen on 2016/07/21.
 //
 
 #ifndef CONVNETCPP_TESTLAYER_H

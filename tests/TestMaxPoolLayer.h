@@ -1,5 +1,5 @@
 //
-// Created by 金井廉 on 2016/07/25.
+// Created by kanairen on 2016/07/25.
 //
 
 #ifndef CONVNETCPP_TESTMAXPOOLLAYER_H
