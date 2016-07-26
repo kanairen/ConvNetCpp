@@ -203,8 +203,8 @@ private:
         // W ← W - ε * dw / N　のうち、ε/Nを先に計算してしまう
         const float lr = learning_rate / n_d;
 
-        for (i_out = 0; i_out < n_o; ++i_out) {
-            for (i_in = 0; i_in < n_i; ++i_in) {
+        for (i_in = 0; i_in < n_i; ++i_in) {
+            for (i_out = 0; i_out < n_o; ++i_out) {
                 if (t(i_out, i_in) != ConvLayerConst::T_WEIGHT_DISABLED) {
                     dw = 0.f;
                     db = 0.f;
@@ -213,12 +213,12 @@ private:
                         dw += d * prev_output(i_in, i_data);
                         db += d;
                     }
-                    // n_dataで割る必要はない？
-                    h(t(i_out, i_in)) -= learning_rate * dw;
+                    h[t(i_out, i_in)] -= lr * dw;
                 }
             }
-            biases(i_out) -= lr * db;
         }
+
+        biases -= lr * delta.rowwise().sum();
 
         update_weights();
 
