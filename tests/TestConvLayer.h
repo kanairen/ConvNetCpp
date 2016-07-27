@@ -85,7 +85,7 @@ namespace conv_layer {
         unsigned int n_data = 1;
         unsigned int input_width = 3;
         unsigned int input_height = 3;
-        unsigned int c_in = 2;
+        unsigned int c_in = 1;
         unsigned int c_out = 2;
         unsigned int kw = 2;
         unsigned int kh = 2;

@@ -144,10 +144,10 @@ namespace max_pool_layer {
 
         // test for backward
         MatrixXf result_delta(n_out, n_data);
-        result_delta << 24,
-                56,
-                32,
-                64;
+        result_delta << 4,
+                4,
+                4,
+                4;
 
         assert(layer.get_delta() == result_delta);
 

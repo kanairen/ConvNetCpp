@@ -230,19 +230,8 @@ public:
         time_t start = clock();
 #endif
 
-        float d;
-        for (int i_data = 0; i_data < n_data; ++i_data) {
-            for (int i_out = 0; i_out < n_out; ++i_out) {
-                d = 0.f;
-                for (int i_n_out = 0; i_n_out < next_n_out; ++i_n_out) {
-                    // デルタを導出
-                    d += next_weights(i_n_out, i_out) *
-                         next_delta(i_n_out, i_data);
-                }
-                // 順伝播の活性化関数が恒等写像なので、活性化関数の導関数は使わない
-                delta(i_out, i_data) = d * u(i_out, i_data);
-            }
-        }
+        delta = next_weights.transpose() * next_delta;
+
 
 #ifdef PROFILE_ENABLED
         std::cout << "MaxPoolLayer2d::backward : " <<
