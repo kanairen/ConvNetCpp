@@ -1,0 +1,8 @@
+/Users/kanairen/Projects/cpp/googletest/googletest/build/CMakeFiles/edit_cache.dir
+/Users/kanairen/Projects/cpp/googletest/googletest/build/CMakeFiles/rebuild_cache.dir
+/Users/kanairen/Projects/cpp/googletest/googletest/build/CMakeFiles/list_install_components.dir
+/Users/kanairen/Projects/cpp/googletest/googletest/build/CMakeFiles/gtest_main.dir
+/Users/kanairen/Projects/cpp/googletest/googletest/build/CMakeFiles/install.dir
+/Users/kanairen/Projects/cpp/googletest/googletest/build/CMakeFiles/install/strip.dir
+/Users/kanairen/Projects/cpp/googletest/googletest/build/CMakeFiles/install/local.dir
+/Users/kanairen/Projects/cpp/googletest/googletest/build/CMakeFiles/gtest.dir
