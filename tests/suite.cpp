@@ -10,31 +10,10 @@
 
 #include "TestModel.h"
 
-int main() {
+int main(int argc, char **argv) {
 
-    // test Softmax Layer
-    sm_layer::test_init();
-    sm_layer::test_forward();
-    sm_layer::test_backward();
-
-    // test Grid Layer
-    grid_layer::test_init();
-    grid_layer::test_filter_outsize();
-
-    // test Convolution Layer
-    conv_layer::test_init();
-    conv_layer::test_backward();
-
-    // test MaxPooling Layer
-    max_pool_layer::test_init();
-    max_pool_layer::test_forward();
-    max_pool_layer::test_backward();
-
-    // test Model
-    model::test_init();
-    model::test_forward();
-    model::test_backward();
-
+    // Google Test
+    ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 
 }
