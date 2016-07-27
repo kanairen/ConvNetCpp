@@ -35,5 +35,6 @@ int main() {
     model::test_forward();
     model::test_backward();
 
+    return RUN_ALL_TESTS();
 
 }
