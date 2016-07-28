@@ -119,7 +119,8 @@ TEST_F(ConvLayer2dTest, test_backward) {
     unsigned int n_out = layer->get_n_out();
     unsigned int n_in = layer->get_n_in();
 
-    MatrixXf input(INPUT_WIDTH * INPUT_HEIGHT * C_IN, 1);
+    MatrixXf input(INPUT_WIDTH *INPUT_HEIGHT
+    *C_IN, 1);
     input << 1,
             2,
             3,
@@ -170,7 +171,6 @@ TEST_F(ConvLayer2dTest, test_backward) {
                                                                4);
 
     ASSERT_EQ(delta, result_delta);
-
 
     //test learned weights
     const MatrixXf &learned_weights = layer->get_weights();
