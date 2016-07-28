@@ -32,11 +32,11 @@ protected:
     }
 
     virtual void SetUp() {
-        std::cout << "TestLayer::SetUp()" << std::endl;
+        std::cout << "LayerTest::SetUp()" << std::endl;
     }
 
     virtual void TearDown() {
-        std::cout << "TestLayer::TearDown()" << std::endl;
+        std::cout << "LayerTest::TearDown()" << std::endl;
     }
 
 };
@@ -49,7 +49,7 @@ const unsigned int LayerTest::NEXT_N_OUT = 4;
 
 TEST_F(LayerTest, test_init) {
 
-    std::cout << "TestLayer::test_init()... " << std::endl;
+    std::cout << "LayerTest::test_init()... " << std::endl;
 
     const MatrixXf &weights = layer->get_weights();
     const VectorXf &biases = layer->get_biases();
@@ -83,7 +83,7 @@ TEST_F(LayerTest, test_init) {
 
 TEST_F(LayerTest, test_forward) {
 
-    std::cout << "TestLayer::test_forward()... " << std::endl;
+    std::cout << "LayerTest::test_forward()... " << std::endl;
 
     MatrixXf input(N_IN, N_DATA);
     input << 1, 4, 7, 10, 13,
@@ -107,7 +107,7 @@ TEST_F(LayerTest, test_forward) {
 
 TEST_F(LayerTest, test_backward) {
 
-    std::cout << "TestLayer::test_backward()... " << std::endl;
+    std::cout << "LayerTest::test_backward()... " << std::endl;
 
     MatrixXf input(N_IN, N_DATA);
     input << 1, 4, 7, 10, 13,

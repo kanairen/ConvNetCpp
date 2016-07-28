@@ -7,7 +7,7 @@
 
 #include "../src/SoftMaxLayer.h"
 
-class TestSoftMaxLayer : public ::testing::Test {
+class SoftMaxLayerTest : public ::testing::Test {
 protected:
 
     SoftMaxLayer_ *layer;
@@ -16,28 +16,28 @@ protected:
     static const unsigned int N_IN;
     static const unsigned int N_OUT;
 
-    TestSoftMaxLayer() : layer(
+    SoftMaxLayerTest() : layer(
             new SoftMaxLayer_(N_DATA, N_IN, N_OUT, false, 1.f)) { }
 
-    virtual ~TestSoftMaxLayer() { }
+    virtual ~SoftMaxLayerTest() { }
 
     virtual void SetUp() {
-        std::cout << "TestSoftMaxLayer::SetUp()" << std::endl;
+        std::cout << "SoftMaxLayerTest::SetUp()" << std::endl;
     }
 
     virtual void TearDown() {
-        std::cout << "TestSoftMaxLayer::TearDown()" << std::endl;
+        std::cout << "SoftMaxLayerTest::TearDown()" << std::endl;
     }
 
 };
 
-const unsigned int TestSoftMaxLayer::N_DATA = 3;
-const unsigned int TestSoftMaxLayer::N_IN = 2;
-const unsigned int TestSoftMaxLayer::N_OUT = 4;
+const unsigned int SoftMaxLayerTest::N_DATA = 3;
+const unsigned int SoftMaxLayerTest::N_IN = 2;
+const unsigned int SoftMaxLayerTest::N_OUT = 4;
 
-TEST_F(TestSoftMaxLayer, test_init) {
+TEST_F(SoftMaxLayerTest, test_init) {
 
-    std::cout << "TestSoftMaxLayer::test_init()... " << std::endl;
+    std::cout << "SoftMaxLayerTest::test_init()... " << std::endl;
 
     const MatrixXf &weights = layer->get_weights();
     const VectorXf &biases = layer->get_biases();
@@ -69,9 +69,9 @@ TEST_F(TestSoftMaxLayer, test_init) {
 
 }
 
-TEST_F(TestSoftMaxLayer, test_forward) {
+TEST_F(SoftMaxLayerTest, test_forward) {
 
-    std::cout << "TestSoftMaxLayer::test_forward()... " << std::endl;
+    std::cout << "SoftMaxLayerTest::test_forward()... " << std::endl;
 
     // input matrix
     MatrixXf input(N_IN, N_DATA);
@@ -97,13 +97,13 @@ TEST_F(TestSoftMaxLayer, test_forward) {
             0.25, 0.25, 0.25,
             0.25, 0.25, 0.25;
 
-    ASSERT_EQ(output, result_z) << "output : " << output << std::endl;
+    ASSERT_EQ(z, result_z) << "z : " << z << std::endl;
 
 }
 
-TEST_F(TestSoftMaxLayer, test_backward) {
+TEST_F(SoftMaxLayerTest, test_backward) {
 
-    std::cout << "TestSoftMaxLayer::test_backward()... " << std::endl;
+    std::cout << "SoftMaxLayerTest::test_backward()... " << std::endl;
 
     MatrixXf dummy_weight(N_OUT, N_IN);
     MatrixXf dummy_prev_output(N_IN, N_DATA);
