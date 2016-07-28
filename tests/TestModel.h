@@ -5,117 +5,114 @@
 #ifndef CONVNETCPP_TESTMODEL_H
 #define CONVNETCPP_TESTMODEL_H
 
+#include<gtest/gtest.h>
 #include "../src/Model.h"
 
-namespace model {
-    void test_init() {
+class ModelTest : public ::testing::Test {
+protected:
 
-        std::cout << "TestModel::test_init()... " << std::endl;
+    static const unsigned int N_DATA;
+    static const unsigned int N_IN;
+    static const unsigned int N_HIDDEN;
+    static const unsigned int N_OUT;
 
-        unsigned int n_data = 2;
-        unsigned int n_in = 3;
-        unsigned int n_hidden = 4;
-        unsigned int n_out = 5;
-        float (*activation)(float) = iden;
-        float (*grad_activation)(float) = g_iden;
+    constexpr static float (*const ACTIVATION)(float) = iden;
 
+    constexpr static float (*const GRAD_ACTIVATION)(float) = g_iden;
 
-        Layer_ *l1 = new Layer_(n_data, n_in, n_hidden, iden, g_iden, false,
-                                1.f);
-        Layer_ *l2 = new Layer_(n_data, n_hidden, n_out, iden, g_iden, false,
-                                1.f);
-        vector<Layer_ *> layers = {l1, l2};
+    Layer_ *l1;
+    Layer_ *l2;
+    vector<Layer_ *> *layers;
+    Model_ *model;
 
-        Model_ model(layers, n_data);
+    ModelTest() {
 
-    }
+        l1 = new Layer_(N_DATA, N_IN, N_HIDDEN, ACTIVATION,
+                        GRAD_ACTIVATION, false, 1.f);
+        l2 = new SoftMaxLayer_(N_DATA, N_HIDDEN, N_OUT, false, 1.f);
 
-    void test_forward() {
+        vector<Layer_ *> *layers = new vector<Layer_ *>{l1, l2};
 
-        std::cout << "TestModel::test_forward()... " << std::endl;
-
-        unsigned int n_data = 2;
-        unsigned int n_in = 3;
-        unsigned int n_hidden = 4;
-        unsigned int n_out = 5;
-        float (*activation)(float) = iden;
-        float (*grad_activation)(float) = g_iden;
-
-        Layer_ *l1 = new Layer_(n_data, n_in, n_hidden, iden, g_iden, false,
-                                1.f);
-        Layer_ *l2 = new Layer_(n_data, n_hidden, n_out, iden, g_iden, false,
-                                1.f);
-        vector<Layer_ *> layers = {l1, l2};
-
-        Model_ model(layers, n_data);
-
-        MatrixXf inputs(n_in, n_data);
-        inputs << 1, 4,
-                2, 5,
-                3, 6;
-
-        auto output = model.forward(inputs);
-
-        std::cout << "output : " << std::endl;
-        std::cout << output << std::endl;
-
-        MatrixXf result_output(n_out, n_data);
-        result_output << 24, 60,
-                24, 60,
-                24, 60,
-                24, 60,
-                24, 60;
-
-        assert(output == result_output);
+        model = new Model_(*layers, N_DATA);
 
     }
 
-    void test_backward() {
-
-        std::cout << "TestModel::test_backward()... " << std::endl;
-
-        unsigned int n_data = 2;
-        unsigned int n_in = 3;
-        unsigned int n_hidden = 4;
-        unsigned int n_out = 5;
-        float (*activation)(float) = iden;
-        float (*grad_activation)(float) = g_iden;
-
-        Layer_ *l1 = new Layer_(n_data, n_in, n_hidden, iden, g_iden, false,
-                                1.f);
-        Layer_ *l2 = new SoftMaxLayer_(n_data, n_hidden, n_out, false, 1.f);
-
-        vector<Layer_ *> layers = {l1, l2};
-
-        Model_ model(layers, n_data);
-
-        MatrixXf inputs(n_in, n_data);
-        inputs << 1, 4,
-                2, 5,
-                3, 6;
-
-        auto output = model.forward(inputs);
-
-        std::cout << "output : " << std::endl;
-        std::cout << output << std::endl;
-
-        MatrixXf result_output(n_out, n_data);
-        result_output << 0.2, 0.2,
-                0.2, 0.2,
-                0.2, 0.2,
-                0.2, 0.2,
-                0.2, 0.2;
-
-        assert(output == result_output);
-
-
-        MatrixXf &&last_delta = MatrixXf::Ones(n_out, n_data);
-
-        model.backward(inputs, last_delta, 1);
-
-        //TODO detailed backward test
-
+    virtual ~ModelTest() {
+        delete l1;
+        delete l2;
+        delete layers;
+        delete model;
     }
+
+    virtual void SetUp() {
+        std::cout << "ModelTest::SetUp()" << std::endl;
+    }
+
+    virtual void TearDown() {
+        std::cout << "ModelTest::TearDown()" << std::endl;
+    }
+
+};
+
+const unsigned int ModelTest::N_DATA = 2;
+const unsigned int ModelTest::N_IN = 3;
+const unsigned int ModelTest::N_HIDDEN = 4;
+const unsigned int ModelTest::N_OUT = 5;
+
+TEST_F(ModelTest, test_forward) {
+
+    std::cout << "ModelTest::test_forward()... " << std::endl;
+
+    MatrixXf inputs(N_IN, N_DATA);
+    inputs << 1, 4,
+            2, 5,
+            3, 6;
+
+    const MatrixXf &output = model->forward(inputs);
+
+    std::cout << "output : " << std::endl;
+    std::cout << output << std::endl;
+
+    MatrixXf result_output(N_OUT, N_DATA);
+    result_output << 0.2, 0.2,
+            0.2, 0.2,
+            0.2, 0.2,
+            0.2, 0.2,
+            0.2, 0.2;
+
+    ASSERT_EQ(output, result_output);
+
+}
+
+TEST_F(ModelTest, test_backward) {
+
+    std::cout << "ModelTest::test_backward()... " << std::endl;
+
+    MatrixXf inputs(N_IN, N_DATA);
+    inputs << 1, 4,
+            2, 5,
+            3, 6;
+
+    const MatrixXf &output = model->forward(inputs);
+
+    std::cout << "output : " << std::endl;
+    std::cout << output << std::endl;
+
+    MatrixXf result_output(N_OUT, N_DATA);
+    result_output << 0.2, 0.2,
+            0.2, 0.2,
+            0.2, 0.2,
+            0.2, 0.2,
+            0.2, 0.2;
+
+    ASSERT_EQ(output, result_output);
+
+    MatrixXf &&last_delta = MatrixXf::Ones(N_OUT, N_DATA);
+
+    model->backward(inputs, last_delta, 1);
+
+    //TODO detailed backward test
+
 }
 
 #endif //CONVNETCPP_TESTMODEL_H
