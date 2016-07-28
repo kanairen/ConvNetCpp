@@ -52,6 +52,8 @@ public:
 
     ~Model_() { }
 
+    const vector<Layer_ *> &get_layers() { return layers; }
+
     const MatrixXf &forward(const MatrixXf &inputs) {
 
         /*
