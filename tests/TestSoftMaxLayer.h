@@ -7,118 +7,129 @@
 
 #include "../src/SoftMaxLayer.h"
 
-namespace sm_layer {
+class TestSoftMaxLayer : public ::testing::Test {
+protected:
 
-    void test_init() {
+    SoftMaxLayer_ *layer;
 
-        std::cout << "TestSoftMaxLayer::test_init()... " << std::endl;
+    static const unsigned int N_DATA;
+    static const unsigned int N_IN;
+    static const unsigned int N_OUT;
 
-        const unsigned int n_data = 3;
-        const unsigned int n_in = 2;
-        const unsigned int n_out = 4;
+    TestSoftMaxLayer() : layer(
+            new SoftMaxLayer_(N_DATA, N_IN, N_OUT, false, 1.f)) { }
 
-        SoftMaxLayer_ layer(n_data, n_in, n_out);
+    virtual ~TestSoftMaxLayer() { }
 
-        const MatrixXf &weights = layer.get_weights();
-        const VectorXf &biases = layer.get_biases();
-        const MatrixXf &delta = layer.get_delta();
-        const MatrixXf &z = layer.get_z();
-
-        assert(weights.rows() == n_out);
-        assert(weights.cols() == n_in);
-
-        assert(biases.size() == n_out);
-
-        assert(delta.rows() == n_out);
-        assert(delta.cols() == n_data);
-
-        assert(z.rows() == n_out);
-        assert(z.cols() == n_data);
-
-        std::cout << "weights : " << std::endl;
-        std::cout << weights << std::endl;
-
-        std::cout << "biases : " << std::endl;
-        std::cout << layer.get_biases() << std::endl;
-
-        std::cout << "delta : " << std::endl;
-        std::cout << layer.get_delta() << std::endl;
-
-        std::cout << "z : " << std::endl;
-        std::cout << layer.get_z() << std::endl;
-
+    virtual void SetUp() {
+        std::cout << "TestSoftMaxLayer::SetUp()" << std::endl;
     }
 
-    void test_forward() {
-
-        std::cout << "TestSoftMaxLayer::test_forward()... " << std::endl;
-
-        const unsigned int n_data = 3;
-        const unsigned int n_in = 2;
-        const unsigned int n_out = 4;
-
-        SoftMaxLayer_ layer(n_data, n_in, n_out, false, 1.f);
-
-        MatrixXf input(n_in, n_data);
-        input << 1, 3, 5,
-                2, 4, 6;
-
-        const MatrixXf &output = layer.forward(input);
-
-        MatrixXf result_u(n_out, n_data);
-        result_u << 3, 7, 11,
-                3, 7, 11,
-                3, 7, 11,
-                3, 7, 11;
-
-        assert(layer.get_u() == result_u);
-
-        MatrixXf result_z(n_out, n_data);
-        result_z << 0.25, 0.25, 0.25,
-                0.25, 0.25, 0.25,
-                0.25, 0.25, 0.25,
-                0.25, 0.25, 0.25;
-
-        assert(output == result_z);
-
-        std::cout << "output : " << std::endl;
-        std::cout << output << std::endl;
-
-
+    virtual void TearDown() {
+        std::cout << "TestSoftMaxLayer::TearDown()" << std::endl;
     }
 
-    void test_backward() {
+};
 
-        std::cout << "TestSoftMaxLayer::test_backward()... " << std::endl;
+const unsigned int TestSoftMaxLayer::N_DATA = 3;
+const unsigned int TestSoftMaxLayer::N_IN = 2;
+const unsigned int TestSoftMaxLayer::N_OUT = 4;
 
-        const unsigned int n_data = 3;
-        const unsigned int n_in = 2;
-        const unsigned int n_out = 4;
-        const unsigned int next_n_out = 6;
+TEST_F(TestSoftMaxLayer, test_init) {
 
-        SoftMaxLayer_ layer(n_data, n_in, n_out, false, 1.f);
+    std::cout << "TestSoftMaxLayer::test_init()... " << std::endl;
 
-        MatrixXf dummy_weight(n_out, n_in);
-        MatrixXf dummy_prev_output(n_in, n_data);
-        MatrixXf &&last_delta = (MatrixXf &&) MatrixXf::Ones(n_out, n_data);
+    const MatrixXf &weights = layer->get_weights();
+    const VectorXf &biases = layer->get_biases();
+    const MatrixXf &delta = layer->get_delta();
+    const MatrixXf &z = layer->get_z();
 
-        layer.backward(dummy_weight, last_delta, dummy_prev_output, next_n_out,
-                       1);
+    ASSERT_EQ(weights.rows(), N_OUT);
+    ASSERT_EQ(weights.cols(), N_IN);
 
-        std::cout << "last_delta : " << std::endl;
-        std::cout << last_delta << std::endl;
+    ASSERT_EQ(biases.size(), N_OUT);
 
-        std::cout << "delta : " << std::endl;
-        std::cout << layer.get_delta() << std::endl;
+    ASSERT_EQ(delta.rows(), N_OUT);
+    ASSERT_EQ(delta.cols(), N_DATA);
 
-        std::cout << "last_delta(0,0) = 100 " << std::endl;
-        last_delta(0, 0) = 100;
-        std::cout << last_delta(0, 0) << std::endl;
+    ASSERT_EQ(z.rows(), N_OUT);
+    ASSERT_EQ(z.cols(), N_DATA);
 
-        std::cout << "delta(0,0) = ..." << std::endl;
-        std::cout << layer.get_delta()(0, 0) << std::endl;
+    std::cout << "weights : " << std::endl;
+    std::cout << weights << std::endl;
 
-    }
+    std::cout << "biases : " << std::endl;
+    std::cout << biases << std::endl;
+
+    std::cout << "delta : " << std::endl;
+    std::cout << delta << std::endl;
+
+    std::cout << "z : " << std::endl;
+    std::cout << z << std::endl;
+
+}
+
+TEST_F(TestSoftMaxLayer, test_forward) {
+
+    std::cout << "TestSoftMaxLayer::test_forward()... " << std::endl;
+
+    // input matrix
+    MatrixXf input(N_IN, N_DATA);
+    input << 1, 3, 5,
+            2, 4, 6;
+
+    // test weighted sum (u) and output (z)
+    // do not order of 'z' and 'u'.
+    const MatrixXf &z = layer->forward(input);
+    const MatrixXf &u = layer->get_u();
+
+    MatrixXf result_u(N_OUT, N_DATA);
+    result_u << 3, 7, 11,
+            3, 7, 11,
+            3, 7, 11,
+            3, 7, 11;
+
+    ASSERT_EQ(u, result_u) << "u : " << u << std::endl;
+
+    MatrixXf result_z(N_OUT, N_DATA);
+    result_z << 0.25, 0.25, 0.25,
+            0.25, 0.25, 0.25,
+            0.25, 0.25, 0.25,
+            0.25, 0.25, 0.25;
+
+    ASSERT_EQ(output, result_z) << "output : " << output << std::endl;
+
+}
+
+TEST_F(TestSoftMaxLayer, test_backward) {
+
+    std::cout << "TestSoftMaxLayer::test_backward()... " << std::endl;
+
+    MatrixXf dummy_weight(N_OUT, N_IN);
+    MatrixXf dummy_prev_output(N_IN, N_DATA);
+    MatrixXf &&last_delta = (MatrixXf &&) MatrixXf::Ones(N_OUT, N_DATA);
+
+    const unsigned int next_n_out = 4;
+
+    layer->backward(dummy_weight, last_delta, dummy_prev_output, next_n_out,
+                    1.f);
+
+    std::cout << "last_delta : " << std::endl;
+    std::cout << last_delta << std::endl;
+
+    std::cout << "delta : " << std::endl;
+    std::cout << layer->get_delta() << std::endl;
+
+    // test independence of each delta.
+    std::cout << "last_delta(0,0) = 100 " << std::endl;
+    last_delta(0, 0) = 100;
+    std::cout << last_delta(0, 0) << std::endl;
+
+    std::cout << "delta(0,0) = ..." << std::endl;
+    std::cout << layer->get_delta()(0, 0) << std::endl;
+
+    ASSERT_NE(last_delta(0, 0), layer->get_delta()(0, 0));
+
 }
 
 #endif //CONVNETCPP_TESTSOFTMAXLAYER_H
