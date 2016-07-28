@@ -5,6 +5,7 @@
 #ifndef CONVNETCPP_TESTCONVLAYER_H
 #define CONVNETCPP_TESTCONVLAYER_H
 
+#include<gtest/gtest.h>
 #include "../src/ConvLayer.h"
 #include "../src/activation.h"
 

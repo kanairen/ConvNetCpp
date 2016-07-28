@@ -5,6 +5,7 @@
 #ifndef CONVNETCPP_TESTSOFTMAXLAYER_H
 #define CONVNETCPP_TESTSOFTMAXLAYER_H
 
+#include<gtest/gtest.h>
 #include "../src/SoftMaxLayer.h"
 
 class SoftMaxLayerTest : public ::testing::Test {

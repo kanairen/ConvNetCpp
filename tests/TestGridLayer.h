@@ -5,6 +5,7 @@
 #ifndef CONVNETCPP_TESTGRIDLAYER_H
 #define CONVNETCPP_TESTGRIDLAYER_H
 
+#include<gtest/gtest.h>
 #include "../src/GridLayer.h"
 
 class GridLayer2dTest : public ::testing::Test {
