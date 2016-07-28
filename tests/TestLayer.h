@@ -96,10 +96,10 @@ TEST_F(LayerTest, test_forward) {
     std::cout << output << std::endl;
 
     MatrixXf result_forward(N_OUT, N_DATA);
-    result_forward << 3, 7, 11,
-            3, 7, 11,
-            3, 7, 11,
-            3, 7, 11;
+    result_forward << 6, 15, 24, 33, 42,
+            6, 15, 24, 33, 42,
+            6, 15, 24, 33, 42,
+            6, 15, 24, 33, 42;
 
     ASSERT_EQ(output, result_forward);
 
@@ -110,8 +110,9 @@ TEST_F(LayerTest, test_backward) {
     std::cout << "TestLayer::test_backward()... " << std::endl;
 
     MatrixXf input(N_IN, N_DATA);
-    input << 1, 3, 5,
-            2, 4, 6;
+    input << 1, 4, 7, 10, 13,
+            2, 5, 8, 11, 14,
+            3, 6, 9, 12, 15;
 
     MatrixXf &&next_weight = (MatrixXf &&) MatrixXf::Ones(NEXT_N_OUT, N_OUT);
     MatrixXf &&next_delta = (MatrixXf &&) MatrixXf::Ones(NEXT_N_OUT, N_DATA);
@@ -119,40 +120,59 @@ TEST_F(LayerTest, test_backward) {
     std::cout << "forward : " << std::endl;
     std::cout << layer->forward(input) << std::endl;
 
-    std::cout << "backward : " << std::endl;
-    layer->backward(next_weight, next_delta, input, N_OUT, 1.f);
+    std::cout << "backward..." << std::endl;
+    layer->backward(next_weight, next_delta, input, NEXT_N_OUT, 1.f);
 
-    // test for backward
+    // test for backward delta
+    const MatrixXf &delta = layer->get_delta();
+
     MatrixXf &&result_delta = (MatrixXf &&) MatrixXf::Constant(N_OUT, N_DATA,
-                                                               6.f);
+                                                               4.f);
 
-    ASSERT_EQ(layer->get_delta(), result_delta);
+    std::cout << "delta : " << std::endl;
+    std::cout << delta << std::endl;
+
+    ASSERT_EQ(delta, result_delta);
+
+
+    // test for learned weights
+    const MatrixXf &learned_weights = layer->get_weights();
+
+    std::cout << "learned_weights : " << std::endl;
+    std::cout << learned_weights << std::endl;
 
     MatrixXf &&result_weight = (MatrixXf &&) MatrixXf(N_OUT, N_IN);
-    result_weight << -17, -23,
-            -17, -23,
-            -17, -23,
-            -17, -23;
+    result_weight << -27, -31, -35,
+            -27, -31, -35,
+            -27, -31, -35,
+            -27, -31, -35;
 
     ASSERT_EQ(layer->get_weights(), result_weight);
 
-    VectorXf &&result_biases = (VectorXf &&) VectorXf(N_OUT);
-    result_biases << -6, -6, -6, -6;
+    // test for learned biases
+    const VectorXf &learned_biases = layer->get_biases();
 
-    ASSERT_EQ(layer->get_biases(), result_biases);
+    std::cout << "learned_biases : " << std::endl;
+    std::cout << learned_biases << std::endl;
+
+    VectorXf &&result_biases = (VectorXf &&) VectorXf(N_OUT);
+    result_biases << -4, -4, -4, -4;
+
+    ASSERT_EQ(learned_biases, result_biases);
 
     // test for forward again.
-
-    MatrixXf result_forward(N_OUT, N_DATA);
-    result_forward << -69, -149, -229,
-            -69, -149, -229,
-            -69, -149, -229,
-            -69, -149, -229;
-
-    ASSERT_EQ(layer->forward(input), result_forward);
+    const MatrixXf &output = layer->forward(input);
 
     std::cout << "forward : " << std::endl;
-    std::cout << layer->forward(input) << std::endl;
+    std::cout << output << std::endl;
+
+    MatrixXf result_forward(N_OUT, N_DATA);
+    result_forward << -198, -477, -756, -1035, -1314,
+            -198, -477, -756, -1035, -1314,
+            -198, -477, -756, -1035, -1314,
+            -198, -477, -756, -1035, -1314;
+
+    ASSERT_EQ(output, result_forward);
 
 }
 
