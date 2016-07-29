@@ -269,14 +269,14 @@ public:
         // tを初期化
         int i_in, j_out;
         for (int co = 0; co < c_out; ++co) {
-            for (int ci = 0; ci < c_in; ++ci) {
-                for (int y = 0; y <= input_height - kh; y += sy) {
-                    for (int x = 0; x <= input_width - kw; x += sx) {
+            for (int y = 0; y <= input_height - kh; y += sy) {
+                for (int x = 0; x <= input_width - kw; x += sx) {
 
-                        j_out = co * output_height * output_width +
-                                y / sy * output_width +
-                                x / sx;
+                    j_out = co * output_height * output_width +
+                            y / sy * output_width +
+                            x / sx;
 
+                    for (int ci = 0; ci < c_in; ++ci) {
                         for (int ky = 0; ky < kh; ++ky) {
                             for (int kx = 0; kx < kw; ++kx) {
                                 i_in = ci * input_width * input_height +
@@ -290,9 +290,8 @@ public:
 
                             }
                         }
-
-
                     }
+
                 }
             }
         }
