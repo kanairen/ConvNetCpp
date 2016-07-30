@@ -156,22 +156,25 @@ public:
         time_t start = clock();
 #endif
 
+        weights.setZero();
+
         int j_out, i_in;
         int max_idx;
         float p_value, max;
+        int count = 0;
         for (int i_data = 0; i_data < n_data; ++i_data) {
 
             for (int co = 0; co < c_out; ++co) {
-                for (int ci = 0; ci < c_in; ++ci) {
-                    for (int y = 0; y <= input_height - kh; y += sy) {
-                        for (int x = 0; x <= input_width - kw; x += sx) {
+                for (int y = 0; y <= input_height - kh; y += sy) {
+                    for (int x = 0; x <= input_width - kw; x += sx) {
 
-                            j_out = co * output_height * output_width +
-                                    y / sy * output_width +
-                                    x / sx;
+                        j_out = co * output_height * output_width +
+                                y / sy * output_width +
+                                x / sx;
 
-                            max = -MAXFLOAT;
+                        max = -MAXFLOAT;
 
+                        for (int ci = 0; ci < c_in; ++ci) {
                             for (int ky = 0; ky < kh; ++ky) {
                                 for (int kx = 0; kx < kw; ++kx) {
                                     i_in = ci * input_width * input_height +
@@ -185,22 +188,23 @@ public:
                                         max_idx = i_in;
                                     }
 
-                                    weights(j_out, i_in) = 0.f;
-
                                 }
                             }
-
-                            weights(j_out, max_idx) = 1.f;
-                            u(j_out, i_data) = max;
-                            z(j_out, i_data) = max;
-
                         }
+
+                        count++;
+                        weights(j_out, max_idx) = 1.f;
+                        u(j_out, i_data) = max;
+                        z(j_out, i_data) = max;
+
                     }
                 }
             }
 
-
         }
+
+        // 複数のデータ入力を受け付けるので、非ゼロ重みは　1.f/発火したユニット数　とする
+        weights /= weights.sum();
 
 #ifdef PROFILE_ENABLED
         std::cout << "MaxPoolLayer2d::forward : " <<
