@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 #project(ConvNetCpp)
 
-set(SOURCE_FILES_TESTS suite.cpp TestConvLayer.h TestMaxPoolLayer.h)
+set(SOURCE_FILES_TESTS suite.cpp)
 # TODO パスを一般化
 set(GOOGLE_TEST_ROOT $ENV{HOME}/Projects/cpp/ConvNetCpp/googletest)
 
