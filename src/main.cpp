@@ -6,6 +6,7 @@
 
 #include "config.h"
 #include "MNIST.h"
+#include "ShapeMap.h"
 #include "SoftMaxLayer.h"
 #include "ConvLayer.h"
 #include "MaxPoolLayer.h"
@@ -30,9 +31,9 @@ namespace cnc {
     // full connect layer
     const unsigned int N_HIDDEN_UNITS = 10000;
 
-    float (*const LAYER_ACTIVATION)(float) = iden;
+    float (*const LAYER_ACTIVATION)(float) = relu;
 
-    float (*const LAYER_GRAD_ACTIVATION)(float) = g_iden;
+    float (*const LAYER_GRAD_ACTIVATION)(float) = g_relu;
 
     // grid layer
     const unsigned int C_IN = 1;
@@ -54,8 +55,12 @@ namespace cnc {
 
 };
 
-void mnist_full_connect(string f_x_train, string f_x_test,
-                        string f_y_train, string f_y_test) {
+void mnist_full_connect(char *argv[]) {
+
+    string f_x_train = argv[2];
+    string f_x_test = argv[3];
+    string f_y_train = argv[4];
+    string f_y_test = argv[5];
 
     // mnist
     MNIST mnist(f_x_train, f_x_test, f_y_train, f_y_test);
@@ -81,8 +86,13 @@ void mnist_full_connect(string f_x_train, string f_x_test,
     delete layer_2;
 }
 
-void mnist_conv(string f_x_train, string f_x_test,
-                string f_y_train, string f_y_test) {
+void mnist_conv(char *argv[]) {
+
+    string f_x_train = argv[2];
+    string f_x_test = argv[3];
+    string f_y_train = argv[4];
+    string f_y_test = argv[5];
+
     // mnist
     MNIST mnist(f_x_train, f_x_test, f_y_train, f_y_test);
 
@@ -114,8 +124,13 @@ void mnist_conv(string f_x_train, string f_x_test,
 }
 
 
-void mnist_conv_pool(string f_x_train, string f_x_test,
-                     string f_y_train, string f_y_test) {
+void mnist_conv_pool(char *argv[]) {
+
+    string f_x_train = argv[2];
+    string f_x_test = argv[3];
+    string f_y_train = argv[4];
+    string f_y_test = argv[5];
+
     // mnist
     MNIST mnist(f_x_train, f_x_test, f_y_train, f_y_test);
 
@@ -154,8 +169,12 @@ void mnist_conv_pool(string f_x_train, string f_x_test,
 }
 
 
-void mnist_full_connect_eigen(string f_x_train, string f_x_test,
-                              string f_y_train, string f_y_test) {
+void mnist_full_connect_eigen(char *argv[]) {
+
+    string f_x_train = argv[2];
+    string f_x_test = argv[3];
+    string f_y_train = argv[4];
+    string f_y_test = argv[5];
 
     // mnist
     MNIST mnist(f_x_train, f_x_test, f_y_train, f_y_test);
@@ -181,8 +200,13 @@ void mnist_full_connect_eigen(string f_x_train, string f_x_test,
     delete layer_2;
 }
 
-void mnist_conv_eigen(string f_x_train, string f_x_test,
-                      string f_y_train, string f_y_test) {
+void mnist_conv_eigen(char *argv[]) {
+
+    string f_x_train = argv[2];
+    string f_x_test = argv[3];
+    string f_y_train = argv[4];
+    string f_y_test = argv[5];
+
     // mnist
     MNIST mnist(f_x_train, f_x_test, f_y_train, f_y_test);
 
@@ -214,8 +238,13 @@ void mnist_conv_eigen(string f_x_train, string f_x_test,
 }
 
 
-void mnist_conv_pool_eigen(string f_x_train, string f_x_test,
-                           string f_y_train, string f_y_test) {
+void mnist_conv_pool_eigen(char *argv[]) {
+
+    string f_x_train = argv[2];
+    string f_x_test = argv[3];
+    string f_y_train = argv[4];
+    string f_y_test = argv[5];
+
     // mnist
     MNIST mnist(f_x_train, f_x_test, f_y_train, f_y_test);
 
@@ -254,7 +283,16 @@ void mnist_conv_pool_eigen(string f_x_train, string f_x_test,
 
 }
 
-typedef void (*func_mnist)(string, string, string, string);
+void shape_map_cnn(char *argv[]) {
+
+    ShapeMapSet shapeMapSet(argv[2], argv[3], argv[4], argv[5], argv[6]);
+    for (float elem : shapeMapSet.x_train[0].horizontal_map ){
+        cout << elem << endl;
+    }
+
+}
+
+typedef void (*func_mnist)(char **);
 
 
 // コマンドライン引数にmnistへのパスを渡す
@@ -270,6 +308,8 @@ int main(int argc, char *argv[]) {
     functions["conv_eigen"] = mnist_conv_eigen;
     functions["conv_pool_eigen"] = mnist_conv_pool_eigen;
 
+    functions["shape_map_cnn"] = shape_map_cnn;
+
     if (argc < 5) {
         std::cerr << "The number of command line arguments is incorrect." <<
         std::endl;
@@ -278,16 +318,11 @@ int main(int argc, char *argv[]) {
 
     string function_name = argv[1];
 
-    string f_x_train = argv[2];
-    string f_x_test = argv[3];
-    string f_y_train = argv[4];
-    string f_y_test = argv[5];
-
     if (functions.find(function_name) == functions.end()) {
         std::cerr << "function name is incorrect." << std::endl;
         exit(1);
     } else {
-        functions[function_name](f_x_train, f_x_test, f_y_train, f_y_test);
+        functions[function_name](argv);
     }
 
 
