@@ -7,4 +7,6 @@ add_executable(FULL_CONNECT ${SOURCE_FILES_SRC})
 add_executable(CONV ${SOURCE_FILES_SRC})
 add_executable(CONV_POOL ${SOURCE_FILES_SRC})
 
+add_executable(SHAPE_MAP_CNN ${SOURCE_FILES_SRC})
+
 
