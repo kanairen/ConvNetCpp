@@ -285,10 +285,8 @@ void mnist_conv_pool_eigen(char *argv[]) {
 
 void shape_map_cnn(char *argv[]) {
 
-    ShapeMapSet shapeMapSet(argv[2], argv[3], argv[4], argv[5], argv[6]);
-    for (float elem : shapeMapSet.x_train[0].horizontal_map ){
-        cout << elem << endl;
-    }
+    ShapeMapSet shapeMapSet(argv[2], argv[3]);
+
 
 }
 
@@ -310,7 +308,7 @@ int main(int argc, char *argv[]) {
 
     functions["shape_map_cnn"] = shape_map_cnn;
 
-    if (argc < 5) {
+    if (argc == 0) {
         std::cerr << "The number of command line arguments is incorrect." <<
         std::endl;
         exit(1);
