@@ -57,7 +57,7 @@ private:
         // 各マップのデータ部を読み込み
         float f;
 
-        for (int row = 0; row < n_div; ++row) {
+        for (int row = 0; row <= n_div; ++row) {
             row_size.push_back(row + 1);
             for (int i = 0; i <= row; ++i) {
                 ifs.read((char *) &f, sizeof(float));
