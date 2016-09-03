@@ -287,6 +287,9 @@ void shape_map_cnn(char *argv[]) {
 
     ShapeMapSet shapeMapSet(argv[2], argv[3]);
 
+    for(ShapeMap shape_map : shapeMapSet.train_maps){
+        std::cout << shape_map << std::endl;
+    }
 
 }
 

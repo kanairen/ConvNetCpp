@@ -91,6 +91,20 @@ public:
 
 };
 
+// << operator
+std::ostream &operator<<(std::ostream &os, const ShapeMap &map) {
+    os << "class : " << map.cls << "  face ID : " << map.face_id <<
+    "  direction : " << map.direction << "\n";
+    int index = 0;
+    for (unsigned int rs: map.row_size) {
+        os << "[ ";
+        for (int i = 0; i < rs; ++i) {
+            os << map.distances[index++] << " ";
+        }
+        os << "]\n";
+    }
+    return os;
+}
 
 class ShapeMapSet {
 private:
