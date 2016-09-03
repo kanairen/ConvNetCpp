@@ -40,4 +40,5 @@
 
 # Resource Folder
 ConvNetCpp/res/*
+*.shp
 
