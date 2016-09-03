@@ -89,6 +89,9 @@ public:
 
     virtual ~ShapeMap() { }
 
+    unsigned int data_size() {
+        return distances.size();
+    }
 };
 
 // << operator

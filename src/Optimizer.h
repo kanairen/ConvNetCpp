@@ -327,4 +327,5 @@ void optimize_(DataSet<X, Y> &data,
 
 }
 
+
 #endif //CONVNETCPP_OPTIMIZER_H
