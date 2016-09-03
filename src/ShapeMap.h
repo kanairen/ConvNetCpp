@@ -37,6 +37,9 @@ private:
             if (line == "#CLASS") {
                 getline(ifs, line);
                 cls = atoi(line.c_str());
+            } else if (line == "#FACE_ID") {
+                getline(ifs, line);
+                face_id = atoi(line.c_str());
             } else if (line == "#DIRECTION") {
                 getline(ifs, line);
                 direction = line;
@@ -66,11 +69,9 @@ private:
 
 public:
 
+    unsigned int face_id;
+
     unsigned int cls;
-
-    vector<float> distances;
-
-    vector<unsigned int> row_size;
 
     unsigned int n_div;
 
@@ -78,6 +79,9 @@ public:
 
     string type;
 
+    vector<float> distances;
+
+    vector<unsigned int> row_size;
 
     ShapeMap(string file_path) {
         loadMap(file_path);
