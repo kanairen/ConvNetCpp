@@ -84,7 +84,7 @@ public:
     vector<unsigned int> row_size;
 
     ShapeMap(string file_path) {
-        loadMap(file_path);
+        load(file_path);
     }
 
     virtual ~ShapeMap() { }
@@ -193,8 +193,8 @@ public:
     vector<ShapeMap> test_maps;
 
     ShapeMapSet(string root_train, string root_test) {
-        loadData(root_train, train_maps);
-        loadData(root_test, test_maps);
+        load(root_train, train_maps);
+        load(root_test, test_maps);
     };
 
     ~ShapeMapSet() { };
