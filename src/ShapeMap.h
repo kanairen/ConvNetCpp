@@ -202,8 +202,15 @@ public:
 
     ~ShapeMapSet() { };
 
-    unsigned int xv_size() {
-        return 0;
+    unsigned int data_size() {
+        if (train_maps.size() > 0) {
+            return train_maps[0].data_size();
+        } else if (test_maps.size() > 0) {
+            return test_maps[0].data_size();
+        } else {
+            std::cerr << "data is not exists." << std::endl;
+            return -1;
+        }
     }
 
 };
