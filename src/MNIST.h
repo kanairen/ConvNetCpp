@@ -32,8 +32,8 @@ public:
 
     MNIST(string f_x_train, string f_x_test, string f_y_train,
           string f_y_test) {
-        loadData(f_x_train, x_train, image_row, image_col);
-        loadData(f_x_test, x_test, image_row, image_col);
+        loadData(f_x_train, x_train, width, height);
+        loadData(f_x_test, x_test, width, height);
         loadLabels(f_y_train, y_train);
         loadLabels(f_y_test, y_test);
     };
@@ -41,16 +41,9 @@ public:
     ~MNIST() { };
 
     unsigned int xv_size() {
-        return getImageRow() * getImageCol();
+        return width * height;
     }
 
-    unsigned int getImageRow() {
-        return image_row;
-    }
-
-    unsigned int getImageCol() {
-        return image_col;
-    }
 
 };
 

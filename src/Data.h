@@ -32,13 +32,9 @@ public:
 
 template<class X, class Y>
 class ImageDataSet : public DataSet<X, Y> {
-protected:
-    unsigned int image_row;
-    unsigned int image_col;
 public:
-    virtual unsigned int getImageRow() = 0;
-
-    virtual unsigned int getImageCol() = 0;
+    unsigned int width;
+    unsigned int height;
 };
 
 #endif //CONVNETCPP_DATA_H
