@@ -43,9 +43,9 @@ void optimize(DataSet<X, Y> &data,
 
     // 分割データセット配列
     vector<vector<X>> x_trains(n_batch_train,
-                               vector<X>(data.xv_size() * batch_size));
+                               vector<X>(data.data_size() * batch_size));
     vector<vector<X>> x_tests(n_batch_test,
-                              vector<X>(data.xv_size() * batch_size));
+                              vector<X>(data.data_size() * batch_size));
     vector<vector<Y>> y_trains(n_batch_train, vector<Y>(batch_size));
     vector<vector<Y>> y_tests(n_batch_test, vector<Y>(batch_size));
 
@@ -53,7 +53,7 @@ void optimize(DataSet<X, Y> &data,
     for (int i = 0; i < n_batch_train; ++i) {
 
         for (int k = 0; k < batch_size; ++k) {
-            for (int j = 0; j < data.xv_size(); ++j) {
+            for (int j = 0; j < data.data_size(); ++j) {
                 x_trains[i][j * batch_size + k] = data.x_train[j][
                         i * batch_size + k];
             }
@@ -63,7 +63,7 @@ void optimize(DataSet<X, Y> &data,
         if (i % (n_batch_train / n_batch_test) == 0) {
             unsigned long idx = i / (n_batch_train / n_batch_test);
             for (int k = 0; k < batch_size; ++k) {
-                for (int j = 0; j < data.xv_size(); ++j) {
+                for (int j = 0; j < data.data_size(); ++j) {
                     x_tests[idx][j * batch_size + k] = data.x_test[j][
                             idx * batch_size + k];
                 }
@@ -203,9 +203,9 @@ void optimize_(DataSet<X, Y> &data,
 
     // 分割データセット行列
     vector<MatrixXf> x_trains(n_batch_train,
-                              MatrixXf(data.xv_size(), batch_size));
+                              MatrixXf(data.data_size(), batch_size));
     vector<MatrixXf> x_tests(n_batch_test,
-                             MatrixXf(data.xv_size(), batch_size));
+                             MatrixXf(data.data_size(), batch_size));
     vector<VectorXi> y_trains(n_batch_train, VectorXi(batch_size));
     vector<VectorXi> y_tests(n_batch_test, VectorXi(batch_size));
 
@@ -213,7 +213,7 @@ void optimize_(DataSet<X, Y> &data,
     for (int i = 0; i < n_batch_train; ++i) {
 
         for (int k = 0; k < batch_size; ++k) {
-            for (int j = 0; j < data.xv_size(); ++j) {
+            for (int j = 0; j < data.data_size(); ++j) {
                 x_trains[i](j, k) = data.x_train[j][i * batch_size + k];
             }
             y_trains[i](k) = data.y_train[i * batch_size + k];
@@ -223,7 +223,7 @@ void optimize_(DataSet<X, Y> &data,
 
             unsigned long idx = i / (n_batch_train / n_batch_test);
             for (int k = 0; k < batch_size; ++k) {
-                for (int j = 0; j < data.xv_size(); ++j) {
+                for (int j = 0; j < data.data_size(); ++j) {
                     x_tests[idx](j, k) = data.x_test[j][idx * batch_size + k];
                 }
                 y_tests[idx](k) = data.y_test[idx * batch_size + k];

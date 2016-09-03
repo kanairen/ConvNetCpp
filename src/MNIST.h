@@ -40,7 +40,7 @@ public:
 
     ~MNIST() { };
 
-    unsigned int xv_size() {
+    virtual unsigned int data_size() {
         return width * height;
     }
 

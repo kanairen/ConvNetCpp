@@ -18,7 +18,7 @@ public:
     vector<Y> y_train;
     vector<Y> y_test;
 
-    virtual unsigned int xv_size() = 0;
+    virtual unsigned int data_size() = 0;
 
     std::string toString() {
         std::stringstream ss;
