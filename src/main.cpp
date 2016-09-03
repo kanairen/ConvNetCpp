@@ -285,13 +285,42 @@ void mnist_conv_pool_eigen(char *argv[]) {
 
 void shape_map_cnn(char *argv[]) {
 
-    ShapeMapSet shapeMapSet(argv[2], argv[3]);
+    ShapeMapSet shape_map_set(argv[2], argv[3]);
 
-    for(ShapeMap shape_map : shapeMapSet.train_maps){
-        std::cout << shape_map << std::endl;
-    }
+    unsigned int batch_size = 25;
+    unsigned int input_size = shape_map_set.data_size();
+    unsigned int n_hidden_units = 10000;
+    unsigned int n_class = 1;
+    unsigned int n_iter = 1000;
+
+    float learning_rate = 0.001f;
+
+    float (*const layer_activation)(float) = relu;
+
+    float (*const layer_grad_activation)(float) = g_relu;
+
+    Layer_ *layer_1 = new Layer_(batch_size,
+                                 input_size,
+                                 n_hidden_units,
+                                 layer_activation,
+                                 layer_grad_activation);
+
+    Layer_ *layer_2 = new SoftMaxLayer_(batch_size,
+                                        layer_1->get_n_out(),
+                                        n_class);
+
+    vector<Layer_ *> layers{layer_1, layer_2};
+
+    // optimize
+    optimize_(shape_map_set, layers, learning_rate, batch_size, n_iter,
+              n_class);
+
+    // release
+    delete layer_1;
+    delete layer_2;
 
 }
+
 
 typedef void (*func_mnist)(char **);
 

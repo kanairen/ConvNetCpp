@@ -109,10 +109,11 @@ std::ostream &operator<<(std::ostream &os, const ShapeMap &map) {
     return os;
 }
 
-class ShapeMapSet {
+class ShapeMapSet : public DataSet<float, unsigned int> {
 private:
 
-    void load(string root, vector<ShapeMap> &dst) {
+    void load(string root, vector<ShapeMap> &dst_maps,
+              vector<vector<float>> &dst_x, vector<unsigned int> &dst_y) {
 
         /*
          *
@@ -139,8 +140,26 @@ private:
                 for (string file_name: file_names) {
                     string full_path = direction_path + "/" + file_name;
 
-                    dst.push_back(ShapeMap(full_path));
+                    dst_maps.push_back(ShapeMap(full_path));
 
+                }
+            }
+        }
+
+        if (dst_maps.size() == 0) {
+            return;
+        }
+
+        dst_x.resize(dst_maps[0].data_size());
+        dst_y.resize(dst_maps.size());
+
+        for (vector<float> &x_col : dst_x) {
+            x_col.resize(dst_maps.size());
+            for (int i = 0; i < dst_maps.size(); ++i) {
+                const vector<float> &dists = dst_maps[i].distances;
+                std::copy(dists.begin(), dists.end(), x_col.begin());
+                if (i == 0) {
+                    dst_y[i] = dst_maps[i].cls;
                 }
             }
         }
@@ -196,8 +215,8 @@ public:
     vector<ShapeMap> test_maps;
 
     ShapeMapSet(string root_train, string root_test) {
-        load(root_train, train_maps);
-        load(root_test, test_maps);
+        load(root_train, train_maps, x_train, y_train);
+        load(root_test, test_maps, x_test, y_test);
     };
 
     ~ShapeMapSet() { };
