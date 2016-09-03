@@ -15,7 +15,7 @@ using std::string;
 class ShapeMap {
 private:
 
-    void loadMap(string file_path) {
+    void load(string file_path) {
 
         /*
          * 一つの距離マップを読み込み、ShapeMapメンバを更新する
@@ -109,7 +109,7 @@ std::ostream &operator<<(std::ostream &os, const ShapeMap &map) {
 class ShapeMapSet {
 private:
 
-    void loadData(string root, vector<ShapeMap> &dst) {
+    void load(string root, vector<ShapeMap> &dst) {
 
         /*
          *
