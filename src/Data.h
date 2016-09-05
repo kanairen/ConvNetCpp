@@ -28,6 +28,7 @@ public:
         ss << " y_test : " << y_test.size();
         return ss.str();
     }
+
 };
 
 template<class X, class Y>

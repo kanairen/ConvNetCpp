@@ -34,7 +34,10 @@ private:
         // # 各マップのカラム数を読み込み
         string line;
         while (getline(ifs, line) and line.find("#DATA")) {
-            if (line == "#CLASS") {
+            if (line == "#ID"){
+                getline(ifs, line);
+                id = atoi(line.c_str());
+            } else if (line == "#CLASS") {
                 getline(ifs, line);
                 cls = atoi(line.c_str());
             } else if (line == "#FACE_ID") {
@@ -68,6 +71,8 @@ private:
     }
 
 public:
+
+    unsigned int id;
 
     unsigned int face_id;
 
