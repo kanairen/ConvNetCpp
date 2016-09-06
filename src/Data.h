@@ -7,6 +7,8 @@
 
 #include <sstream>
 #include <vector>
+#include <algorithm>
+#include <random>
 
 using std::vector;
 
@@ -27,6 +29,34 @@ public:
         ss << " y_train : " << y_train.size();
         ss << " y_test : " << y_test.size();
         return ss.str();
+    }
+
+    void shuffle(bool isTrain) {
+
+        vector<vector<X>> &x = (isTrain) ? x_train : x_test;
+        vector<Y> &y = (isTrain) ? y_train : y_test;
+
+        vector<int> indices(x.size());
+
+        for (int i = 0; i < indices.size(); ++i) {
+            indices[i] = i;
+        }
+
+        std::shuffle(indices.begin(), indices.end(), std::mt19937());
+
+        vector<vector<X>> tmp_x(indices.size());
+        vector<Y> tmp_y(indices.size());
+
+        for (int i = 0; i < indices.size(); ++i) {
+            tmp_x[i] = x[indices[i]];
+            tmp_y[i] = y[indices[i]];
+        }
+
+        for (int i = 0; i < indices.size(); ++i) {
+            x[i] = tmp_x[i];
+            y[i] = tmp_y[i];
+        }
+
     }
 
 };
