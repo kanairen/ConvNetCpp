@@ -173,6 +173,7 @@ void optimize(DataSet<X, Y> &data,
 
 }
 
+
 template<class X, class Y>
 void optimize_(DataSet<X, Y> &data,
                vector<Layer_ *> &layers,
@@ -211,25 +212,21 @@ void optimize_(DataSet<X, Y> &data,
 
     // 元のデータセットを分割データセット配列にコピー
     for (int i = 0; i < n_batch_train; ++i) {
-
         for (int k = 0; k < batch_size; ++k) {
             for (int j = 0; j < data.data_size(); ++j) {
                 x_trains[i](j, k) = data.x_train[j][i * batch_size + k];
             }
             y_trains[i](k) = data.y_train[i * batch_size + k];
         }
+    }
 
-        if (i % (n_batch_train / n_batch_test) == 0) {
-
-            unsigned long idx = i / (n_batch_train / n_batch_test);
-            for (int k = 0; k < batch_size; ++k) {
-                for (int j = 0; j < data.data_size(); ++j) {
-                    x_tests[idx](j, k) = data.x_test[j][idx * batch_size + k];
-                }
-                y_tests[idx](k) = data.y_test[idx * batch_size + k];
+    for (int i = 0; i < n_batch_test; ++i) {
+        for (int k = 0; k < batch_size; ++k) {
+            for (int j = 0; j < data.data_size(); ++j) {
+                x_tests[i](j, k) = data.x_test[j][i * batch_size + k];
             }
+            y_tests[i](k) = data.y_test[i * batch_size + k];
         }
-
     }
 
     // 学習モデルオブジェクト
