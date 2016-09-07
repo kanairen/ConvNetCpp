@@ -163,12 +163,12 @@ private:
             for (int i = 0; i < dst_maps.size(); ++i) {
                 const vector<float> &dists = dst_maps[i].distances;
                 std::copy(dists.begin(), dists.end(), x_col.begin());
-                if (i == 0) {
-                    dst_y[i] = dst_maps[i].cls;
-                }
             }
         }
 
+        for (int i = 0; i < dst_maps.size(); ++i) {
+            dst_y[i] = dst_maps[i].cls;
+        }
 
     }
 
