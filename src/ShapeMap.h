@@ -49,7 +49,7 @@ private:
             } else if (line == "#N_DIV") {
                 getline(ifs, line);
                 n_div = atoi(line.c_str());
-            } else if (line == "#TYPE") {
+            } else if (line == "#DATA_TYPE") {
                 getline(ifs, line);
                 type = line;
             } else {
