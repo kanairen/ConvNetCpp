@@ -59,6 +59,55 @@ public:
 
     }
 
+    void cross_validation(unsigned int n_fold,
+                          vector<vector<unsigned int>> &train_perm,
+                          vector<vector<unsigned int>> &test_perm) {
+        /*
+         * n-fold交差検定としてのデータセットのインデックスパターン返す
+         */
+
+        // n-foldパターンの組み合わせを生成
+        train_perm.resize(n_fold);
+        test_perm.resize(n_fold);
+
+        for (int i = 0; i < n_fold; ++i) {
+
+            train_perm[i].resize(x_train.size());
+            test_perm[i].resize(x_test.size());
+
+            // 組み合わせの数（階乗）
+            unsigned int n_pattern_train = 0;
+            unsigned int n_pattern_test = 0;
+
+            // 初期化
+            for (int j = 0; j < x_train.size(); ++j) {
+                train_perm[i][j] = j;
+                n_pattern_train += j;
+            }
+            for (int j = 0; j < x_test.size(); ++j) {
+                test_perm[i][j] = j;
+                n_pattern_test += j;
+            }
+
+            // どの組み合わせを選択するか
+            long pivot_train = rand() % n_pattern_train;
+            long pivot_test = rand() % n_pattern_test;
+
+            // 目的のパターンに行き着くまでループ
+            for (int j = 0; j < pivot_train; j++) {
+                std::next_permutation(train_perm[i].begin(),
+                                      train_perm[i].end());
+            }
+            for (int j = 0; j < pivot_test; j++) {
+                std::next_permutation(test_perm[i].begin(),
+                                      test_perm[i].end());
+            }
+
+        }
+
+    }
+
+
 };
 
 template<class X, class Y>
