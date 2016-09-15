@@ -135,6 +135,7 @@ private:
 
         listDirs(root, label_names);
         for (string label_name : label_names) {
+            std::cout << label_name << std::endl;
             string label_path = root + "/" + label_name;
             direction_names.clear();
             listDirs(label_path, direction_names);

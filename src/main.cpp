@@ -275,7 +275,6 @@ void mnist_conv_pool_eigen(char *argv[]) {
     // optimize
     optimize_(mnist, v, cnc::LEARNING_RATE, cnc::BATCH_SIZE, cnc::N_ITERATION,
               cnc::N_CLASS);
-
     // release
     delete layer_1;
     delete layer_2;
@@ -287,10 +286,14 @@ void shape_map_fc(char **argv) {
 
     ShapeMapSet shape_map_set(argv[2], argv[3]);
 
-    unsigned int batch_size = 25;
+    // shuffle
+    shape_map_set.shuffle(true);
+    shape_map_set.shuffle(false);
+
+    unsigned int batch_size = 100;
     unsigned int input_size = shape_map_set.data_size();
     unsigned int n_hidden_units = 10000;
-    unsigned int n_class = 1;
+    unsigned int n_class = 50;
     unsigned int n_iter = 1000;
 
     float learning_rate = 0.001f;
