@@ -10,23 +10,20 @@
 #include <vector>
 
 template<class T>
-void output_stream(const std::ostream ost, const vector <T> &v,
-                   const char delim) {
+void print(const std::vector <T> &v) {
     for (T t: v) {
-        ost << t << delim;
+        std::cout << t << ", ";
     }
-    ost << "\n";
+    std::cout << "\n";
 }
 
 template<class T>
-void print(const vector <T> &v) {
-    output_stream(std::cout, v, ' ');
-}
-
-template<class T>
-void save_as_csv(const string path, const vector <T> &v) {
+void save_as_csv(const std::string path, const std::vector <T> &v) {
     std::ofstream ofs(path);
-    output_stream(ofs, v, ',');
+    for (T t: v) {
+        ofs << t << ",";
+    }
+    ofs << "\n";
     ofs.close();
 }
 
