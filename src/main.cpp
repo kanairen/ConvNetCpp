@@ -283,7 +283,7 @@ void mnist_conv_pool_eigen(char *argv[]) {
 
 }
 
-void shape_map_cnn(char *argv[]) {
+void shape_map_fc(char **argv) {
 
     ShapeMapSet shape_map_set(argv[2], argv[3]);
 
@@ -338,7 +338,7 @@ int main(int argc, char *argv[]) {
     functions["conv_eigen"] = mnist_conv_eigen;
     functions["conv_pool_eigen"] = mnist_conv_pool_eigen;
 
-    functions["shape_map_cnn"] = shape_map_cnn;
+    functions["shape_map_fc"] = shape_map_fc;
 
     if (argc == 0) {
         std::cerr << "The number of command line arguments is incorrect." <<
