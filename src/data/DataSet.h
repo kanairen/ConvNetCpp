@@ -73,11 +73,12 @@ public:
 
     virtual unsigned int data_size() = 0;
 
-    virtual static const BaseDataSet *load();
+    virtual static const unique_ptr<BaseDataSet> load();
 
-    static const vector<BaseDataSet> *cross_validation(unsigned int n_fold,
-                                                       const vector<vector<X>> &x,
-                                                       const vector<Y> &y) {
+    static const unique_ptr<vector<BaseDataSet>> cross_validation(
+            unsigned int n_fold,
+            const vector<vector<X>> &x,
+            const vector<Y> &y) {
         /*
          * n-fold交差検定のデータ・セットを返す
          */
@@ -109,7 +110,7 @@ public:
             data_sets->push_back(BaseDataSet(x_train, x_test, y_train, y_test));
         }
 
-        return data_sets;
+        return unique_ptr(data_sets);
     }
 
     std::string toString() {
