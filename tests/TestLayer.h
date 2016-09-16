@@ -5,7 +5,8 @@
 #ifndef CONVNETCPP_TESTLAYER_H
 #define CONVNETCPP_TESTLAYER_H
 
-#include<gtest/gtest.h>
+#include <iostream>
+#include <gtest/gtest.h>
 #include "../src/activation.h"
 #include "../src/Layer.h"
 
