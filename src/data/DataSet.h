@@ -15,6 +15,11 @@ using std::unique_ptr;
 
 template<class X, class Y>
 class BaseDataSet {
+
+    /*
+     * データセット基底クラス
+     */
+
 public:
 
     unique_ptr<vector<vector<X>>> x_train;
@@ -23,9 +28,6 @@ public:
     unique_ptr<vector<Y>> y_test;
 
 protected:
-    /*
-     * データセット基底クラス
-     */
 
     BaseDataSet(vector<vector<X>> *x_train, vector<vector<X>> *x_test,
                 vector<Y> *y_train, vector<Y> *y_test)
@@ -61,9 +63,6 @@ protected:
     }
 
 public:
-
-    virtual unsigned int data_size() = 0;
-
     void shuffle(bool is_train) {
         if (is_train) {
             BaseDataSet::shuffle(x_train, y_train);
@@ -72,9 +71,13 @@ public:
         }
     }
 
-    static const vector<DataSet> *cross_validation(unsigned int n_fold,
-                                                   const vector<vector<X>> &x,
-                                                   const vector<Y> &y) {
+    virtual unsigned int data_size() = 0;
+
+    virtual static const BaseDataSet *load();
+
+    static const vector<BaseDataSet> *cross_validation(unsigned int n_fold,
+                                                       const vector<vector<X>> &x,
+                                                       const vector<Y> &y) {
         /*
          * n-fold交差検定のデータ・セットを返す
          */
