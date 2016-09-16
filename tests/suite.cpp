@@ -4,6 +4,7 @@
 
 #include <gtest/gtest.h>
 #include "util/TestIOUtil.h"
+#include "util/TestOSUtil.h"
 //#include "TestLayer.h"
 //#include "TestSoftMaxLayer.h"
 //#include "TestGridLayer.h"

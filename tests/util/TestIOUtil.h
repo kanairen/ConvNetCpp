@@ -9,6 +9,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <gtest/gtest.h>
 #include "../../src/util/IOUtil.h"
 
 class IOUtilTest : public ::testing::Test {
