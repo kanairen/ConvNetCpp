@@ -124,12 +124,4 @@ public:
 
 };
 
-template<class X, class Y>
-class ImageDataSet : public BaseDataSet<X, Y> {
-public:
-    unsigned int width;
-    unsigned int height;
-};
-
-
 #endif //CONVNETCPP_DATASET_H
