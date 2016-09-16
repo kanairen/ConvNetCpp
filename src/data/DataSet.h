@@ -121,7 +121,7 @@ public:
 };
 
 template<class X, class Y>
-class ImageDataSet : public DataSet<X, Y> {
+class ImageDataSet : public BaseDataSet<X, Y> {
 public:
     unsigned int width;
     unsigned int height;
