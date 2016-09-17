@@ -93,7 +93,7 @@ public:
         vector<BaseDataSet> *data_sets = new vector<BaseDataSet>();
 
         // shuffle
-        ShapeMapSet::shuffle(x, y);
+        BaseDataSet::shuffle(x, y);
 
         unsigned int begin, end;
         for (int i = 0; i < n_fold; ++i) {
