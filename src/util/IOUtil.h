@@ -10,7 +10,7 @@
 #include <vector>
 
 template<class T>
-void print(const std::vector <T> &v) {
+void print(const std::vector<T> &v) {
     for (T t: v) {
         std::cout << t << ", ";
     }
@@ -18,7 +18,15 @@ void print(const std::vector <T> &v) {
 }
 
 template<class T>
-void save_as_csv(const std::string path, const std::vector <T> &v) {
+void print_col(const std::vector<std::vector<T>> &v, int column_index) {
+    for (int i = 0; i < v.size(); ++i) {
+        std::cout << v[i][column_index] << ", ";
+    }
+    std::cout << "\n";
+}
+
+template<class T>
+void save_as_csv(const std::string path, const std::vector<T> &v) {
     std::ofstream ofs(path);
     for (T t: v) {
         ofs << t << ",";
