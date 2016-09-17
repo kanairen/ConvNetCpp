@@ -73,12 +73,9 @@ private:
             exit(1);
         }
 
+        // 各行のカラム数
         for (int row = 0; row <= n_div; ++row) {
-            row_size.push_back(row + 1);
-            for (int i = 0; i <= row; ++i) {
-                ifs.read((char *) &f, sizeof(float));
-                distances.push_back(f);
-            }
+            row_size.push_back(distances.size() / n_div);
         }
 
     }
