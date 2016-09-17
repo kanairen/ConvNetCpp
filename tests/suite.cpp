@@ -3,6 +3,7 @@
 //
 
 #include <gtest/gtest.h>
+#include "ShareArgs.h"
 #include "util/TestIOUtil.h"
 #include "util/TestOSUtil.h"
 //#include "TestLayer.h"
@@ -18,6 +19,11 @@ int main(int argc, char **argv) {
 
     // Google Test
     ::testing::InitGoogleTest(&argc, argv);
+
+    // Share arguments.
+    ARGC = argc;
+    ARGV = argv;
+
     return RUN_ALL_TESTS();
 
 }
