@@ -63,6 +63,15 @@ private:
 
         // 各マップのデータ部を読み込み
         float f;
+        while (ifs.read((char *) &f, sizeof(float))) {
+            distances.push_back(f);
+        }
+
+        if (distances.size() != (5 * n_div) * (n_div + 1)) {
+            std::cerr << "The number of distances are not correct." <<
+            std::endl;
+            exit(1);
+        }
 
         for (int row = 0; row <= n_div; ++row) {
             row_size.push_back(row + 1);
