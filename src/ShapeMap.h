@@ -57,6 +57,10 @@ private:
             }
         }
 
+        // 余分なバイナリを空読み
+        getline(ifs,line);
+        getline(ifs,line);
+
         // 各マップのデータ部を読み込み
         float f;
 
