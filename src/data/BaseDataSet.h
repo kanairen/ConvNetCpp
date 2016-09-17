@@ -117,7 +117,7 @@ public:
             data_sets->push_back(BaseDataSet(x_train, x_test, y_train, y_test));
         }
 
-        return unique_ptr(data_sets);
+        return unique_ptr<vector<BaseDataSet>>(data_sets);
     }
 
     std::string toString() {
