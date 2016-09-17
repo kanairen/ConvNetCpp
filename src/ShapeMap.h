@@ -170,16 +170,27 @@ private:
         dst_x.resize(dst_maps[0].data_size());
         dst_y.resize(dst_maps.size());
 
-        for (vector<float> &x_col : dst_x) {
-            x_col.resize(dst_maps.size());
-            for (int i = 0; i < dst_maps.size(); ++i) {
-                const vector<float> &dists = dst_maps[i].distances;
-                std::copy(dists.begin(), dists.end(), x_col.begin());
+        // データ部への距離のコピー
+        for (int dx_col = 0; dx_col < dst_maps.size(); ++dx_col) {
+            const vector<float> &dists = dst_maps[dx_col].distances;
+            for (int dx_row = 0; dx_row < dists.size(); ++dx_row) {
+                dst_x[dx_row].push_back(dists[dx_row]);
             }
         }
 
+        // クラスラベル集合
+        std::set<int> set_y;
         for (int i = 0; i < dst_maps.size(); ++i) {
-            dst_y[i] = dst_maps[i].cls;
+            set_y.insert(dst_maps[i].cls);
+        }
+        // クラスラベル空間
+        for (int i = 0; i < dst_maps.size(); ++i) {
+            auto iter = set_y.find(dst_maps[i].cls);
+            if (iter == set_y.end()) {
+                cerr << "ShapeMapSet::load() : failed to find label." << endl;
+                exit(1);
+            }
+            dst_y[i] = std::distance(set_y.begin(), iter);
         }
 
     }
