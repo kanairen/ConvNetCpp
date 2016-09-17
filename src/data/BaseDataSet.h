@@ -90,7 +90,7 @@ public:
          * n-fold交差検定のデータ・セットを返す
          */
 
-        vector<BaseDataSet> *data_sets = new vector<DataSet>();
+        vector<BaseDataSet> *data_sets = new vector<BaseDataSet>();
 
         // shuffle
         ShapeMapSet::shuffle(x, y);
