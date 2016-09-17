@@ -9,6 +9,7 @@
 #include <iostream>
 #include <vector>
 #include <gtest/gtest.h>
+#include "../ShareArgs.h"
 #include "../../src/util/OSUtil.h"
 
 class OSUtilTest : public ::testing::Test {
@@ -31,7 +32,7 @@ protected:
 TEST_F(OSUtilTest, test_list_dirs) {
     std::cout << "OSUtilTest::listdir()" << std::endl;
     std::vector<std::string> v;
-    list_dirs(".", v);
+    list_dirs(std::string(ARGV[1]), v);
     for (std::string s : v) {
         std::cout << s << std::endl;
     }

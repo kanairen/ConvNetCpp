@@ -11,6 +11,7 @@
 #include <vector>
 #include <stdio.h>
 #include <gtest/gtest.h>
+#include "../ShareArgs.h"
 #include "../../src/util/IOUtil.h"
 
 class IOUtilTest : public ::testing::Test {
@@ -83,7 +84,7 @@ TEST_F(IOUtilTest, test_print_col) {
 }
 
 TEST_F(IOUtilTest, test__save_as_csv) {
-    std::string path = "test_io_util.csv";
+    std::string path = std::string(ARGV[1]) + "/test_io_util.csv";
     std::cout << "IOUtilTest::test_save_as_csv()" << std::endl;
     save_as_csv(path, v);
 
