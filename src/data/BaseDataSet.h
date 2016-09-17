@@ -78,7 +78,7 @@ public:
 
     virtual unsigned int data_size() = 0;
 
-    static const unique_ptr<BaseDataSet> load(){
+    static const unique_ptr<BaseDataSet> load() {
 
     }
 

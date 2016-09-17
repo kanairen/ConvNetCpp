@@ -35,7 +35,7 @@ private:
         // # 各マップのカラム数を読み込み
         string line;
         while (getline(ifs, line) and line.find("#DATA")) {
-            if (line == "#ID"){
+            if (line == "#ID") {
                 getline(ifs, line);
                 id = atoi(line.c_str());
             } else if (line == "#CLASS") {
