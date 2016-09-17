@@ -35,16 +35,20 @@ public:
 
         std::shuffle(indices.begin(), indices.end(), std::mt19937());
 
-        vector<vector<X>> tmp_x(indices.size());
-        vector<Y> tmp_y(indices.size());
+        vector<vector<X>> tmp_x(x.size(), vector<X>(x[0].size()));
+        vector<Y> tmp_y(y.size());
 
         for (int i = 0; i < indices.size(); ++i) {
-            tmp_x[i] = x[indices[i]];
+            for (int j = 0; j < x.size(); ++j) {
+                tmp_x[j][i] = x[j][indices[i]];
+            }
             tmp_y[i] = y[indices[i]];
         }
 
         for (int i = 0; i < indices.size(); ++i) {
-            x[i] = tmp_x[i];
+            for (int j = 0; j < x.size(); ++j) {
+                x[j][i] = tmp_x[j][i];
+            }
             y[i] = tmp_y[i];
         }
 
