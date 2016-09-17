@@ -9,6 +9,7 @@
 
 #include "Data.h"
 #include "Model.h"
+#include "util/IOUtil.h"
 
 using Eigen::VectorXi;
 using std::vector;

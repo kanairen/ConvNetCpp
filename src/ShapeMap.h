@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <fstream>
+#include <set>
 
 using std::vector;
 using std::string;
