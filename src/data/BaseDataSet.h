@@ -39,7 +39,7 @@ protected:
          * 特徴ベクトル集合と正解データ集合を、特徴ベクトル・正解の関係が崩れないようシャッフルする
          */
 
-        vector<int> indices(x->size());
+        vector<int> indices(y->size());
 
         for (int i = 0; i < indices.size(); ++i) {
             indices[i] = i;
@@ -73,7 +73,9 @@ public:
 
     virtual unsigned int data_size() = 0;
 
-    virtual static const unique_ptr<BaseDataSet> load();
+    static const unique_ptr<BaseDataSet> load(){
+
+    }
 
     static const unique_ptr<vector<BaseDataSet>> cross_validation(
             unsigned int n_fold,
