@@ -6,6 +6,7 @@
 #define CONVNETCPP_TESTSHAPEMAPDATASET_H
 
 #include "gtest/gtest.h"
+#include "../ShareArgs.h"
 #include "../../src/data/ShapeMapDataSet.h"
 
 class ShapeMapDataSetTest : public ::testing::Test {
@@ -27,7 +28,7 @@ protected:
 
 TEST_F(ShapeMapDataSetTest, test_load) {
     std::cout << "ShapeMapDataSetTest::listdir()" << std::endl;
-    ShapeMapDataSetTest::load
+    ShapeMapDataSet::load(PATH_SHAPE_MAP);
 }
 
 #endif //CONVNETCPP_TESTSHAPEMAPDATASET_H

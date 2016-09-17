@@ -6,12 +6,12 @@
 #include "ShareArgs.h"
 #include "util/TestIOUtil.h"
 #include "util/TestOSUtil.h"
+#include "data/TestShapeMapDataSet.h"
 //#include "TestLayer.h"
 //#include "TestSoftMaxLayer.h"
 //#include "TestGridLayer.h"
 //#include "TestConvLayer.h"
 //#include "TestMaxPoolLayer.h"
-//
 //#include "TestModel.h"
 
 
@@ -23,6 +23,9 @@ int main(int argc, char **argv) {
     // Share arguments.
     ARGC = argc;
     ARGV = argv;
+
+    PATH_ROOT = std::string(argv[1]);
+    PATH_SHAPE_MAP = std::string(argv[2]);
 
     return RUN_ALL_TESTS();
 

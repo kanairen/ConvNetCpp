@@ -32,7 +32,7 @@ protected:
 TEST_F(OSUtilTest, test_list_dirs) {
     std::cout << "OSUtilTest::listdir()" << std::endl;
     std::vector<std::string> v;
-    list_dirs(std::string(ARGV[1]), v);
+    list_dirs(PATH_ROOT, v);
     for (std::string s : v) {
         std::cout << s << std::endl;
     }
