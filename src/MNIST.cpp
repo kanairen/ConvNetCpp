@@ -20,7 +20,7 @@ int MNIST::toInteger(int i) {
 }
 
 void MNIST::loadData(std::string f_name, vector<vector<float>> &dst,
-                     unsigned int &dst_n_row, unsigned int &dst_n_col) {
+                     int &dst_n_row, int &dst_n_col) {
 
     /*
      * MNIST文字データをファイルから読み込み

@@ -24,7 +24,7 @@ private:
     static int toInteger(int i);
 
     void loadData(std::string f_name, vector<vector<float>> &dst,
-                  unsigned int &dst_n_row, unsigned int &dst_n_col);
+                  int &dst_n_row, int &dst_n_col);
 
     void loadLabels(string f_name, vector<int> &dst);
 
@@ -40,7 +40,7 @@ public:
 
     ~MNIST() { };
 
-    virtual unsigned int data_size() {
+    virtual int data_size() {
         return width * height;
     }
 

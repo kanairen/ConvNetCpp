@@ -35,6 +35,7 @@ protected:
 
     static void shuffle(const unique_ptr<vector<vector<X>>> &x,
                         const unique_ptr<vector<Y>> &y) {
+
         /*
          * 特徴ベクトル集合と正解データ集合を、特徴ベクトル・正解の関係が崩れないようシャッフルする
          */

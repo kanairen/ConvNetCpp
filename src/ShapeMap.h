@@ -85,13 +85,13 @@ private:
 
 public:
 
-    unsigned int id;
+    int id;
 
-    unsigned int face_id;
+    int face_id;
 
-    unsigned int cls;
+    int cls;
 
-    unsigned int n_div;
+    int n_div;
 
     string direction;
 
@@ -99,7 +99,7 @@ public:
 
     vector<float> distances;
 
-    vector<unsigned int> row_size;
+    vector<int> row_size;
 
     ShapeMap(string file_path) {
         load(file_path);
@@ -107,7 +107,7 @@ public:
 
     virtual ~ShapeMap() { }
 
-    unsigned int data_size() {
+    int data_size() {
         return distances.size();
     }
 };
@@ -117,7 +117,7 @@ std::ostream &operator<<(std::ostream &os, const ShapeMap &map) {
     os << "class : " << map.cls << "  face ID : " << map.face_id <<
     "  direction : " << map.direction << "\n";
     int index = 0;
-    for (unsigned int rs: map.row_size) {
+    for (int rs: map.row_size) {
         os << "[ ";
         for (int i = 0; i < rs; ++i) {
             os << map.distances[index++] << " ";
@@ -127,11 +127,12 @@ std::ostream &operator<<(std::ostream &os, const ShapeMap &map) {
     return os;
 }
 
-class ShapeMapSet : public DataSet<float, unsigned int> {
+// Eigenがunsigned int コンテナを持たない（？）ため、int
+class ShapeMapSet : public DataSet<float, int> {
 private:
 
     void load(string root, vector<ShapeMap> &dst_maps,
-              vector<vector<float>> &dst_x, vector<unsigned int> &dst_y) {
+              vector<vector<float>> &dst_x, vector<int> &dst_y) {
 
         /*
          *
@@ -240,7 +241,7 @@ public:
 
     ~ShapeMapSet() { };
 
-    unsigned int data_size() {
+    int data_size() {
         if (train_maps.size() > 0) {
             return train_maps[0].data_size();
         } else if (test_maps.size() > 0) {
