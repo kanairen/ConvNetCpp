@@ -193,7 +193,7 @@ void mnist_full_connect_eigen(char *argv[]) {
 
     // optimize
     optimize_(mnist, v, cnc::LEARNING_RATE, cnc::BATCH_SIZE,
-              cnc::N_ITERATION, cnc::N_CLASS);
+              cnc::N_ITERATION, cnc::N_CLASS, argv[6], argv[7]);
 
     // release
     delete layer_1;
@@ -229,7 +229,7 @@ void mnist_conv_eigen(char *argv[]) {
 
     // optimize
     optimize_(mnist, v, cnc::LEARNING_RATE, cnc::BATCH_SIZE, cnc::N_ITERATION,
-              cnc::N_CLASS);
+              cnc::N_CLASS, argv[6], argv[7]);
 
     // release
     delete layer_1;
@@ -274,7 +274,7 @@ void mnist_conv_pool_eigen(char *argv[]) {
 
     // optimize
     optimize_(mnist, v, cnc::LEARNING_RATE, cnc::BATCH_SIZE, cnc::N_ITERATION,
-              cnc::N_CLASS);
+              cnc::N_CLASS, argv[6], argv[7]);
     // release
     delete layer_1;
     delete layer_2;
@@ -287,13 +287,13 @@ void shape_map_fc(char **argv) {
     ShapeMapSet shape_map_set(argv[2], argv[3]);
 
     // shuffle
-    shape_map_set.shuffle(true);
-    shape_map_set.shuffle(false);
+    ShapeMapSet::shuffle(shape_map_set.x_train, shape_map_set.y_train);
+    ShapeMapSet::shuffle(shape_map_set.x_test, shape_map_set.y_test);
 
-    unsigned int batch_size = 100;
+    unsigned int batch_size = 1;
     unsigned int input_size = shape_map_set.data_size();
-    unsigned int n_hidden_units = 10000;
-    unsigned int n_class = 50;
+    unsigned int n_hidden_units = 100;
+    unsigned int n_class = 2;
     unsigned int n_iter = 1000;
 
     float learning_rate = 0.001f;
@@ -308,19 +308,26 @@ void shape_map_fc(char **argv) {
                                  layer_activation,
                                  layer_grad_activation);
 
-    Layer_ *layer_2 = new SoftMaxLayer_(batch_size,
+    Layer_ *layer_2 = new Layer_(batch_size,
+                                 layer_1->get_n_out(),
+                                 n_hidden_units,
+                                 layer_activation,
+                                 layer_grad_activation);
+
+    Layer_ *layer_3 = new SoftMaxLayer_(batch_size,
                                         layer_1->get_n_out(),
                                         n_class);
 
-    vector<Layer_ *> layers{layer_1, layer_2};
+    vector<Layer_ *> layers{layer_1, layer_2, layer_3};
 
     // optimize
     optimize_(shape_map_set, layers, learning_rate, batch_size, n_iter,
-              n_class);
+              n_class, argv[4], argv[5]);
 
     // release
     delete layer_1;
     delete layer_2;
+    delete layer_3;
 
 }
 

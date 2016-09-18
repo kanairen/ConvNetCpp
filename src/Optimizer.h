@@ -181,7 +181,9 @@ void optimize_(DataSet<X, Y> &data,
                float learning_rate,
                unsigned int batch_size,
                unsigned int n_iter,
-               unsigned int n_class) {
+               unsigned int n_class,
+               string train_log_path,
+               string test_log_path) {
 
     /*
      * Modelオブジェクトを最適化
@@ -240,9 +242,14 @@ void optimize_(DataSet<X, Y> &data,
     VectorXi pred_train(batch_size);
     VectorXi pred_test(batch_size);
 
+    // ERRORの割合ログ
+    std::vector<float> log_average_error_train(n_iter);
+    std::vector<float> log_average_error_test(n_iter);
+
     std::cout << "\nlearning start !\n" << std::endl;
 
-    float batch_error_train, batch_error_test, average_error_train, average_error_test;
+    float batch_error_train, batch_error_test,
+            average_error_train, average_error_test;
 
     clock_t start, train_start, test_start;
 
@@ -310,11 +317,13 @@ void optimize_(DataSet<X, Y> &data,
 
         }
 
-        cout << "average error(training data):" <<
-        average_error_train / n_batch_train << "\n";
+        average_error_train /= n_batch_train;
+        cout << "average error(training data):" << average_error_train << "\n";
+        log_average_error_train[i] = average_error_train;
 
-        cout << "average error(test data):" <<
-        average_error_test / n_batch_test << "\n";
+        average_error_test /= n_batch_test;
+        cout << "average error(test data):" << average_error_test << "\n";
+        log_average_error_test[i] = average_error_test;
 
         cout << "process time:" << (float) (clock() - start) / CLOCKS_PER_SEC <<
         "s\n";
@@ -322,6 +331,9 @@ void optimize_(DataSet<X, Y> &data,
         cout << endl;
 
     }
+
+    save_as_csv<float>(train_log_path, log_average_error_train);
+    save_as_csv<float>(test_log_path, log_average_error_test);
 
 }
 
