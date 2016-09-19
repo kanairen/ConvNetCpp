@@ -124,3 +124,4 @@ float Model::error(const vector<int> &predict, const vector<int> &answer) {
     return num_error / predict.size();
 
 }
+

@@ -132,8 +132,9 @@ public:
 
     }
 
-    static float error(const VectorXi &predict, const VectorXi &answer) {
-
+    static float error(const VectorXi &predict, const VectorXi &answer,
+                       vector<int> &error_indices, vector<int> &error_answers,
+                       int start_index) {
         /*
          * predictとanswerの各要素を比較し、誤りの割合を返す
          *
@@ -152,6 +153,8 @@ public:
         for (int i = 0; i < predict.size(); ++i) {
             if (predict[i] != answer[i]) {
                 num_error += 1;
+                error_indices.push_back(start_index + i);
+                error_answers.push_back(answer[i]);
             }
         }
 

@@ -258,6 +258,13 @@ void optimize_(DataSet<X, Y> &data,
         average_error_train = 0.f;
         average_error_test = 0.f;
 
+        // 誤りインデックス
+        std::vector<int> error_indices_train;
+        std::vector<int> error_indices_test;
+        // 誤り推定
+        std::vector<int> error_answers_train;
+        std::vector<int> error_answers_test;
+
         // データセット一周当たりの学習・テスト時間を計測
         start = clock();
 
@@ -267,11 +274,21 @@ void optimize_(DataSet<X, Y> &data,
 
             train_start = clock();
 
+            // batchごとの誤りインデックス
+            std::vector<int> error_indices_train_batch;
+            std::vector<int> error_indices_test_batch;
+            // batchごとの誤り推定
+            std::vector<int> error_answers_train_batch;
+            std::vector<int> error_answers_test_batch;
+
             const MatrixXf &train_output = model.forward(x_trains[j]);
 
             model.argmax(train_output, pred_train);
 
-            batch_error_train = model.error(pred_train, y_trains[j]);
+            batch_error_train = model.error(pred_train, y_trains[j],
+                                            error_indices_train_batch,
+                                            error_answers_train_batch,
+                                            j * batch_size);
             average_error_train += batch_error_train;
 
             cout << "batch error(training data):" << batch_error_train << "\n";
@@ -301,7 +318,10 @@ void optimize_(DataSet<X, Y> &data,
 
                 model.argmax(test_output, pred_test);
 
-                batch_error_test = model.error(pred_test, y_tests[idx]);
+                batch_error_test = model.error(pred_test, y_tests[idx],
+                                               error_indices_test_batch,
+                                               error_answers_test_batch,
+                                               idx * batch_size);
                 average_error_test += batch_error_test;
 
                 cout << "batch error(test data):" << batch_error_test << "\n";
@@ -312,6 +332,22 @@ void optimize_(DataSet<X, Y> &data,
                 (float) (clock() - test_start) / CLOCKS_PER_SEC << "s\n";
 
             }
+
+            std::copy(error_indices_train_batch.begin(),
+                      error_indices_train_batch.end(),
+                      std::back_inserter(error_indices_train));
+
+            std::copy(error_indices_test_batch.begin(),
+                      error_indices_test_batch.end(),
+                      std::back_inserter(error_indices_test));
+
+            std::copy(error_answers_train_batch.begin(),
+                      error_answers_train_batch.end(),
+                      std::back_inserter(error_answers_train));
+
+            std::copy(error_answers_test_batch.begin(),
+                      error_answers_test_batch.end(),
+                      std::back_inserter(error_answers_test));
 
             cout << endl;
 
@@ -324,6 +360,18 @@ void optimize_(DataSet<X, Y> &data,
         average_error_test /= n_batch_test;
         cout << "average error(test data):" << average_error_test << "\n";
         log_average_error_test[i] = average_error_test;
+
+        cout << "incorrect estimations(training data) : \n";
+        cout << "indices : ";
+        print(error_indices_train);
+        cout << "error estimations : ";
+        print(error_answers_train);
+
+        cout << "incorrect estimations(test data) : \n";
+        cout << "indices : ";
+        print(error_indices_test);
+        cout << "error estimations : ";
+        print(error_answers_test);
 
         cout << "process time:" << (float) (clock() - start) / CLOCKS_PER_SEC <<
         "s\n";
