@@ -9,6 +9,7 @@
 #include <iostream>
 #include <fstream>
 #include <set>
+#include "util/OSUtil.h"
 
 using std::vector;
 using std::string;
@@ -145,12 +146,12 @@ private:
         vector<string> direction_names;
         vector<string> file_names;
 
-        listDirs(root, label_names);
+        list_dirs(root, label_names);
         for (string label_name : label_names) {
             std::cout << label_name << std::endl;
             string label_path = root + "/" + label_name;
             direction_names.clear();
-            listDirs(label_path, direction_names);
+            list_dirs(label_path, direction_names);
             for (string direction_name : direction_names) {
                 string direction_path = label_path + "/" + direction_name;
                 dst_maps.push_back(ShapeMap(direction_path));
@@ -189,47 +190,6 @@ private:
 
     }
 
-    void listDirs(string path, vector<string> &dst,
-                  string tmp_file_name = "tmp_ls_path.txt") {
-
-        /**
-         *
-         *  引数にとったディレクトリ中のファイル/フォルダ名一覧を文字列として返す
-         *
-         *  path : 対象ディレクトリ
-         *
-         */
-
-        // ファイル/フォルダ一覧を一時保存するためのファイル生成
-        string tmpLsPath = path + "/" + tmp_file_name;
-        string commands = "ls " + path + " >> " + tmpLsPath;
-        if (std::system(commands.c_str())) {
-            std::cerr << "ShapeMap::listDirs() : failed to execute commands." <<
-            std::endl;
-            exit(1);
-        }
-
-        // 一時ファイル展開
-        std::ifstream ifs(tmpLsPath);
-        if (ifs.fail()) {
-            std::cerr << "ShapeMap::listDirs() : failed to load labels." <<
-            std::endl;
-            exit(1);
-        }
-
-        // 一時ファイル中のファイル/フォルダ名をdstに格納
-        string line;
-        while (getline(ifs, line)) {
-            int isNotFound = line.find(tmp_file_name);
-            if (!isNotFound) {
-                continue;
-            }
-            dst.push_back(line);
-        }
-
-        // 一時ファイルの消去
-        std::remove(tmpLsPath.c_str());
-    }
 
 public:
 
