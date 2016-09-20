@@ -7,6 +7,7 @@
 
 #include <sstream>
 #include <vector>
+#include <set>
 #include <algorithm>
 #include <random>
 
@@ -21,6 +22,13 @@ public:
     vector<Y> y_test;
 
     virtual int data_size() = 0;
+
+    unsigned int get_n_cls() {
+        std::vector<Y> v;
+        std::copy(y_train.begin(), y_train.end(), std::back_inserter(v));
+        std::copy(y_test.begin(), y_test.end(), std::back_inserter(v));
+        return std::set<Y>(v.begin(), v.end()).size();
+    }
 
     static void shuffle(vector<vector<X>> &x, vector<Y> &y) {
         /*
@@ -53,24 +61,6 @@ public:
         }
 
     }
-//
-//    static const vector<DataSet> *cross_validation(unsigned int n_fold,
-//                                                   vector<vector<X>> x,
-//                                                   vector<Y> y) {
-//        /*
-//         * n-fold交差検定のデータ・セットを返す
-//         */
-//
-//        // shuffle
-//        ShapeMapSet::shuffle(x, y);
-//
-//        unsigned int begin, end;
-//        for (int i = 0; i < n_fold; ++i) {
-//            begin = x.size() / n_fold * i;
-//            end = x.size() / n_fold * (i + 1);
-//
-//        }
-//    }
 
     std::string toString() {
         std::stringstream ss;

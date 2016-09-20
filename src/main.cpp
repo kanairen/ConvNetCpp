@@ -26,7 +26,6 @@ namespace cnc {
     const unsigned int INPUT_SIZE = MNIST_WIDTH * MNIST_HEIGHT;
 
     const unsigned int N_ITERATION = 1000;
-    const unsigned int N_CLASS = 10;
 
     // full connect layer
     const unsigned int N_HIDDEN_UNITS = 10000;
@@ -65,6 +64,8 @@ void mnist_full_connect(char *argv[]) {
     // mnist
     MNIST mnist(f_x_train, f_x_test, f_y_train, f_y_test);
 
+    unsigned int n_class = mnist.get_n_cls();
+
     Layer *layer_1 = new Layer(cnc::BATCH_SIZE,
                                cnc::INPUT_SIZE,
                                cnc::N_HIDDEN_UNITS,
@@ -73,13 +74,13 @@ void mnist_full_connect(char *argv[]) {
 
     Layer *layer_2 = new SoftMaxLayer(cnc::BATCH_SIZE,
                                       layer_1->get_n_out(),
-                                      cnc::N_CLASS);
+                                      n_class);
 
     vector<Layer *> v{layer_1, layer_2};
 
     // optimize
     optimize(mnist, v, cnc::LEARNING_RATE, cnc::BATCH_SIZE,
-             cnc::N_ITERATION, cnc::N_CLASS);
+             cnc::N_ITERATION, n_class);
 
     // release
     delete layer_1;
@@ -96,6 +97,8 @@ void mnist_conv(char *argv[]) {
     // mnist
     MNIST mnist(f_x_train, f_x_test, f_y_train, f_y_test);
 
+    unsigned int n_class = mnist.get_n_cls();
+
     Layer *layer_1 = new ConvLayer2d(cnc::BATCH_SIZE,
                                      cnc::MNIST_WIDTH, cnc::MNIST_HEIGHT,
                                      cnc::C_IN, cnc::C_OUT,
@@ -107,7 +110,7 @@ void mnist_conv(char *argv[]) {
 
     Layer *layer_2 = new SoftMaxLayer(cnc::BATCH_SIZE,
                                       layer_1->get_n_out(),
-                                      cnc::N_CLASS);
+                                      n_class);
 
     vector<Layer *> v{layer_1, layer_2};
 
@@ -115,7 +118,7 @@ void mnist_conv(char *argv[]) {
 
     // optimize
     optimize(mnist, v, cnc::LEARNING_RATE, cnc::BATCH_SIZE, cnc::N_ITERATION,
-             cnc::N_CLASS);
+             n_class);
 
     // release
     delete layer_1;
@@ -133,6 +136,8 @@ void mnist_conv_pool(char *argv[]) {
 
     // mnist
     MNIST mnist(f_x_train, f_x_test, f_y_train, f_y_test);
+
+    unsigned int n_class = mnist.get_n_cls();
 
     GridLayer2d *layer_1 = new ConvLayer2d(cnc::BATCH_SIZE,
                                            cnc::MNIST_WIDTH, cnc::MNIST_HEIGHT,
@@ -153,13 +158,13 @@ void mnist_conv_pool(char *argv[]) {
 
     Layer *layer_3 = new SoftMaxLayer(cnc::BATCH_SIZE,
                                       layer_2->get_n_out(),
-                                      cnc::N_CLASS);
+                                      n_class);
 
     vector<Layer *> v{layer_1, layer_2, layer_3};
 
     // optimize
     optimize(mnist, v, cnc::LEARNING_RATE, cnc::BATCH_SIZE, cnc::N_ITERATION,
-             cnc::N_CLASS);
+             n_class);
 
     // release
     delete layer_1;
@@ -179,6 +184,8 @@ void mnist_full_connect_eigen(char *argv[]) {
     // mnist
     MNIST mnist(f_x_train, f_x_test, f_y_train, f_y_test);
 
+    unsigned int n_class = mnist.get_n_cls();
+
     Layer_ *layer_1 = new Layer_(cnc::BATCH_SIZE,
                                  cnc::INPUT_SIZE,
                                  cnc::N_HIDDEN_UNITS,
@@ -187,13 +194,13 @@ void mnist_full_connect_eigen(char *argv[]) {
 
     Layer_ *layer_2 = new SoftMaxLayer_(cnc::BATCH_SIZE,
                                         layer_1->get_n_out(),
-                                        cnc::N_CLASS);
+                                        n_class);
 
     vector<Layer_ *> v{layer_1, layer_2};
 
     // optimize
     optimize_(mnist, v, cnc::LEARNING_RATE, cnc::BATCH_SIZE,
-              cnc::N_ITERATION, cnc::N_CLASS, argv[6], argv[7]);
+              cnc::N_ITERATION, n_class, argv[6], argv[7]);
 
     // release
     delete layer_1;
@@ -210,6 +217,8 @@ void mnist_conv_eigen(char *argv[]) {
     // mnist
     MNIST mnist(f_x_train, f_x_test, f_y_train, f_y_test);
 
+    unsigned int n_class = mnist.get_n_cls();
+
     Layer_ *layer_1 = new ConvLayer2d_(cnc::BATCH_SIZE,
                                        cnc::MNIST_WIDTH, cnc::MNIST_HEIGHT,
                                        cnc::C_IN, cnc::C_OUT,
@@ -221,7 +230,7 @@ void mnist_conv_eigen(char *argv[]) {
 
     Layer_ *layer_2 = new SoftMaxLayer_(cnc::BATCH_SIZE,
                                         layer_1->get_n_out(),
-                                        cnc::N_CLASS);
+                                        n_class);
 
     vector<Layer_ *> v{layer_1, layer_2};
 
@@ -229,7 +238,7 @@ void mnist_conv_eigen(char *argv[]) {
 
     // optimize
     optimize_(mnist, v, cnc::LEARNING_RATE, cnc::BATCH_SIZE, cnc::N_ITERATION,
-              cnc::N_CLASS, argv[6], argv[7]);
+              n_class, argv[6], argv[7]);
 
     // release
     delete layer_1;
@@ -247,6 +256,8 @@ void mnist_conv_pool_eigen(char *argv[]) {
 
     // mnist
     MNIST mnist(f_x_train, f_x_test, f_y_train, f_y_test);
+
+    unsigned int n_class = mnist.get_n_cls();
 
     GridLayer2d_ *layer_1 = new ConvLayer2d_(cnc::BATCH_SIZE,
                                              cnc::MNIST_WIDTH,
@@ -268,13 +279,13 @@ void mnist_conv_pool_eigen(char *argv[]) {
 
     Layer_ *layer_3 = new SoftMaxLayer_(cnc::BATCH_SIZE,
                                         layer_2->get_n_out(),
-                                        cnc::N_CLASS);
+                                        n_class);
 
     vector<Layer_ *> v{layer_1, layer_2, layer_3};
 
     // optimize
     optimize_(mnist, v, cnc::LEARNING_RATE, cnc::BATCH_SIZE, cnc::N_ITERATION,
-              cnc::N_CLASS, argv[6], argv[7]);
+              n_class, argv[6], argv[7]);
     // release
     delete layer_1;
     delete layer_2;
@@ -293,32 +304,32 @@ void shape_map_fc(char **argv) {
     unsigned int batch_size = 1;
     unsigned int input_size = shape_map_set.data_size();
     unsigned int n_hidden_units = 100;
-    unsigned int n_class = 2;
-    unsigned int n_iter = 1000;
+    unsigned int n_class = shape_map_set.get_n_cls();
+    unsigned int n_iter = 100000;
 
     float learning_rate = 0.001f;
 
-    float (*const layer_activation)(float) = relu;
+    float (*const layer_activation)(float) = sigmoid;
 
-    float (*const layer_grad_activation)(float) = g_relu;
+    float (*const layer_grad_activation)(float) = g_sigmoid;
 
     Layer_ *layer_1 = new Layer_(batch_size,
                                  input_size,
                                  n_hidden_units,
                                  layer_activation,
                                  layer_grad_activation);
-
-    Layer_ *layer_2 = new Layer_(batch_size,
-                                 layer_1->get_n_out(),
-                                 n_hidden_units,
-                                 layer_activation,
-                                 layer_grad_activation);
+//
+//    Layer_ *layer_2 = new Layer_(batch_size,
+//                                 layer_1->get_n_out(),
+//                                 n_hidden_units,
+//                                 layer_activation,
+//                                 layer_grad_activation);
 
     Layer_ *layer_3 = new SoftMaxLayer_(batch_size,
                                         layer_1->get_n_out(),
                                         n_class);
 
-    vector<Layer_ *> layers{layer_1, layer_2, layer_3};
+    vector<Layer_ *> layers{layer_1, layer_3};
 
     // optimize
     optimize_(shape_map_set, layers, learning_rate, batch_size, n_iter,
@@ -326,7 +337,7 @@ void shape_map_fc(char **argv) {
 
     // release
     delete layer_1;
-    delete layer_2;
+//    delete layer_2;
     delete layer_3;
 
 }
