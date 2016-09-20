@@ -7,7 +7,7 @@
 
 #include "Layer.h"
 
-class TriangleGridLayer : public Layer_ {
+class TriangularLatticeLayer : public Layer_ {
 protected:
 
     unsigned int n_channel;
