@@ -27,7 +27,7 @@ void list_dirs(string path, vector<string> &dst,
     string tmpLsPath = path + "/" + tmp_file_name;
     string commands = "ls " + path + " >> " + tmpLsPath;
     if (std::system(commands.c_str())) {
-        std::cerr << "ShapeMap::listDirs() : failed to execute commands." <<
+        std::cerr << "list_dirs() : failed to execute commands." <<
         std::endl;
         exit(1);
     }
@@ -35,7 +35,7 @@ void list_dirs(string path, vector<string> &dst,
     // 一時ファイル展開
     std::ifstream ifs(tmpLsPath);
     if (ifs.fail()) {
-        std::cerr << "ShapeMap::listDirs() : failed to load labels." <<
+        std::cerr << "list_dirs() : failed to load labels." <<
         std::endl;
         exit(1);
     }
