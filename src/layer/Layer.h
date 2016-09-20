@@ -5,7 +5,7 @@
 #ifndef CONVNETCPP_ABSTRACTLAYER_H
 #define CONVNETCPP_ABSTRACTLAYER_H
 
-#include "config.h"
+#include "../config.h"
 #include <random>
 #include <iostream>
 #include <vector>

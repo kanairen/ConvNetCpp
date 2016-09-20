@@ -7,7 +7,7 @@
 
 #include <float.h>
 #include "Layer.h"
-#include "activation.h"
+#include "../activation.h"
 
 class SoftMaxLayer_ : public Layer_ {
 public:

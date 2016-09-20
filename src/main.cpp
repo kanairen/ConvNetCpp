@@ -7,9 +7,9 @@
 #include "config.h"
 #include "MNIST.h"
 #include "ShapeMap.h"
-#include "SoftMaxLayer.h"
-#include "ConvLayer.h"
-#include "MaxPoolLayer.h"
+#include "layer/SoftMaxLayer.h"
+#include "layer/ConvLayer.h"
+#include "layer/MaxPoolLayer.h"
 #include "Model.h"
 #include "optimizer.h"
 

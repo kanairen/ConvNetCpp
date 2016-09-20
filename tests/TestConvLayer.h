@@ -6,7 +6,7 @@
 #define CONVNETCPP_TESTCONVLAYER_H
 
 #include<gtest/gtest.h>
-#include "../src/ConvLayer.h"
+#include "../src/layer/ConvLayer.h"
 #include "../src/activation.h"
 
 class ConvLayer2dTest : public ::testing::Test {

@@ -6,7 +6,7 @@
 #define CONVNETCPP_TESTMAXPOOLLAYER_H
 
 #include<gtest/gtest.h>
-#include "../src/MaxPoolLayer.h"
+#include "../src/layer/MaxPoolLayer.h"
 
 class MaxPoolLayer2dTest : public ::testing::Test {
 protected:

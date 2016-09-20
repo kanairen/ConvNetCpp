@@ -7,7 +7,7 @@
 
 #include <cmath>
 #include <vector>
-#include "Layer.h"
+#include "layer/Layer.h"
 
 using Eigen::VectorXi;
 using std::vector;

@@ -6,7 +6,7 @@
 #define CONVNETCPP_TESTGRIDLAYER_H
 
 #include<gtest/gtest.h>
-#include "../src/GridLayer.h"
+#include "../src/layer/GridLayer.h"
 
 class GridLayer2dTest : public ::testing::Test {
 protected:

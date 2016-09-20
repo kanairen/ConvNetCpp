@@ -8,7 +8,7 @@
 #include <iostream>
 #include <gtest/gtest.h>
 #include "../src/activation.h"
-#include "../src/Layer.h"
+#include "../src/layer/Layer.h"
 
 
 class LayerTest : public ::testing::Test {

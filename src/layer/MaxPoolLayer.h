@@ -6,7 +6,7 @@
 #define CONVNETCPP_MAXPOOLLAYER_H
 
 #include "GridLayer.h"
-#include "activation.h"
+#include "../activation.h"
 
 
 class MaxPoolLayer2d_ : public GridLayer2d_ {
