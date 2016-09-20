@@ -153,14 +153,7 @@ private:
             listDirs(label_path, direction_names);
             for (string direction_name : direction_names) {
                 string direction_path = label_path + "/" + direction_name;
-//                file_names.clear();
-//                listDirs(direction_path, file_names);
-//                for (string file_name: file_names) {
-//                    string full_path = direction_path + "/" + file_name;
-
                 dst_maps.push_back(ShapeMap(direction_path));
-
-//                }
             }
         }
 
