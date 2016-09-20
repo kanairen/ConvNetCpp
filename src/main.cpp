@@ -54,125 +54,6 @@ namespace cnc {
 
 };
 
-void mnist_full_connect(char *argv[]) {
-
-    string f_x_train = argv[2];
-    string f_x_test = argv[3];
-    string f_y_train = argv[4];
-    string f_y_test = argv[5];
-
-    // mnist
-    MNIST mnist(f_x_train, f_x_test, f_y_train, f_y_test);
-
-    unsigned int n_class = mnist.get_n_cls();
-
-    Layer *layer_1 = new Layer(cnc::BATCH_SIZE,
-                               cnc::INPUT_SIZE,
-                               cnc::N_HIDDEN_UNITS,
-                               cnc::LAYER_ACTIVATION,
-                               cnc::LAYER_GRAD_ACTIVATION);
-
-    Layer *layer_2 = new SoftMaxLayer(cnc::BATCH_SIZE,
-                                      layer_1->get_n_out(),
-                                      n_class);
-
-    vector<Layer *> v{layer_1, layer_2};
-
-    // optimize
-    optimize(mnist, v, cnc::LEARNING_RATE, cnc::BATCH_SIZE,
-             cnc::N_ITERATION, n_class);
-
-    // release
-    delete layer_1;
-    delete layer_2;
-}
-
-void mnist_conv(char *argv[]) {
-
-    string f_x_train = argv[2];
-    string f_x_test = argv[3];
-    string f_y_train = argv[4];
-    string f_y_test = argv[5];
-
-    // mnist
-    MNIST mnist(f_x_train, f_x_test, f_y_train, f_y_test);
-
-    unsigned int n_class = mnist.get_n_cls();
-
-    Layer *layer_1 = new ConvLayer2d(cnc::BATCH_SIZE,
-                                     cnc::MNIST_WIDTH, cnc::MNIST_HEIGHT,
-                                     cnc::C_IN, cnc::C_OUT,
-                                     cnc::KERNEL_WIDTH, cnc::KERNEL_HEIGHT,
-                                     cnc::STRIDE_X, cnc::STRIDE_Y,
-                                     cnc::PADDING_X, cnc::PADDING_Y,
-                                     cnc::CONV_ACTIVATION,
-                                     cnc::CONV_GRAD_ACTIVATION);
-
-    Layer *layer_2 = new SoftMaxLayer(cnc::BATCH_SIZE,
-                                      layer_1->get_n_out(),
-                                      n_class);
-
-    vector<Layer *> v{layer_1, layer_2};
-
-    std::cout << "conv:n_out:" << layer_1->get_n_out() << std::endl;
-
-    // optimize
-    optimize(mnist, v, cnc::LEARNING_RATE, cnc::BATCH_SIZE, cnc::N_ITERATION,
-             n_class);
-
-    // release
-    delete layer_1;
-    delete layer_2;
-
-}
-
-
-void mnist_conv_pool(char *argv[]) {
-
-    string f_x_train = argv[2];
-    string f_x_test = argv[3];
-    string f_y_train = argv[4];
-    string f_y_test = argv[5];
-
-    // mnist
-    MNIST mnist(f_x_train, f_x_test, f_y_train, f_y_test);
-
-    unsigned int n_class = mnist.get_n_cls();
-
-    GridLayer2d *layer_1 = new ConvLayer2d(cnc::BATCH_SIZE,
-                                           cnc::MNIST_WIDTH, cnc::MNIST_HEIGHT,
-                                           cnc::C_IN, cnc::C_OUT,
-                                           cnc::KERNEL_WIDTH,
-                                           cnc::KERNEL_HEIGHT,
-                                           cnc::STRIDE_X, cnc::STRIDE_Y,
-                                           cnc::PADDING_X, cnc::PADDING_Y,
-                                           cnc::CONV_ACTIVATION,
-                                           cnc::CONV_GRAD_ACTIVATION);
-
-    Layer *layer_2 = new MaxPoolLayer2d(cnc::BATCH_SIZE,
-                                        layer_1->get_output_width(),
-                                        layer_1->get_output_height(),
-                                        cnc::C_OUT,
-                                        cnc::KERNEL_WIDTH, cnc::KERNEL_HEIGHT,
-                                        cnc::PADDING_X, cnc::PADDING_Y);
-
-    Layer *layer_3 = new SoftMaxLayer(cnc::BATCH_SIZE,
-                                      layer_2->get_n_out(),
-                                      n_class);
-
-    vector<Layer *> v{layer_1, layer_2, layer_3};
-
-    // optimize
-    optimize(mnist, v, cnc::LEARNING_RATE, cnc::BATCH_SIZE, cnc::N_ITERATION,
-             n_class);
-
-    // release
-    delete layer_1;
-    delete layer_2;
-    delete layer_3;
-
-}
-
 
 void mnist_full_connect_eigen(char *argv[]) {
 
@@ -350,10 +231,6 @@ typedef void (*func_mnist)(char **);
 int main(int argc, char *argv[]) {
 
     std::map<string, func_mnist> functions;
-
-    functions["full_connect"] = mnist_full_connect;
-    functions["conv"] = mnist_conv;
-    functions["conv_pool"] = mnist_conv_pool;
 
     functions["full_connect_eigen"] = mnist_full_connect_eigen;
     functions["conv_eigen"] = mnist_conv_eigen;
