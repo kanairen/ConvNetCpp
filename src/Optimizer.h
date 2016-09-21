@@ -121,7 +121,7 @@ void optimize_(DataSet<X, Y> &data,
             std::vector<int> error_answers_train_batch;
             std::vector<int> error_answers_test_batch;
 
-            const MatrixXf &train_output = model.forward(x_trains[j]);
+            const MatrixXf &train_output = model.forward(x_trains[j], true);
 
             model.argmax(train_output, pred_train);
 
@@ -154,7 +154,8 @@ void optimize_(DataSet<X, Y> &data,
 
                 test_start = clock();
 
-                const MatrixXf &test_output = model.forward(x_tests[idx]);
+                const MatrixXf &test_output = model.forward(x_tests[idx],
+                                                            false);
 
                 model.argmax(test_output, pred_test);
 

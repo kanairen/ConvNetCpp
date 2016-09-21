@@ -27,7 +27,7 @@ public:
 
     const vector<Layer_ *> &get_layers() { return layers; }
 
-    const MatrixXf &forward(const MatrixXf &inputs) {
+    const MatrixXf &forward(const MatrixXf &inputs, bool is_train) {
 
         /*
          * 全レイヤの順伝播
@@ -37,7 +37,7 @@ public:
 
         const MatrixXf *output = &inputs;
         for (Layer_ *layer : layers) {
-            output = &(layer->forward(*output));
+            output = &(layer->forward(*output, is_train));
         }
         return *output;
     }

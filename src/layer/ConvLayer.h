@@ -85,10 +85,12 @@ public:
                  unsigned int px, unsigned int py,
                  float (*activation)(float), float (*grad_activation)(float),
                  bool is_filter_rand_init_enabled = true,
-                 float filter_constant_value = 0.f)
+                 float filter_constant_value = 0.f,
+                 bool is_dropout_enabled = false,
+                 float dropout_rate = 0.5f)
             : GridLayer2d_(n_data, input_width, input_height, c_in, c_out, kw,
                            kh, sx, sy, px, py, activation, grad_activation,
-                           false),
+                           false, is_dropout_enabled, dropout_rate),
               h(VectorXf::Constant(kw * kh * c_in * c_out,
                                    filter_constant_value)),
               t(MatrixXi::Constant(n_out, n_in,

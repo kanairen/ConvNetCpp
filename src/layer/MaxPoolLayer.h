@@ -17,12 +17,14 @@ public:
                     unsigned int input_width, unsigned int input_height,
                     unsigned int c,
                     unsigned int kw, unsigned int kh,
-                    unsigned int px, unsigned int py)
+                    unsigned int px, unsigned int py,
+                    bool is_dropout_enabled = false, float dropout_rate = 0.5f)
             : GridLayer2d_(n_data, input_width, input_height, c, c, kw,
-                           kh, kw, kh, px, py, iden, g_iden, false) { }
+                           kh, kw, kh, px, py, iden, g_iden, false,
+                           is_dropout_enabled, dropout_rate) { }
 
 
-    const MatrixXf &forward(const MatrixXf &input) {
+    const MatrixXf &forward(const MatrixXf &input, bool is_train) {
 
         /*
          * 入力の重み付き和を順伝播する関数
@@ -84,6 +86,12 @@ public:
         // 複数のデータ入力を受け付けるので、非ゼロ重みは　1.f/発火したユニット数　とする
         weights /= weights.sum();
 
+        // Dropout
+        if (is_dropout_enabled) {
+            dropout(is_train);
+        }
+
+
 #ifdef PROFILE_ENABLED
         std::cout << "MaxPoolLayer2d::forward : " <<
         (float) (clock() - start) / CLOCKS_PER_SEC << "s" << std::endl;
@@ -113,6 +121,10 @@ public:
 #endif
 
         delta = next_weights.transpose() * next_delta;
+
+        if (is_dropout_enabled) {
+            delta = delta.array() * dropout_filter.array();
+        }
 
 
 #ifdef PROFILE_ENABLED

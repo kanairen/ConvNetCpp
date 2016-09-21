@@ -1,5 +1,5 @@
 //
-// Created by 金井廉 on 2016/08/01.
+// Created by Ren Kanai on 2016/08/01.
 //
 
 #ifndef CONVNETCPP_TRIANGLEGRIDLAYER_H

@@ -17,7 +17,7 @@
 
 namespace cnc {
 
-    const float LEARNING_RATE = 0.01f;
+    const float LEARNING_RATE = 0.1f;
 
     const unsigned int BATCH_SIZE = 25;
 
@@ -198,7 +198,8 @@ void shape_map_fc(char **argv) {
                                  input_size,
                                  n_hidden_units,
                                  layer_activation,
-                                 layer_grad_activation);
+                                 layer_grad_activation,
+                                 true, 0.f, true, 0.5f);
 //
 //    Layer_ *layer_2 = new Layer_(batch_size,
 //                                 layer_1->get_n_out(),

@@ -55,6 +55,18 @@ protected:
     // 活性化関数微分形
     float (*grad_activation)(float);
 
+    // Dropout用フィルタベクトル
+    MatrixXf dropout_filter;
+
+    // ドロップアウトの有無
+    bool is_dropout_enabled;
+
+    // ドロップアウトする割合
+    float dropout_rate;
+
+    // 乱数生成器を使って一様分布に従った乱数を生成するオブジェクト
+    std::uniform_real_distribution<> normal_uniform;
+
     Layer_() = delete;
 
 
@@ -86,12 +98,37 @@ protected:
 
     }
 
+    void dropout(bool is_train) {
+
+        // 乱数生成器
+        std::random_device rand;
+        std::mt19937 mt(rand());
+
+        // init dropout-filter
+        for (int j = 0; j < dropout_filter.cols(); ++j) {
+            for (int i = 0; i < dropout_filter.rows(); ++i) {
+                dropout_filter(i, j) =
+                        normal_uniform(mt) > dropout_rate ? 1.f : 0.f;
+            }
+        }
+
+        // dropout
+        if (is_train) {
+            z = z.array() * dropout_filter.array();
+        } else {
+            z = z.array() * dropout_rate;
+        }
+
+    }
+
 public:
 
     Layer_(unsigned int n_data, unsigned int n_in, unsigned int n_out,
            float (*activation)(float), float (*grad_activation)(float),
            bool is_weight_rand_init_enabled = true,
-           float weight_constant_value = 0.f)
+           float weight_constant_value = 0.f,
+           bool is_dropout_enabled = false,
+           float dropout_rate = 0.5f)
             : n_data(n_data), n_in(n_in), n_out(n_out),
               activation(activation), grad_activation(grad_activation),
               weights(MatrixXf::Constant(n_out, n_in, weight_constant_value)),
@@ -99,13 +136,15 @@ public:
               delta(MatrixXf::Zero(n_out, n_data)),
               u(MatrixXf::Zero(n_out, n_data)),
               z(MatrixXf::Zero(n_out, n_data)),
-              ones_vec(VectorXf::Ones(n_data)) {
+              ones_vec(VectorXf::Ones(n_data)),
+              dropout_filter(MatrixXf::Ones(n_out, n_data)),
+              is_dropout_enabled(is_dropout_enabled),
+              dropout_rate(dropout_rate) {
 
         if (is_weight_rand_init_enabled) {
-
             // 乱数生成器
-            std::random_device rnd;
-            std::mt19937 mt(rnd());
+            std::random_device rand;
+            std::mt19937 mt(rand());
             std::uniform_real_distribution<float> uniform(
                     -sqrtf(6.f / (n_in + n_out)),
                     sqrtf(6.f / (n_in + n_out)));
@@ -141,7 +180,7 @@ public:
 
     virtual const VectorXf &get_biases() { return biases; }
 
-    virtual const MatrixXf &forward(const MatrixXf &input) {
+    virtual const MatrixXf &forward(const MatrixXf &input, bool is_train) {
 
         /*
          * 入力の重み付き和を順伝播する関数
@@ -162,6 +201,10 @@ public:
             }
         }
 
+        if (is_dropout_enabled) {
+            dropout(is_train);
+        }
+
 #ifdef PROFILE_ENABLED
         std::cout << "Layer::forward : " <<
         (float) (clock() - start) / CLOCKS_PER_SEC << "s" << std::endl;
@@ -169,6 +212,7 @@ public:
 
         return z;
     }
+
 
     virtual void backward(const MatrixXf &next_weights,
                           const MatrixXf &next_delta,
@@ -195,6 +239,10 @@ public:
             for (int i = 0; i < n_out; ++i) {
                 delta(i, j) = delta(i, j) * grad_activation(u(i, j));
             }
+        }
+
+        if (is_dropout_enabled) {
+            delta = delta.array() * dropout_filter.array();
         }
 
         // パラメタ更新
