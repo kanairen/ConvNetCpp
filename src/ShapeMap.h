@@ -178,6 +178,7 @@ private:
         for (int i = 0; i < dst_maps.size(); ++i) {
             set_y.insert(dst_maps[i].cls);
         }
+
         // クラスラベル空間
         for (int i = 0; i < dst_maps.size(); ++i) {
             auto iter = set_y.find(dst_maps[i].cls);

@@ -14,7 +14,6 @@
 using Eigen::VectorXi;
 using std::vector;
 
-
 template<class X, class Y>
 void optimize_(DataSet<X, Y> &data,
                vector<Layer_ *> &layers,

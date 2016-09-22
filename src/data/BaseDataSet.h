@@ -78,10 +78,6 @@ public:
 
     virtual unsigned int data_size() = 0;
 
-    static const unique_ptr<BaseDataSet> load() {
-
-    }
-
     static const unique_ptr<vector<BaseDataSet>> cross_validation(
             unsigned int n_fold,
             const vector<vector<X>> &x,
