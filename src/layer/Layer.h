@@ -64,6 +64,9 @@ protected:
     // ドロップアウトする割合
     float dropout_rate;
 
+    // メルセンヌ・ツイスタ乱数生成器
+    std::mt19937 mt;
+
     // 乱数生成器を使って一様分布に従った乱数を生成するオブジェクト
     std::uniform_real_distribution<> normal_uniform;
 
@@ -99,10 +102,6 @@ protected:
     }
 
     void dropout(bool is_train) {
-
-        // 乱数生成器
-        std::random_device rand;
-        std::mt19937 mt(rand());
 
         // init dropout-filter
         for (int j = 0; j < dropout_filter.cols(); ++j) {
@@ -141,10 +140,12 @@ public:
               is_dropout_enabled(is_dropout_enabled),
               dropout_rate(dropout_rate) {
 
+        // 初期シードを決定
+        std::random_device rand;
+        mt.seed(rand());
+
         if (is_weight_rand_init_enabled) {
             // 乱数生成器
-            std::random_device rand;
-            std::mt19937 mt(rand());
             std::uniform_real_distribution<float> uniform(
                     -sqrtf(6.f / (n_in + n_out)),
                     sqrtf(6.f / (n_in + n_out)));
