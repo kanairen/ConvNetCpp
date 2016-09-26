@@ -21,9 +21,9 @@ private:
 
 public:
     Model_(vector<Layer_ *> &layers, unsigned int n_data) :
-            layers(layers) { }
+            layers(layers) {}
 
-    ~Model_() { }
+    ~Model_() {}
 
     const vector<Layer_ *> &get_layers() { return layers; }
 
@@ -102,6 +102,32 @@ public:
             }
             predict(j) = max_idx;
         }
+
+    }
+
+    static float error(const VectorXi &predict, const VectorXi &answer) {
+        /*
+         * predictとanswerの各要素を比較し、誤りの割合を返す
+         *
+         * predict : 正解ラベルの予測
+         * answer : Ground-Truth
+         */
+
+#ifdef DEBUG_MODEL
+        if (predict.size() != answer.size()) {
+    std::cerr << "error :  Model::error()" << endl;
+    exit(1);
+}
+#endif
+
+        float num_error = 0.f;
+        for (int i = 0; i < predict.size(); ++i) {
+            if (predict[i] != answer[i]) {
+                num_error += 1;
+            }
+        }
+
+        return num_error / predict.size();
 
     }
 
