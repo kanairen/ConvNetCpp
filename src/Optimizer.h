@@ -23,7 +23,8 @@ void optimize_(DataSet<X, Y> &data,
                unsigned int n_class,
                string train_log_path,
                string test_log_path,
-               float log_init_const_value = -1.f) {
+               float log_init_const_value = -1.f,
+               bool is_error_example_enabled = false) {
 
     /*
      * Modelオブジェクトを最適化
@@ -100,12 +101,16 @@ void optimize_(DataSet<X, Y> &data,
         average_error_train = 0.f;
         average_error_test = 0.f;
 
-        // 誤りインデックス
-        std::vector<int> error_indices_train;
-        std::vector<int> error_indices_test;
-        // 誤り推定
-        std::vector<int> error_answers_train;
-        std::vector<int> error_answers_test;
+        if (is_error_example_enabled) {
+
+            // 誤りインデックス
+            std::vector<int> error_indices_train;
+            std::vector<int> error_indices_test;
+            // 誤り推定
+            std::vector<int> error_answers_train;
+            std::vector<int> error_answers_test;
+
+        }
 
         // データセット一周当たりの学習・テスト時間を計測
         start = clock();
@@ -127,15 +132,21 @@ void optimize_(DataSet<X, Y> &data,
 
             model.argmax(train_output, pred_train);
 
-            batch_error_train = model.error(pred_train, y_trains[j],
-                                            error_indices_train_batch,
-                                            error_answers_train_batch,
-                                            j * batch_size);
+            if (is_error_example_enabled) {
+                batch_error_train = model.error(pred_train, y_trains[j],
+                                                error_indices_train_batch,
+                                                error_answers_train_batch,
+                                                j * batch_size);
+            } else {
+                batch_error_train = model.error(pred_train, y_trains[j],
+                                                j * batch_size);
+            }
+
             average_error_train += batch_error_train;
 
             cout << "batch error(training data):" << batch_error_train << "\n";
             cout << "average error(training data):" <<
-            average_error_train / (j + 1) << "\n";
+                 average_error_train / (j + 1) << "\n";
 
             // 出力層デルタ
             sm_train = train_output;
@@ -147,7 +158,7 @@ void optimize_(DataSet<X, Y> &data,
             model.backward(x_trains[j], sm_train, learning_rate);
 
             cout << "train time:" <<
-            (float) (clock() - train_start) / CLOCKS_PER_SEC << "s\n";
+                 (float) (clock() - train_start) / CLOCKS_PER_SEC << "s\n";
 
             // テスト
             if (j % (n_batch_train / n_batch_test) == 0) {
@@ -161,36 +172,44 @@ void optimize_(DataSet<X, Y> &data,
 
                 model.argmax(test_output, pred_test);
 
-                batch_error_test = model.error(pred_test, y_tests[idx],
-                                               error_indices_test_batch,
-                                               error_answers_test_batch,
-                                               idx * batch_size);
+                if (is_error_example_enabled) {
+                    batch_error_test = model.error(pred_test, y_tests[idx],
+                                                   error_indices_test_batch,
+                                                   error_answers_test_batch,
+                                                   idx * batch_size);
+                } else {
+                    batch_error_test = model.error(pred_test, y_tests[idx],
+                                                   idx * batch_size);
+                }
+
                 average_error_test += batch_error_test;
 
                 cout << "batch error(test data):" << batch_error_test << "\n";
                 cout << "average error(test data):" <<
-                average_error_test / (idx + 1) << "\n";
+                     average_error_test / (idx + 1) << "\n";
 
                 cout << "test time:" <<
-                (float) (clock() - test_start) / CLOCKS_PER_SEC << "s\n";
+                     (float) (clock() - test_start) / CLOCKS_PER_SEC << "s\n";
 
             }
 
-            std::copy(error_indices_train_batch.begin(),
-                      error_indices_train_batch.end(),
-                      std::back_inserter(error_indices_train));
+            if (is_error_example_enabled) {
+                std::copy(error_indices_train_batch.begin(),
+                          error_indices_train_batch.end(),
+                          std::back_inserter(error_indices_train));
 
-            std::copy(error_indices_test_batch.begin(),
-                      error_indices_test_batch.end(),
-                      std::back_inserter(error_indices_test));
+                std::copy(error_indices_test_batch.begin(),
+                          error_indices_test_batch.end(),
+                          std::back_inserter(error_indices_test));
 
-            std::copy(error_answers_train_batch.begin(),
-                      error_answers_train_batch.end(),
-                      std::back_inserter(error_answers_train));
+                std::copy(error_answers_train_batch.begin(),
+                          error_answers_train_batch.end(),
+                          std::back_inserter(error_answers_train));
 
-            std::copy(error_answers_test_batch.begin(),
-                      error_answers_test_batch.end(),
-                      std::back_inserter(error_answers_test));
+                std::copy(error_answers_test_batch.begin(),
+                          error_answers_test_batch.end(),
+                          std::back_inserter(error_answers_test));
+            }
 
             cout << endl;
 
@@ -217,7 +236,7 @@ void optimize_(DataSet<X, Y> &data,
         print(error_answers_test);
 
         cout << "process time:" << (float) (clock() - start) / CLOCKS_PER_SEC <<
-        "s\n";
+             "s\n";
 
         cout << endl;
 
