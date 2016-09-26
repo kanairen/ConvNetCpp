@@ -24,7 +24,8 @@ void optimize_(DataSet<X, Y> &data,
                string train_log_path,
                string test_log_path,
                float log_init_const_value = -1.f,
-               bool is_error_example_enabled = false) {
+               bool is_error_example_enabled = false,
+               unsigned int save_log_duration = 100) {
 
     /*
      * Modelオブジェクトを最適化
@@ -240,10 +241,12 @@ void optimize_(DataSet<X, Y> &data,
 
         cout << endl;
 
-    }
+        if (i % save_log_duration == 0) {
+            save_as_csv<float>(train_log_path, log_average_error_train);
+            save_as_csv<float>(test_log_path, log_average_error_test);
+        }
 
-    save_as_csv<float>(train_log_path, log_average_error_train);
-    save_as_csv<float>(test_log_path, log_average_error_test);
+    }
 
 }
 
