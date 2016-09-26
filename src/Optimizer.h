@@ -22,7 +22,8 @@ void optimize_(DataSet<X, Y> &data,
                unsigned int n_iter,
                unsigned int n_class,
                string train_log_path,
-               string test_log_path) {
+               string test_log_path,
+               float log_init_const_value = -1.f) {
 
     /*
      * Modelオブジェクトを最適化
@@ -84,6 +85,8 @@ void optimize_(DataSet<X, Y> &data,
     // ERRORの割合ログ
     std::vector<float> log_average_error_train(n_iter);
     std::vector<float> log_average_error_test(n_iter);
+    std::fill(log_average_error_train.begin(), log_average_error_train.end(), log_init_const_value);
+    std::fill(log_average_error_test.begin(), log_average_error_test.end(), log_init_const_value);
 
     std::cout << "\nlearning start !\n" << std::endl;
 
