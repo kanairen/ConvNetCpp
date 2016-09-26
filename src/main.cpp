@@ -11,7 +11,7 @@
 #include "layer/ConvLayer.h"
 #include "layer/MaxPoolLayer.h"
 #include "Model.h"
-#include "optimizer.h"
+#include "Optimizer.h"
 
 #ifdef CONV_NET_CPP_DEBUG
 
