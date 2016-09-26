@@ -5,6 +5,7 @@
 #ifndef CONVNETCPP_MAXPOOLLAYER_H
 #define CONVNETCPP_MAXPOOLLAYER_H
 
+#include <float.h>
 #include "GridLayer.h"
 #include "../activation.h"
 
@@ -52,7 +53,7 @@ public:
                                 y / sy * output_width +
                                 x / sx;
 
-                        max = -MAXFLOAT;
+                        max = FLT_MIN;
 
                         for (int ci = 0; ci < c_in; ++ci) {
                             for (int ky = 0; ky < kh; ++ky) {
