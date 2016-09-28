@@ -10,6 +10,11 @@
 #include <vector>
 
 template<class T>
+void print(const T &v) {
+    std::cout << v << std::endl;
+}
+
+template<class T>
 void print(const std::vector<T> &v) {
     for (T t: v) {
         std::cout << t << ", ";
