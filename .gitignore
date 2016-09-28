@@ -44,3 +44,6 @@ ConvNetCpp/res/*
 
 # csv file
 *.csv
+
+# XML file
+*.xml
