@@ -54,4 +54,9 @@ void list_dirs(string path, vector<string> &dst,
     std::remove(tmpLsPath.c_str());
 }
 
+void error_and_exit(string message) {
+    cerr << message << endl;
+    exit(1);
+}
+
 #endif //CONVNETCPP_OSUTIL_H
