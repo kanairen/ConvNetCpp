@@ -1,0 +1,8 @@
+//
+// Created by Ren Kanai on 2016/10/01.
+//
+
+#ifndef CONVNETCPP_STRINGUTIL_H
+#define CONVNETCPP_STRINGUTIL_H
+
+#endif //CONVNETCPP_STRINGUTIL_H
