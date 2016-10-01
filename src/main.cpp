@@ -15,6 +15,8 @@
 #include "Model.h"
 #include "Optimizer.h"
 
+#include "util/StringUtil.h"
+
 #include "tinyxml/tinyxml2.h"
 
 using tinyxml2::XMLDocument;
@@ -162,15 +164,13 @@ Layer_ *new_layer(XMLElement *xml_layer, int n_data, int n_in) {
             atoi(map[xmlkey::ACTIVATION_ID].c_str()));
 
     // weight initialization setting
-    bool is_weight_rand_init_enabled = std::strncmp(
-            map[xmlkey::IS_WEIGHT_RAND_INIT_ENABLED].c_str(), "true", 4) == 0;
+    bool is_weight_rand_init_enabled = atob(
+            map[xmlkey::IS_WEIGHT_RAND_INIT_ENABLED].c_str());
     float weight_constant_value = std::atof(
             map[xmlkey::WEIGHT_CONSTANT_VALUE].c_str());
 
     // dropout setting
-    bool is_dropout_enabled =
-            std::strncmp(map[xmlkey::IS_DROPOUT_ENABLED].c_str(), "true", 4) ==
-            0;
+    bool is_dropout_enabled = atob(map[xmlkey::IS_DROPOUT_ENABLED].c_str());
     float dropout_rate = std::atof(map[xmlkey::DROPOUT_RATE].c_str());
 
     return new Layer_(n_data, n_in, n_hidden, act, g_act,
@@ -182,7 +182,7 @@ Layer_ *new_layer(XMLElement *xml_layer, int n_data, int n_in) {
 SoftMaxLayer_ *new_softmax_layer(XMLElement *xml_layer, int n_data, int n_in,
                                  int n_class) {
 
-    if (strncmp(xml_layer->Name(), xmlkey::SOFTMAX, 2) != 0) {
+    if (xml_layer->Name() == xmlkey::SOFTMAX) {
         error_and_exit(
                 "new_softmax_layer(): a xml element in arguments is incorrect.");
     }
@@ -190,15 +190,13 @@ SoftMaxLayer_ *new_softmax_layer(XMLElement *xml_layer, int n_data, int n_in,
     std::map<string, string> &&map = params_softmax(xml_layer);
 
     // weight initialization setting
-    bool is_weight_rand_init_enabled = std::strncmp(
-            map[xmlkey::IS_WEIGHT_RAND_INIT_ENABLED].c_str(), "true", 4) == 0;
+    bool is_weight_rand_init_enabled = atob(
+            map[xmlkey::IS_WEIGHT_RAND_INIT_ENABLED].c_str());
     float weight_constant_value = std::atof(
             map[xmlkey::WEIGHT_CONSTANT_VALUE].c_str());
 
     // dropout setting
-    bool is_dropout_enabled =
-            std::strncmp(map[xmlkey::IS_DROPOUT_ENABLED].c_str(), "true", 4) ==
-            0;
+    bool is_dropout_enabled = atob(map[xmlkey::IS_DROPOUT_ENABLED].c_str());
     float dropout_rate = std::atof(map[xmlkey::DROPOUT_RATE].c_str());
 
     return new SoftMaxLayer_(n_data, n_in, n_class, is_weight_rand_init_enabled,
@@ -206,6 +204,7 @@ SoftMaxLayer_ *new_softmax_layer(XMLElement *xml_layer, int n_data, int n_in,
                              dropout_rate);
 
 }
+
 
 // コマンドライン引数にmnistへのパスを渡す
 int main(int argc, char *argv[]) {
@@ -255,7 +254,7 @@ int main(int argc, char *argv[]) {
     float learning_rate = (float) std::atof(xml_lr->GetText());
 
     // Layers
-    vector<Layer_*> layers;
+    vector<Layer_ *> layers;
     int n_in = data_set->data_size();
     XMLNode *node = xml_nets->FirstChild();
     while (node != nullptr) {
@@ -275,7 +274,6 @@ int main(int argc, char *argv[]) {
     // optimize
     optimize_(*data_set, layers, learning_rate, batch_size, n_iter,
               n_class, argv[argc - 2], argv[argc - 1]);
-
 
 }
 
