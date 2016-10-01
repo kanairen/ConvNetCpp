@@ -3,6 +3,7 @@
 //
 
 #include <map>
+#include <memory>
 
 #include "config.h"
 #include "Data.h"
