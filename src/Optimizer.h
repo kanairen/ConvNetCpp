@@ -251,6 +251,9 @@ void optimize_(DataSet<X, Y> &data,
 
     }
 
+    save_as_csv<float>(train_log_path, log_average_error_train);
+    save_as_csv<float>(test_log_path, log_average_error_test);
+
 }
 
 
