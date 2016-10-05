@@ -87,8 +87,10 @@ void optimize_(DataSet<X, Y> &data,
     // ERRORの割合ログ
     std::vector<float> log_average_error_train(n_iter);
     std::vector<float> log_average_error_test(n_iter);
-    std::fill(log_average_error_train.begin(), log_average_error_train.end(), log_init_const_value);
-    std::fill(log_average_error_test.begin(), log_average_error_test.end(), log_init_const_value);
+    std::fill(log_average_error_train.begin(), log_average_error_train.end(),
+              log_init_const_value);
+    std::fill(log_average_error_test.begin(), log_average_error_test.end(),
+              log_init_const_value);
 
     // 誤りインデックス
     std::vector<int> error_indices_train;
@@ -149,7 +151,7 @@ void optimize_(DataSet<X, Y> &data,
 
             cout << "batch error(training data):" << batch_error_train << "\n";
             cout << "average error(training data):" <<
-                 average_error_train / (j + 1) << "\n";
+            average_error_train / (j + 1) << "\n";
 
             // 出力層デルタ
             sm_train = train_output;
@@ -161,7 +163,7 @@ void optimize_(DataSet<X, Y> &data,
             model.backward(x_trains[j], sm_train, learning_rate);
 
             cout << "train time:" <<
-                 (float) (clock() - train_start) / CLOCKS_PER_SEC << "s\n";
+            (float) (clock() - train_start) / CLOCKS_PER_SEC << "s\n";
 
             // テスト
             if (j % (n_batch_train / n_batch_test) == 0) {
@@ -188,10 +190,10 @@ void optimize_(DataSet<X, Y> &data,
 
                 cout << "batch error(test data):" << batch_error_test << "\n";
                 cout << "average error(test data):" <<
-                     average_error_test / (idx + 1) << "\n";
+                average_error_test / (idx + 1) << "\n";
 
                 cout << "test time:" <<
-                     (float) (clock() - test_start) / CLOCKS_PER_SEC << "s\n";
+                (float) (clock() - test_start) / CLOCKS_PER_SEC << "s\n";
 
             }
 
@@ -240,7 +242,7 @@ void optimize_(DataSet<X, Y> &data,
         }
 
         cout << "process time:" << (float) (clock() - start) / CLOCKS_PER_SEC <<
-             "s\n";
+        "s\n";
 
         cout << endl;
 
