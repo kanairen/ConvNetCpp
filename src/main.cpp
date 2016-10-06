@@ -206,8 +206,24 @@ SoftMaxLayer_ *new_softmax_layer(XMLElement *xml_layer, int n_data, int n_in,
 }
 
 
-// コマンドライン引数にmnistへのパスを渡す
 int main(int argc, char *argv[]) {
+
+    /*
+     * Check Command Line Arguments
+     */
+
+    if (argc != 6) {
+        string message = "\n  The number of arguments is too ";
+        if (argc > 6) {
+            message += "much! \n\n";
+        } else {
+            message += "short! \n\n";
+        }
+        message += " *.out [config xml path] "
+                "[training data path] [test data path] "
+                "[training log path] [test log path]";
+        error_and_exit(message);
+    }
 
     /*
      * XML Parse
