@@ -17,6 +17,8 @@
 
 #include "util/StringUtil.h"
 
+#include "helper/ActivationHelper.h"
+
 #include "tinyxml/tinyxml2.h"
 
 using tinyxml2::XMLDocument;
@@ -51,52 +53,6 @@ public:
             default:
                 error_and_exit(
                         "DataSetHelper::get_dataset : failed to get dataset.");
-                return nullptr;
-        }
-    }
-
-};
-
-typedef float (*ACTIVATION)(float);
-
-class ActivationHelper {
-private:
-
-    ActivationHelper() = delete;
-
-    ActivationHelper(const ActivationHelper &activation_helper) = delete;
-
-    virtual ~ActivationHelper() = default;
-
-public:
-
-    enum Type : long {
-        SIGMOID = 0x00,
-        RELU = 0x01,
-    };
-
-    static ACTIVATION get_activation(int id) {
-        switch (id) {
-            case SIGMOID:
-                return sigmoid;
-            case RELU:
-                return relu;
-            default:
-                error_and_exit(
-                        "ActivationHelper::get_activation() : failed to get activate function.");
-                return nullptr;
-        }
-    }
-
-    static ACTIVATION get_g_activation(int id) {
-        switch (id) {
-            case SIGMOID:
-                return g_sigmoid;
-            case RELU:
-                return g_relu;
-            default:
-                error_and_exit(
-                        "ActivationHelper::get_grad_activation() : failed to get activate function.");
                 return nullptr;
         }
     }
@@ -205,7 +161,6 @@ SoftMaxLayer_ *new_softmax_layer(XMLElement *xml_layer, int n_data, int n_in,
 
 }
 
-
 int main(int argc, char *argv[]) {
 
     /*
@@ -250,7 +205,6 @@ int main(int argc, char *argv[]) {
     // xml:layer_params
     std::vector<std::pair<string, string>> layer_params;
     XMLElement *xml_nets = xml_root->FirstChildElement("nets");
-
 
     /*
      * Getting Start
