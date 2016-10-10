@@ -30,6 +30,18 @@ using tinyxml2::XMLNode;
 
 
 namespace xmlkey {
+    constexpr char ROOT[] = "root";
+
+    constexpr char N_ITER[] = "n_iteration";
+    constexpr char LEARNING_RATE[] = "learning_rate";
+
+    constexpr char DATA_SET[] = "data_set";
+    constexpr char DATA_SET_ID[] = "id";
+    constexpr char DATA_SET_IS_SHUFFLED[] = "is_shuffled";
+    constexpr char DATA_SET_BATCH_SIZE[] = "batch_size";
+
+    constexpr char NETS[] = "nets";
+
     constexpr char FULL_CONNECT[] = "full_connect";
     constexpr char SOFTMAX[] = "softmax";
 
@@ -158,23 +170,24 @@ int main(int argc, char *argv[]) {
     xml.LoadFile(argv[1]);
 
     // xml:root
-    XMLElement *xml_root = xml.FirstChildElement("root");
+    XMLElement *xml_root = xml.FirstChildElement(xmlkey::ROOT);
 
     // xml:n_iteration
-    XMLElement *xml_n_iteration = xml_root->FirstChildElement("n_iteration");
+    XMLElement *xml_n_iteration = xml_root->FirstChildElement(xmlkey::N_ITER);
     // xml:learning_rate
-    XMLElement *xml_lr = xml_root->FirstChildElement("learning_rate");
+    XMLElement *xml_lr = xml_root->FirstChildElement(xmlkey::LEARNING_RATE);
 
     // xml:data_set
-    XMLElement *xml_data_set = xml_root->FirstChildElement("data_set");
-    XMLElement *xml_data_set_id = xml_data_set->FirstChildElement("id");
-    XMLElement *xml_data_set_is_shuffled = xml_data_set->FirstChildElement(
-            "is_shuffled");
-    XMLElement *xml_batch_size = xml_data_set->FirstChildElement("batch_size");
+    XMLElement *xml_ds = xml_root->FirstChildElement(xmlkey::DATA_SET);
+    XMLElement *xml_ds_id = xml_ds->FirstChildElement(xmlkey::DATA_SET_ID);
+    XMLElement *xml_ds_is_shuffled = xml_ds->FirstChildElement(
+            xmlkey::DATA_SET_IS_SHUFFLED);
+    XMLElement *xml_batch_size = xml_ds->FirstChildElement(
+            xmlkey::DATA_SET_BATCH_SIZE);
 
     // xml:layer_params
     std::vector<std::pair<string, string>> layer_params;
-    XMLElement *xml_nets = xml_root->FirstChildElement("nets");
+    XMLElement *xml_nets = xml_root->FirstChildElement(xmlkey::NETS);
 
     /*
      * Getting Start
@@ -182,7 +195,7 @@ int main(int argc, char *argv[]) {
 
     // DataSet
     std::unique_ptr<DataSet<float, int>> data_set(DataSetHelper::get_dataset(
-            std::atoi(xml_data_set_id->GetText()), argv));
+            std::atoi(xml_ds_id->GetText()), argv));
     // shuffle
     ShapeMapSet::shuffle(data_set->x_train, data_set->y_train);
     ShapeMapSet::shuffle(data_set->x_test, data_set->y_test);
