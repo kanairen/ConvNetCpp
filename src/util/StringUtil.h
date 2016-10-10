@@ -16,5 +16,8 @@ bool atob(const char c[]) {
     return false;
 }
 
+bool is_equal(const char s1[],const char s2[]){
+    return std::strcmp(s1, s2) == 0;
+}
 
 #endif //CONVNETCPP_STRINGUTIL_H
