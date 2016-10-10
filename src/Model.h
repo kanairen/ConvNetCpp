@@ -11,21 +11,22 @@
 
 using Eigen::VectorXi;
 using std::vector;
+using std::unique_ptr;
 
 
 class Model_ {
 private:
-    vector<Layer_ *> &layers;
+    vector<unique_ptr<Layer_>> &layers;
 
     Model_() = delete;
 
 public:
-    Model_(vector<Layer_ *> &layers, unsigned int n_data) :
-            layers(layers) {}
+    Model_(vector<unique_ptr<Layer_>> &layers, unsigned int n_data) :
+            layers(layers) { }
 
-    ~Model_() {}
+    ~Model_() { }
 
-    const vector<Layer_ *> &get_layers() { return layers; }
+    const vector<unique_ptr<Layer_> > &get_layers() { return layers; }
 
     const MatrixXf &forward(const MatrixXf &inputs, bool is_train) {
 
@@ -36,7 +37,7 @@ public:
          */
 
         const MatrixXf *output = &inputs;
-        for (Layer_ *layer : layers) {
+        for (unique_ptr<Layer_> &layer : layers) {
             output = &(layer->forward(*output, is_train));
         }
         return *output;

@@ -13,10 +13,11 @@
 
 using Eigen::VectorXi;
 using std::vector;
+using std::unique_ptr;
 
 template<class X, class Y>
 void optimize_(DataSet<X, Y> &data,
-               vector<Layer_ *> &layers,
+               vector<unique_ptr<Layer_>> &layers,
                float learning_rate,
                unsigned int batch_size,
                unsigned int n_iter,

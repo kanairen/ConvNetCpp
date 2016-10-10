@@ -86,8 +86,9 @@ std::map<string, string> params_softmax(XMLElement *elem) {
 
 Layer_ *new_fc(XMLElement *xml_layer, int n_data, int n_in) {
 
-    if (is_equal(xml_layer->Name(), xmlkey::FULL_CONNECT)) {
-        error_and_exit("new_layer(): a xml element in arguments is incorrect.");
+    if (!is_equal(xml_layer->Name(), xmlkey::FULL_CONNECT)) {
+        error_and_exit("new_fc(): a xml element name is incorrect. : " +
+                       string(xml_layer->Name()));
     }
 
     std::map<string, string> &&map = params_layer(xml_layer);
@@ -120,9 +121,10 @@ Layer_ *new_fc(XMLElement *xml_layer, int n_data, int n_in) {
 SoftMaxLayer_ *new_softmax(XMLElement *xml_layer, int n_data, int n_in,
                            int n_class) {
 
-    if (xml_layer->Name() == xmlkey::SOFTMAX) {
+    if (!is_equal(xml_layer->Name(), xmlkey::SOFTMAX)) {
         error_and_exit(
-                "new_softmax_layer(): a xml element in arguments is incorrect.");
+                "new_softmax(): a xml element name is incorrect : " +
+                string(xml_layer->Name()));
     }
 
     std::map<string, string> &&map = params_softmax(xml_layer);
@@ -210,17 +212,23 @@ int main(int argc, char *argv[]) {
     float learning_rate = (float) std::atof(xml_lr->GetText());
 
     // Layers
-    vector<Layer_ *> layers;
+    vector<unique_ptr<Layer_>> layers;
     int n_in = data_set->data_size();
     XMLNode *node = xml_nets->FirstChild();
+    XMLElement *net_elem;
     while (node != nullptr) {
 
-        XMLElement *net_elem = node->ToElement();
+        net_elem = node->ToElement();
 
         if (is_equal(net_elem->Name(), xmlkey::FULL_CONNECT)) {
-            layers.push_back(new_fc(net_elem, batch_size, n_in));
+            layers.push_back(
+                    unique_ptr<Layer_>(
+                            std::move(new_fc(net_elem, batch_size, n_in))));
         } else if (is_equal(net_elem->Name(), xmlkey::SOFTMAX)) {
-            layers.push_back(new_softmax(net_elem, batch_size, n_in, n_class));
+            layers.push_back(
+                    unique_ptr<Layer_>(
+                            std::move(new_softmax(net_elem, batch_size, n_in,
+                                                  n_class))));
         } else {
             error_and_exit("failed to set layer.");
         }
@@ -231,8 +239,8 @@ int main(int argc, char *argv[]) {
     }
 
     // optimize
-    optimize_(*data_set, layers, learning_rate, batch_size, n_iter,
-              n_class, argv[argc - 2], argv[argc - 1]);
+    optimize_(*data_set, layers, learning_rate, batch_size, n_iter, n_class,
+              argv[argc - 2], argv[argc - 1]);
 
 }
 
