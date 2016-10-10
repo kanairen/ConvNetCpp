@@ -84,7 +84,7 @@ std::map<string, string> params_softmax(XMLElement *elem) {
     return params_common(elem);
 };
 
-Layer_ *new_layer(XMLElement *xml_layer, int n_data, int n_in) {
+Layer_ *new_fc(XMLElement *xml_layer, int n_data, int n_in) {
 
     if (is_equal(xml_layer->Name(), xmlkey::FULL_CONNECT)) {
         error_and_exit("new_layer(): a xml element in arguments is incorrect.");
@@ -117,8 +117,8 @@ Layer_ *new_layer(XMLElement *xml_layer, int n_data, int n_in) {
 
 }
 
-SoftMaxLayer_ *new_softmax_layer(XMLElement *xml_layer, int n_data, int n_in,
-                                 int n_class) {
+SoftMaxLayer_ *new_softmax(XMLElement *xml_layer, int n_data, int n_in,
+                           int n_class) {
 
     if (xml_layer->Name() == xmlkey::SOFTMAX) {
         error_and_exit(
@@ -145,6 +145,7 @@ SoftMaxLayer_ *new_softmax_layer(XMLElement *xml_layer, int n_data, int n_in,
 
 int main(int argc, char *argv[]) {
 
+
     /*
      * Check Command Line Arguments
      */
@@ -161,6 +162,7 @@ int main(int argc, char *argv[]) {
                 "[training log path] [test log path]";
         error_and_exit(message);
     }
+
 
     /*
      * XML Parse
@@ -189,6 +191,7 @@ int main(int argc, char *argv[]) {
     std::vector<std::pair<string, string>> layer_params;
     XMLElement *xml_nets = xml_root->FirstChildElement(xmlkey::NETS);
 
+
     /*
      * Getting Start
      */
@@ -215,9 +218,9 @@ int main(int argc, char *argv[]) {
         XMLElement *net_elem = node->ToElement();
 
         if (is_equal(net_elem->Name(), xmlkey::FULL_CONNECT)) {
-            layers.push_back(new_layer(net_elem, batch_size, n_in));
+            layers.push_back(new_fc(net_elem, batch_size, n_in));
         } else if (is_equal(net_elem->Name(), xmlkey::SOFTMAX)) {
-            layers.push_back(new_softmax_layer(net_elem, batch_size, n_in, n_class));
+            layers.push_back(new_softmax(net_elem, batch_size, n_in, n_class));
         } else {
             error_and_exit("failed to set layer.");
         }
