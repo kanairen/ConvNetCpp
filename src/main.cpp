@@ -104,12 +104,12 @@ Layer_ *new_fc(XMLElement *xml_layer, int n_data, int n_in) {
     // weight initialization setting
     bool is_weight_rand_init_enabled = atob(
             map[xmlkey::IS_WEIGHT_RAND_INIT_ENABLED].c_str());
-    float weight_constant_value = std::atof(
+    float weight_constant_value = (float) std::atof(
             map[xmlkey::WEIGHT_CONSTANT_VALUE].c_str());
 
     // dropout setting
     bool is_dropout_enabled = atob(map[xmlkey::IS_DROPOUT_ENABLED].c_str());
-    float dropout_rate = std::atof(map[xmlkey::DROPOUT_RATE].c_str());
+    float dropout_rate = (float) std::atof(map[xmlkey::DROPOUT_RATE].c_str());
 
     return new Layer_(n_data, n_in, n_hidden, act, g_act,
                       is_weight_rand_init_enabled, weight_constant_value,
@@ -130,12 +130,12 @@ SoftMaxLayer_ *new_softmax(XMLElement *xml_layer, int n_data, int n_in,
     // weight initialization setting
     bool is_weight_rand_init_enabled = atob(
             map[xmlkey::IS_WEIGHT_RAND_INIT_ENABLED].c_str());
-    float weight_constant_value = std::atof(
+    float weight_constant_value = (float) std::atof(
             map[xmlkey::WEIGHT_CONSTANT_VALUE].c_str());
 
     // dropout setting
     bool is_dropout_enabled = atob(map[xmlkey::IS_DROPOUT_ENABLED].c_str());
-    float dropout_rate = std::atof(map[xmlkey::DROPOUT_RATE].c_str());
+    float dropout_rate = (float) std::atof(map[xmlkey::DROPOUT_RATE].c_str());
 
     return new SoftMaxLayer_(n_data, n_in, n_class, is_weight_rand_init_enabled,
                              weight_constant_value, is_dropout_enabled,
