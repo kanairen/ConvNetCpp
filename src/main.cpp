@@ -86,7 +86,7 @@ std::map<string, string> params_softmax(XMLElement *elem) {
 
 Layer_ *new_layer(XMLElement *xml_layer, int n_data, int n_in) {
 
-    if (strncmp(xml_layer->Name(), xmlkey::FULL_CONNECT, 2) != 0) {
+    if (is_equal(xml_layer->Name(), xmlkey::FULL_CONNECT)) {
         error_and_exit("new_layer(): a xml element in arguments is incorrect.");
     }
 
@@ -211,17 +211,20 @@ int main(int argc, char *argv[]) {
     int n_in = data_set->data_size();
     XMLNode *node = xml_nets->FirstChild();
     while (node != nullptr) {
-        XMLElement *xml_nets_elem = node->ToElement();
-        if (std::strcmp(xml_nets_elem->Name(), xmlkey::FULL_CONNECT) == 0) {
-            layers.push_back(new_layer(xml_nets_elem, batch_size, n_in));
-        } else if (std::strcmp(xml_nets_elem->Name(), xmlkey::SOFTMAX) == 0) {
-            layers.push_back(new_softmax_layer(xml_nets_elem, batch_size, n_in,
-                                               n_class));
+
+        XMLElement *net_elem = node->ToElement();
+
+        if (is_equal(net_elem->Name(), xmlkey::FULL_CONNECT)) {
+            layers.push_back(new_layer(net_elem, batch_size, n_in));
+        } else if (is_equal(net_elem->Name(), xmlkey::SOFTMAX)) {
+            layers.push_back(new_softmax_layer(net_elem, batch_size, n_in, n_class));
         } else {
             error_and_exit("failed to set layer.");
         }
+
         node = node->NextSibling();
         n_in = layers.back()->get_n_out();
+
     }
 
     // optimize
