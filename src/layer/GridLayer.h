@@ -61,6 +61,7 @@ public:
                  unsigned int px, unsigned int py,
                  float (*activation)(float), float (*grad_activation)(float),
                  bool is_weight_rand_init_enabled = false,
+                 float weight_constant_value = 0.0f,
                  bool is_dropout_enabled = false,
                  float dropout_rate = 0.5f)
             : input_width(input_width), input_height(input_height),
@@ -72,7 +73,7 @@ public:
                      c_out * filter_outsize(input_height, kh, sy, py, false) *
                      filter_outsize(input_width, kw, sx, px, false),
                      activation, grad_activation, is_weight_rand_init_enabled,
-                     is_dropout_enabled, dropout_rate) { }
+                     weight_constant_value, is_dropout_enabled, dropout_rate) { }
 
     virtual unsigned int get_output_width() { return output_width; }
 

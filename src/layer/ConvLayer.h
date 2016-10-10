@@ -90,7 +90,8 @@ public:
                  float dropout_rate = 0.5f)
             : GridLayer2d_(n_data, input_width, input_height, c_in, c_out, kw,
                            kh, sx, sy, px, py, activation, grad_activation,
-                           false, is_dropout_enabled, dropout_rate),
+                           false, filter_constant_value, is_dropout_enabled,
+                           dropout_rate),
               h(VectorXf::Constant(kw * kh * c_in * c_out,
                                    filter_constant_value)),
               t(MatrixXi::Constant(n_out, n_in,

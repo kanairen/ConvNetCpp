@@ -46,6 +46,10 @@ namespace xmlkey {
     constexpr char SOFTMAX[] = "softmax";
 
     constexpr char N_HIDDEN[] = "n_hidden";
+
+    constexpr char KERNEL_WIDTH[] = "kw";
+    constexpr char KERNEL_HEIGHT[] = "kh";
+
     constexpr char ACTIVATION_ID[] = "activation_id";
     constexpr char IS_WEIGHT_RAND_INIT_ENABLED[] = "is_weight_rand_init_enabled";
     constexpr char WEIGHT_CONSTANT_VALUE[] = "weight_constant_value";
@@ -117,6 +121,40 @@ Layer_ *new_fc(XMLElement *xml_layer, int n_data, int n_in) {
                       is_dropout_enabled, dropout_rate);
 
 }
+//
+//ConvLayer2d_ *new_conv(XMLElement *xml_layer, int n_data, int n_in,
+//                       int input_width, int input_height, int c_in, int c_out,
+//) {
+//
+//    if (!is_equal(xml_layer->Name(), xmlkey::FULL_CONNECT)) {
+//        error_and_exit("new_conv(): a xml element name is incorrect. : " +
+//                       string(xml_layer->Name()));
+//    }
+//
+//    std::map<string, string> &&map = params_layer(xml_layer);
+//
+//    int kw = atoi(map[xmlkey::KERNEL_WIDTH]);
+//
+//    // activation
+//    ACTIVATION act = ActivationHelper::get_activation(
+//            atoi(map[xmlkey::ACTIVATION_ID].c_str()));
+//    // grad-activation
+//    ACTIVATION g_act = ActivationHelper::get_g_activation(
+//            atoi(map[xmlkey::ACTIVATION_ID].c_str()));
+//
+//    // weight initialization setting
+//    bool is_weight_rand_init_enabled = atob(
+//            map[xmlkey::IS_WEIGHT_RAND_INIT_ENABLED].c_str());
+//    float weight_constant_value = (float) std::atof(
+//            map[xmlkey::WEIGHT_CONSTANT_VALUE].c_str());
+//
+//    // dropout setting
+//    bool is_dropout_enabled = atob(map[xmlkey::IS_DROPOUT_ENABLED].c_str());
+//    float dropout_rate = (float) std::atof(map[xmlkey::DROPOUT_RATE].c_str());
+//
+//    return new ConvLayer2d_(n_data, input_width, input_height, c_in, c_out,);
+//
+//}
 
 SoftMaxLayer_ *new_softmax(XMLElement *xml_layer, int n_data, int n_in,
                            int n_class) {
@@ -212,31 +250,47 @@ int main(int argc, char *argv[]) {
     float learning_rate = (float) std::atof(xml_lr->GetText());
 
     // Layers
-    vector<unique_ptr<Layer_>> layers;
     int n_in = data_set->data_size();
     XMLNode *node = xml_nets->FirstChild();
     XMLElement *net_elem;
-    while (node != nullptr) {
-
-        net_elem = node->ToElement();
-
-        if (is_equal(net_elem->Name(), xmlkey::FULL_CONNECT)) {
-            layers.push_back(
-                    unique_ptr<Layer_>(
-                            std::move(new_fc(net_elem, batch_size, n_in))));
-        } else if (is_equal(net_elem->Name(), xmlkey::SOFTMAX)) {
-            layers.push_back(
-                    unique_ptr<Layer_>(
-                            std::move(new_softmax(net_elem, batch_size, n_in,
-                                                  n_class))));
-        } else {
-            error_and_exit("failed to set layer.");
-        }
-
-        node = node->NextSibling();
-        n_in = layers.back()->get_n_out();
-
-    }
+    unique_ptr<ConvLayer2d_> l1(
+            new ConvLayer2d_(batch_size, 7, 30, 1, 4, 2, 2, 1, 1, 0,
+                             0, sigmoid, g_sigmoid));
+    unique_ptr<MaxPoolLayer2d_> l2(new MaxPoolLayer2d_(batch_size,
+                                                       l1->get_output_width(),
+                                                       l1->get_output_height(),
+                                                       4, 2, 2,
+                                                       1, 1));
+    unique_ptr<Layer_> l3(new Layer_(batch_size, l2->get_n_out(), 100, sigmoid,
+                                     g_sigmoid));
+    unique_ptr<SoftMaxLayer_> l4(
+            new SoftMaxLayer_(batch_size, l3->get_n_out(), n_class));
+    vector<unique_ptr<Layer_>> layers(4);
+    layers[0] = std::move(l1);
+    layers[1] = std::move(l2);
+    layers[2] = std::move(l3);
+    layers[3] = std::move(l4);
+//    while (node != nullptr) {
+//
+//        net_elem = node->ToElement();
+//
+//        if (is_equal(net_elem->Name(), xmlkey::FULL_CONNECT)) {
+//            layers.push_back(
+//                    unique_ptr<Layer_>(
+//                            std::move(new_fc(net_elem, batch_size, n_in))));
+//        } else if (is_equal(net_elem->Name(), xmlkey::SOFTMAX)) {
+//            layers.push_back(
+//                    unique_ptr<Layer_>(
+//                            std::move(new_softmax(net_elem, batch_size, n_in,
+//                                                  n_class))));
+//        } else {
+//            error_and_exit("failed to set layer.");
+//        }
+//
+//        node = node->NextSibling();
+//        n_in = layers.back()->get_n_out();
+//
+//    }
 
     // optimize
     optimize_(*data_set, layers, learning_rate, batch_size, n_iter, n_class,
